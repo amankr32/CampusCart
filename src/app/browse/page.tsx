@@ -54,7 +54,7 @@ export default async function BrowsePage({
   });
 
   return (
-    <div className="max-w-(--breakpoint-xl) mx-auto w-full px-4 lg:px-12 py-10">
+    <div className="w-full px-4 lg:px-12 py-10">
       <div className="mb-6">
         <h1 className="font-display font-bold text-3xl mb-4">
           Browse listings

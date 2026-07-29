@@ -45,23 +45,61 @@ export default async function SellPage() {
   const categories = await getTopLevelCategories();
 
   return (
-    <div className="max-w-(--breakpoint-sm) mx-auto w-full px-4 py-12">
-      <div className="mb-8">
-        <Link
-          href="/dashboard"
-          className="text-sm text-black/50 hover:text-black"
-        >
-          &larr; Back to dashboard
-        </Link>
-        <h1 className="font-display font-bold text-3xl mt-3">
-          List a new item
-        </h1>
-        <p className="text-black/60 mt-1">
-          Selling as <span className="font-medium">{tenant.storeName}</span>
-        </p>
-      </div>
+    <div className="w-full px-4 lg:px-12 py-10">
+      <Link
+        href="/dashboard"
+        className="text-sm text-black/50 hover:text-black"
+      >
+        &larr; Back to dashboard
+      </Link>
+      <h1 className="font-display font-bold text-3xl mt-3">
+        List a new item
+      </h1>
+      <p className="text-black/60 mt-1">
+        Selling as <span className="font-medium">{tenant.storeName}</span>
+      </p>
 
-      <ProductForm categories={categories} />
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 mt-8 items-start">
+        <ProductForm categories={categories} />
+
+        <aside className="rounded-xl border border-[var(--border-subtle)] bg-white p-5 flex flex-col gap-5">
+          <h2 className="font-semibold">Selling on Campus Cart</h2>
+
+          <div className="flex flex-col gap-4">
+            <div>
+              <p className="text-sm font-medium">Verified students only</p>
+              <p className="text-xs text-black/50 mt-0.5">
+                Only campus email IDs can buy and sell.
+              </p>
+            </div>
+            <div>
+              <p className="text-sm font-medium">No platform fee</p>
+              <p className="text-xs text-black/50 mt-0.5">
+                Keep 100% of your earnings.
+              </p>
+            </div>
+            <div>
+              <p className="text-sm font-medium">Safe campus deals</p>
+              <p className="text-xs text-black/50 mt-0.5">
+                Meet on campus and stay safe.
+              </p>
+            </div>
+            <div>
+              <p className="text-sm font-medium">Direct chat</p>
+              <p className="text-xs text-black/50 mt-0.5">
+                Chat directly with interested students.
+              </p>
+            </div>
+          </div>
+
+          <div className="rounded-lg bg-orange-50 border border-orange-100 p-3">
+            <p className="text-sm font-medium">Need help?</p>
+            <p className="text-xs text-black/60 mt-0.5">
+              Check our selling guide or contact support.
+            </p>
+          </div>
+        </aside>
+      </div>
     </div>
   );
 }
