@@ -7,7 +7,7 @@ const perks = [
   {
     icon: ShieldCheck,
     title: "Verified Students Only",
-    body: "Only PTU students can buy and sell.",
+    body: "Only IKGPTU students can buy and sell.",
   },
   {
     icon: MessageCircle,
@@ -31,7 +31,7 @@ export default function SignInPage() {
           again 👋
         </h1>
         <p className="text-black/60 text-lg max-w-md">
-          Sign in to continue buying and selling with verified PTU students.
+          Sign in to continue buying and selling with verified IKGPTU students.
         </p>
         <div className="flex flex-col gap-4 mt-2">
           {perks.map(({ icon: Icon, title, body }) => (
@@ -60,7 +60,7 @@ export default function SignInPage() {
 
         <div className="border border-[var(--border-subtle)] rounded-xl bg-white shadow-[var(--shadow-card)] p-6 sm:p-8">
           <h2 className="font-display font-semibold text-xl mb-1">
-            Sign in to PTU Bazar
+            Sign in to Campus Cart
           </h2>
           <p className="text-sm text-black/50 mb-6">
             Enter your student email and password to access your account.
@@ -69,7 +69,7 @@ export default function SignInPage() {
         </div>
 
         <p className="text-center text-sm text-black/60 mt-6">
-          New to PTU Bazar?{" "}
+          New to Campus Cart?{" "}
           <Link
             href="/sign-up"
             className="font-medium text-[var(--brand-orange)] hover:underline"

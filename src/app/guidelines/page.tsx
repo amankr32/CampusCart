@@ -3,15 +3,15 @@ import type { Metadata } from "next";
 import { StaticPage } from "@/components/layout/static-page";
 
 export const metadata: Metadata = {
-  title: "Community guidelines — PTU Bazar",
-  description: "What's allowed and not allowed on PTU Bazar.",
+  title: "Community guidelines — Campus Cart",
+  description: "What's allowed and not allowed on Campus Cart.",
 };
 
 export default function GuidelinesPage() {
   return (
     <StaticPage
       title="Community guidelines"
-      subtitle="PTU Bazar works because it's small and trusted. These rules keep it that way."
+      subtitle="Campus Cart works because it's small and trusted. These rules keep it that way."
     >
       <div>
         <h2 className="font-display font-semibold text-black mb-2">

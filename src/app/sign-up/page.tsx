@@ -7,7 +7,7 @@ const perks = [
   {
     icon: ShieldCheck,
     title: "Verified Students Only",
-    body: "Only PTU students can buy and sell.",
+    body: "Only IKGPTU students can buy and sell.",
   },
   {
     icon: Users,
@@ -26,13 +26,13 @@ export default function SignUpPage() {
     <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-(--breakpoint-xl) mx-auto w-full px-4 lg:px-12 py-12 lg:py-20 items-center">
       <div className="hidden lg:flex flex-col gap-6">
         <h1 className="font-display font-bold text-4xl leading-tight">
-          Join <span className="text-[var(--brand-orange)]">PTU Bazar</span>
+          Join <span className="text-[var(--brand-orange)]">Campus Cart</span>
           <br />
           Start buying &amp; selling on campus 👋
         </h1>
         <p className="text-black/60 text-lg max-w-md">
           Create your account in less than a minute and connect with verified
-          PTU students.
+          IKGPTU students.
         </p>
         <div className="flex flex-col gap-4 mt-2">
           {perks.map(({ icon: Icon, title, body }) => (
@@ -52,7 +52,7 @@ export default function SignUpPage() {
       <div className="w-full max-w-md mx-auto">
         <div className="text-center mb-6 lg:hidden">
           <h1 className="font-display font-bold text-3xl mb-2">
-            Join PTU Bazar
+            Join Campus Cart
           </h1>
           <p className="text-black/60">
             Buy and sell with IK Gujral Punjab University students — set up

@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { StaticPage } from "@/components/layout/static-page";
 
 export const metadata: Metadata = {
-  title: "Safety on campus — PTU Bazar",
-  description: "Tips for buying and selling safely on PTU Bazar.",
+  title: "Safety on campus — Campus Cart",
+  description: "Tips for buying and selling safely on Campus Cart.",
 };
 
 const TIPS = [
@@ -17,7 +17,7 @@ const TIPS = [
     body: "If you're paying in person, inspect the item first. For anything paid through the app, that payment is already tied to a specific listing and seller.",
   },
   {
-    title: "Keep the conversation on PTU Bazar until you've met",
+    title: "Keep the conversation on Campus Cart until you've met",
     body: "It gives you a record of what was agreed — price, condition, pickup time — in case anything needs sorting out later.",
   },
   {
@@ -34,7 +34,7 @@ export default function SafetyPage() {
   return (
     <StaticPage
       title="Safety on campus"
-      subtitle="A few habits that make trading on PTU Bazar smoother and safer for everyone."
+      subtitle="A few habits that make trading on Campus Cart smoother and safer for everyone."
     >
       <div className="flex flex-col gap-4">
         {TIPS.map((tip) => (

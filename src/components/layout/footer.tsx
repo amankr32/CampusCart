@@ -45,10 +45,10 @@ export function Footer() {
               </span>
               <div className="flex flex-col leading-none">
                 <span className="font-display font-bold text-base">
-                  PTU Bazar
+                  Campus Cart
                 </span>
                 <span className="text-[10px] text-black/40">
-                  Only for PTU Students
+                  Only for IKGPTU Students
                 </span>
               </div>
             </div>
@@ -82,11 +82,11 @@ export function Footer() {
 
         <div className="mt-10 pt-6 border-t border-[var(--border-subtle)] flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-black/50">
-            &copy; {new Date().getFullYear()} PTU Bazar. All rights reserved.
+            &copy; {new Date().getFullYear()} Campus Cart. All rights reserved.
           </p>
           <p className="text-xs text-black/50">
             Made with <span className="text-[var(--brand-orange)]">❤</span> by
-            PTU Students
+            IKGPTU Students
           </p>
         </div>
       </div>

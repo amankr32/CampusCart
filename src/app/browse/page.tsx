@@ -7,7 +7,7 @@ import { CategoryPills } from "@/components/products/category-pills";
 import { ProductPagination } from "@/components/products/pagination";
 
 export const metadata: Metadata = {
-  title: "Browse listings — PTU Bazar",
+  title: "Browse listings — Campus Cart",
   description:
     "Browse textbooks, hostel essentials, cycles, electronics, and more listed by IK Gujral Punjab University students.",
 };

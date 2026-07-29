@@ -8,7 +8,7 @@ import { CreateStoreForm } from "@/components/store/create-store-form";
 import { ProductForm } from "@/components/store/product-form";
 
 export const metadata: Metadata = {
-  title: "Sell on PTU Bazar",
+  title: "Sell on Campus Cart",
 };
 
 export default async function SellPage() {

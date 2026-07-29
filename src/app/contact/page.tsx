@@ -4,12 +4,12 @@ import { Mail } from "lucide-react";
 import { StaticPage } from "@/components/layout/static-page";
 
 export const metadata: Metadata = {
-  title: "Contact — PTU Bazar",
-  description: "Get in touch with the PTU Bazar team.",
+  title: "Contact — Campus Cart",
+  description: "Get in touch with the Campus Cart team.",
 };
 
 // TODO: replace with your real support inbox before launch.
-const SUPPORT_EMAIL = "support@ptubazar.example.com";
+const SUPPORT_EMAIL = "amankumar.cs27@gmail.com";
 
 export default function ContactPage() {
   return (

@@ -3,30 +3,30 @@ import type { Metadata } from "next";
 import { StaticPage } from "@/components/layout/static-page";
 
 export const metadata: Metadata = {
-  title: "FAQs — PTU Bazar",
-  description: "Common questions about buying and selling on PTU Bazar.",
+  title: "FAQs — Campus Cart",
+  description: "Common questions about buying and selling on Campus Cart.",
 };
 
 const FAQS = [
   {
-    question: "Who can use PTU Bazar?",
+    question: "Who can use Campus Cart?",
     answer:
       "Any IK Gujral Punjab University student can sign up and start browsing or selling. You'll need a student email to create an account.",
   },
   {
     question: "Is it free to list something?",
     answer:
-      "Yes. There's no fee to create a listing, and no fee when an item sells — PTU Bazar doesn't process any payments.",
+      "Yes. There's no fee to create a listing, and no fee when an item sells — Campus Cart doesn't process any payments.",
   },
   {
     question: "How do I get paid when something sells?",
     answer:
-      "Directly, in person. Buyers pay sellers offline — cash or UPI — when they meet to hand over the item. PTU Bazar never handles or holds your money.",
+      "Directly, in person. Buyers pay sellers offline — cash or UPI — when they meet to hand over the item. Campus Cart never handles or holds your money.",
   },
   {
     question: "How do I meet the buyer or seller?",
     answer:
-      "PTU Bazar doesn't handle delivery. Message each other to agree on a time and place — most people meet at a hostel block or a common spot on campus.",
+      "Campus Cart doesn't handle delivery. Message each other to agree on a time and place — most people meet at a hostel block or a common spot on campus.",
   },
   {
     question: "What if an item isn't as described?",

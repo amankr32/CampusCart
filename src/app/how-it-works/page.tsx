@@ -28,7 +28,7 @@ export default function HowItWorksPage() {
     <div className="max-w-(--breakpoint-xl) mx-auto w-full px-4 lg:px-12 py-16">
       <div className="text-center mb-12">
         <h1 className="font-display font-bold text-3xl sm:text-4xl mb-4">
-          How PTU Bazar works
+          How Campus Cart works
         </h1>
         <p className="text-black/60 text-lg max-w-xl mx-auto">
           A simple and safe way to buy and sell within your campus community.
@@ -60,7 +60,7 @@ export default function HowItWorksPage() {
             Safe. Simple. Student to student.
           </h3>
           <p className="text-black/60 text-sm max-w-2xl">
-            PTU Bazar is built only for verified students. No delivery, no
+            Campus Cart is built only for verified students. No delivery, no
             middlemen — just genuine campus deals.
           </p>
         </div>

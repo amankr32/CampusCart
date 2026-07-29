@@ -52,11 +52,11 @@ export function Navbar() {
           </span>
           <span className="flex flex-col leading-none">
             <span className="font-display font-bold text-lg tracking-tight hidden sm:inline">
-              <span className="text-foreground">PTU </span>
-              <span className="text-[var(--brand-orange)]">Bazar</span>
+              <span className="text-foreground">Campus </span>
+              <span className="text-[var(--brand-orange)]">Cart</span>
             </span>
             <span className="text-[10px] text-black/40 hidden sm:inline">
-              Only for PTU Students
+              Only for IKGPTU Students
             </span>
           </span>
         </Link>
@@ -158,7 +158,7 @@ export function Navbar() {
               </Link>
               <Link href="/sign-up">
                 <Button variant="brand" size="sm">
-                  Join PTU Bazar
+                  Join Campus Cart
                 </Button>
               </Link>
             </>
@@ -261,7 +261,7 @@ export function Navbar() {
                 </Link>
                 <Link href="/sign-up" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="brand" size="sm" className="w-full">
-                    Join PTU Bazar
+                    Join Campus Cart
                   </Button>
                 </Link>
               </>

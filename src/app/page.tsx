@@ -65,12 +65,12 @@ export default function HomePage() {
             <h1 className="font-display font-bold text-4xl sm:text-5xl lg:text-6xl leading-[1.05] tracking-tight mb-6">
               Buy &amp; Sell Everything{" "}
               <span className="text-[var(--brand-orange)]">
-                Within PTU Campus
+                Within IKGPTU Campus
               </span>
             </h1>
             <p className="text-lg leading-relaxed text-black/60 max-w-xl mb-8">
               From books to bicycles, laptops to hostel essentials — find it
-              all with fellow verified PTU students.
+              all with fellow verified IKGPTU students.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 mb-10">
               <Link href="/browse">
@@ -127,7 +127,7 @@ export default function HomePage() {
       <section className="bg-black/[0.02] border-y border-[var(--border-subtle)]">
         <div className="max-w-(--breakpoint-xl) mx-auto px-4 lg:px-12 py-16">
           <h2 className="font-display font-bold text-2xl sm:text-3xl mb-2">
-            How PTU Bazar works
+            How Campus Cart works
           </h2>
           <p className="text-black/60 mb-10">
             Three steps, no middlemen, no surprises.
@@ -163,7 +163,7 @@ export default function HomePage() {
               Built for this campus, not the whole internet
             </h2>
             <p className="text-white/70 max-w-2xl">
-              Every seller on PTU Bazar signs up with their student email, so
+              Every seller on Campus Cart signs up with their student email, so
               you&apos;re always buying from someone who actually studies here
               — not a stranger from across the country.
             </p>

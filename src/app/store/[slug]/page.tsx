@@ -16,10 +16,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const tenant = await getTenantBySlug(slug);
 
   if (!tenant) {
-    return { title: "Store not found — PTU Bazar" };
+    return { title: "Store not found — Campus Cart" };
   }
 
-  return { title: `${tenant.storeName} — PTU Bazar` };
+  return { title: `${tenant.storeName} — Campus Cart` };
 }
 
 export default async function StorePage({ params }: Props) {

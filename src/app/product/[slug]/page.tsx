@@ -21,11 +21,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const product = await getProductBySlug(slug);
 
   if (!product) {
-    return { title: "Listing not found — PTU Bazar" };
+    return { title: "Listing not found — Campus Cart" };
   }
 
   return {
-    title: `${product.name} — PTU Bazar`,
+    title: `${product.name} — Campus Cart`,
     description: product.description ?? undefined,
   };
 }
