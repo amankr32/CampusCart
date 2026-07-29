@@ -1,0 +1,53 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@import "@fontsource/dm-sans/400.css";
+@import "@fontsource/dm-sans/500.css";
+@import "@fontsource/dm-sans/700.css";
+@import "@fontsource/poppins/400.css";
+@import "@fontsource/poppins/500.css";
+@import "@fontsource/poppins/600.css";
+@import "@fontsource/poppins/700.css";
+
+:root {
+  --background: #ffffff;
+  --foreground: #18181b;
+
+  /* Brand */
+  --brand-yellow: #f5730c;
+  --brand-orange: #f5730c;
+  --brand-orange-dark: #e2600a;
+  --brand-orange-light: #fff1e7;
+  --brand-black: #18181b;
+  --border-subtle: #e7e5e4;
+
+  /* Soft card shadow */
+  --shadow-cartoon: 0 1px 2px 0 rgba(24, 24, 27, 0.05);
+  --shadow-cartoon-sm: 0 1px 2px 0 rgba(24, 24, 27, 0.04);
+  --shadow-card: 0 1px 3px 0 rgba(24, 24, 27, 0.08), 0 1px 2px -1px rgba(24, 24, 27, 0.06);
+  --shadow-card-hover: 0 4px 12px -2px rgba(24, 24, 27, 0.12), 0 2px 4px -2px rgba(24, 24, 27, 0.08);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --shadow-cartoon: var(--shadow-cartoon);
+  --shadow-cartoon-sm: var(--shadow-cartoon-sm);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+}
