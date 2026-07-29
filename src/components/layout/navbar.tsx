@@ -102,7 +102,7 @@ export function Navbar() {
 
   return (
     <nav className="border-b border-[var(--border-subtle)] bg-white/95 backdrop-blur sticky top-0 z-50">
-      <div className="h-20 max-w-(--breakpoint-xl) mx-auto flex items-center gap-4 px-4 lg:px-12">
+      <div className="h-20 w-full flex items-center gap-4 px-4 lg:px-12">
         <Link href="/" className="flex items-center gap-2 shrink-0">
           <span className="flex items-center justify-center h-9 w-9 rounded-lg bg-indigo-600 text-white">
             <ShoppingCart className="h-4.5 w-4.5" strokeWidth={2} />

@@ -56,7 +56,7 @@ export default function HomePage() {
     <div className="flex flex-col">
       {/* Hero */}
       <section className="border-b border-[var(--border-subtle)] bg-gradient-to-b from-[var(--brand-orange-light)] to-white">
-        <div className="max-w-(--breakpoint-xl) mx-auto px-4 lg:px-12 py-20 lg:py-24">
+        <div className="w-full px-4 lg:px-12 py-20 lg:py-24">
           <div className="max-w-2xl">
             <p className="inline-flex items-center gap-2 text-xs font-semibold tracking-wide bg-white border border-[var(--border-subtle)] rounded-full px-3 py-1.5 mb-6 shadow-[var(--shadow-cartoon-sm)]">
               <ShieldCheck className="h-3.5 w-3.5 text-[var(--brand-orange)]" />
@@ -100,7 +100,7 @@ export default function HomePage() {
       </section>
 
       {/* Categories */}
-      <section className="max-w-(--breakpoint-xl) mx-auto w-full px-4 lg:px-12 py-16">
+      <section className="w-full px-4 lg:px-12 py-16">
         <h2 className="font-display font-bold text-2xl sm:text-3xl mb-2">
           Shop by category
         </h2>
@@ -125,7 +125,7 @@ export default function HomePage() {
 
       {/* How it works */}
       <section className="bg-black/[0.02] border-y border-[var(--border-subtle)]">
-        <div className="max-w-(--breakpoint-xl) mx-auto px-4 lg:px-12 py-16">
+        <div className="w-full px-4 lg:px-12 py-16">
           <h2 className="font-display font-bold text-2xl sm:text-3xl mb-2">
             How Campus Cart works
           </h2>
@@ -155,7 +155,7 @@ export default function HomePage() {
       </section>
 
       {/* Trust */}
-      <section className="max-w-(--breakpoint-xl) mx-auto w-full px-4 lg:px-12 py-16">
+      <section className="w-full px-4 lg:px-12 py-16">
         <div className="flex flex-col md:flex-row items-start md:items-center gap-6 p-8 rounded-xl bg-[var(--brand-black)] text-white">
           <ShieldCheck className="h-10 w-10 shrink-0 text-[var(--brand-orange)]" />
           <div>
@@ -172,7 +172,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="max-w-(--breakpoint-xl) mx-auto w-full px-4 lg:px-12 pb-20">
+      <section className="w-full px-4 lg:px-12 pb-20">
         <div className="flex flex-col items-center text-center gap-4 py-16 px-6 rounded-xl bg-gradient-to-br from-[var(--brand-orange)] to-[var(--brand-orange-dark)] text-white">
           <h2 className="font-display font-bold text-2xl sm:text-3xl max-w-lg">
             Got things gathering dust in your hostel room?
