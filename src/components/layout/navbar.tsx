@@ -4,17 +4,29 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { ChevronDown, LogOut, Menu, Search, X } from "lucide-react";
+import {
+  Bell,
+  ChevronDown,
+  LogOut,
+  Menu,
+  Search,
+  ShoppingCart,
+  X,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MessagesNavLink } from "@/components/layout/messages-nav-link";
 
 const navLinks = [
   { href: "/browse", label: "Browse" },
   { href: "/sell", label: "Sell" },
   { href: "/how-it-works", label: "How it works" },
+  // "Deals" has no backing feature yet (no discount/deal field on products) —
+  // pointed at /browse for now. See chat notes before wiring up a real page.
+  { href: "/browse", label: "Deals" },
 ];
+
+const UNREAD_POLL_INTERVAL_MS = 15_000;
 
 export function Navbar() {
   const { data: session, status } = useSession();
@@ -22,7 +34,9 @@ export function Navbar() {
   const [search, setSearch] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const profileRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!isProfileOpen) return;
@@ -34,6 +48,49 @@ export function Navbar() {
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, [isProfileOpen]);
+
+  // Real unread-message count, reused here as the navbar's "notifications"
+  // signal — there's no separate notifications table/feature in the schema,
+  // so this stays honest rather than showing a fake hardcoded badge.
+  useEffect(() => {
+    if (!session?.user) {
+      setUnreadCount(0);
+      return;
+    }
+
+    let cancelled = false;
+
+    const poll = async () => {
+      try {
+        const res = await fetch("/api/messages/unread-count");
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!cancelled) setUnreadCount(data.count ?? 0);
+      } catch {
+        // Silently ignore — the badge just won't update this cycle.
+      }
+    };
+
+    poll();
+    const interval = setInterval(poll, UNREAD_POLL_INTERVAL_MS);
+
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [session?.user]);
+
+  // Cmd/Ctrl+K focuses the search box, matching the ⌘K hint shown in it.
+  useEffect(() => {
+    const handleKeydown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", handleKeydown);
+    return () => window.removeEventListener("keydown", handleKeydown);
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,64 +104,64 @@ export function Navbar() {
     <nav className="border-b border-[var(--border-subtle)] bg-white/95 backdrop-blur sticky top-0 z-50">
       <div className="h-20 max-w-(--breakpoint-xl) mx-auto flex items-center gap-4 px-4 lg:px-12">
         <Link href="/" className="flex items-center gap-2 shrink-0">
-          <span className="flex items-center justify-center h-9 w-9 rounded-lg bg-[var(--brand-orange)] text-white font-display font-bold text-sm">
-            PB
+          <span className="flex items-center justify-center h-9 w-9 rounded-lg bg-indigo-600 text-white">
+            <ShoppingCart className="h-4.5 w-4.5" strokeWidth={2} />
           </span>
-          <span className="flex flex-col leading-none">
-            <span className="font-display font-bold text-lg tracking-tight hidden sm:inline">
-              <span className="text-foreground">Campus </span>
-              <span className="text-[var(--brand-orange)]">Cart</span>
-            </span>
-            <span className="text-[10px] text-black/40 hidden sm:inline">
-              Only for IKGPTU Students
-            </span>
+          <span className="font-display font-bold text-lg tracking-tight hidden sm:inline">
+            CampusCart
           </span>
         </Link>
 
         <form
           onSubmit={handleSearch}
-          className="hidden md:flex flex-1 max-w-sm"
+          className="hidden md:flex flex-1 max-w-md relative"
         >
           <Input
+            ref={searchInputRef}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search listings..."
-            className="h-9"
+            placeholder="Search for items, categories or users..."
+            className="h-10 pr-12"
           />
-          <Button type="submit" variant="ghost" size="icon" className="h-9 w-9 -ml-9">
-            <Search className="h-4 w-4" />
-          </Button>
+          <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 min-w-5 px-1 rounded border border-[var(--border-subtle)] bg-black/[0.03] text-[10px] font-medium text-black/40">
+            ⌘K
+          </span>
         </form>
 
         <div className="hidden lg:flex items-center gap-6 shrink-0">
           {navLinks.map((link) => (
             <Link
-              key={link.href}
+              key={link.label}
               href={link.href}
-              className="text-sm font-medium text-black/70 hover:text-[var(--brand-orange)] transition-colors"
+              className="text-sm font-medium text-black/70 hover:text-indigo-600 transition-colors"
             >
               {link.label}
             </Link>
           ))}
           {session?.user && (
-            <>
-              <Link
-                href="/orders"
-                className="text-sm font-medium text-black/70 hover:text-[var(--brand-orange)] transition-colors"
-              >
-                Orders
-              </Link>
-              <Link
-                href="/dashboard/sales"
-                className="text-sm font-medium text-black/70 hover:text-[var(--brand-orange)] transition-colors"
-              >
-                Sales
-              </Link>
-            </>
+            <Link
+              href="/orders"
+              className="text-sm font-medium text-black/70 hover:text-indigo-600 transition-colors"
+            >
+              Orders
+            </Link>
           )}
         </div>
 
-        <MessagesNavLink />
+        {session?.user && (
+          <Link
+            href="/dashboard/messages"
+            className="relative hidden sm:flex items-center justify-center h-9 w-9 rounded-lg hover:bg-black/5 transition-colors shrink-0"
+            aria-label="Notifications"
+          >
+            <Bell className="h-5 w-5 text-black/60" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 flex items-center justify-center h-4 min-w-4 px-1 rounded-full bg-red-500 text-white text-[10px] font-medium">
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
+            )}
+          </Link>
+        )}
 
         {/* Desktop auth actions */}
         <div className="hidden lg:flex items-center gap-3 shrink-0">
@@ -117,11 +174,8 @@ export function Navbar() {
                 onClick={() => setIsProfileOpen((v) => !v)}
                 className="flex items-center gap-2 pl-1 pr-2 h-9 rounded-lg hover:bg-black/5 transition-colors"
               >
-                <span className="flex items-center justify-center h-7 w-7 rounded-full bg-[var(--brand-orange-light)] text-[var(--brand-orange)] font-display font-semibold text-xs shrink-0">
+                <span className="flex items-center justify-center h-8 w-8 rounded-full bg-indigo-600 text-white font-display font-semibold text-xs shrink-0">
                   {session.user.username?.slice(0, 2).toUpperCase()}
-                </span>
-                <span className="text-sm font-medium">
-                  {session.user.username}
                 </span>
                 <ChevronDown className="h-3.5 w-3.5 text-black/40" />
               </button>
@@ -157,8 +211,8 @@ export function Navbar() {
                 </Button>
               </Link>
               <Link href="/sign-up">
-                <Button variant="brand" size="sm">
-                  Join Campus Cart
+                <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700">
+                  Join CampusCart
                 </Button>
               </Link>
             </>
@@ -184,7 +238,7 @@ export function Navbar() {
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search listings..."
+              placeholder="Search for items, categories or users..."
               className="h-9"
             />
             <Button type="submit" variant="ghost" size="icon" className="h-9 w-9 -ml-9">
@@ -195,7 +249,7 @@ export function Navbar() {
           <div className="flex flex-col gap-1">
             {navLinks.map((link) => (
               <Link
-                key={link.href}
+                key={link.label}
                 href={link.href}
                 onClick={() => setIsMenuOpen(false)}
                 className="text-sm font-medium py-2 hover:opacity-70 transition-opacity"
@@ -213,18 +267,16 @@ export function Navbar() {
                   Orders
                 </Link>
                 <Link
-                  href="/dashboard/sales"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="text-sm font-medium py-2 hover:opacity-70 transition-opacity"
-                >
-                  Sales
-                </Link>
-                <Link
                   href="/dashboard/messages"
                   onClick={() => setIsMenuOpen(false)}
-                  className="text-sm font-medium py-2 hover:opacity-70 transition-opacity"
+                  className="flex items-center gap-2 text-sm font-medium py-2 hover:opacity-70 transition-opacity"
                 >
-                  Messages
+                  Notifications
+                  {unreadCount > 0 && (
+                    <span className="flex items-center justify-center h-4 min-w-4 px-1 rounded-full bg-red-500 text-white text-[10px] font-medium">
+                      {unreadCount > 9 ? "9+" : unreadCount}
+                    </span>
+                  )}
                 </Link>
               </>
             )}
@@ -260,8 +312,8 @@ export function Navbar() {
                   </Button>
                 </Link>
                 <Link href="/sign-up" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="brand" size="sm" className="w-full">
-                    Join Campus Cart
+                  <Button size="sm" className="w-full bg-indigo-600 hover:bg-indigo-700">
+                    Join CampusCart
                   </Button>
                 </Link>
               </>
