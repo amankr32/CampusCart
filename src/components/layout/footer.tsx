@@ -85,7 +85,7 @@ export function Footer() {
             &copy; {new Date().getFullYear()} Campus Cart. All rights reserved.
           </p>
           <p className="text-xs text-black/50">
-            Made with <span className="text-[var(--brand-orange)]">❤</span> by
+            Made by <span className="text-[var(--brand-orange)]">students</span> for
             IKGPTU Students
           </p>
         </div>
