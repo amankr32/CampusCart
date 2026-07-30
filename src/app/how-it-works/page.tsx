@@ -25,7 +25,7 @@ const steps = [
 
 export default function HowItWorksPage() {
   return (
-    <div className="max-w-(--breakpoint-xl) mx-auto w-full px-4 lg:px-12 py-16">
+    <div className="w-full px-4 lg:px-12 py-16">
       <div className="text-center mb-12">
         <h1 className="font-display font-bold text-3xl sm:text-4xl mb-4">
           How Campus Cart works

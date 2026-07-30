@@ -16,7 +16,7 @@ export default async function MessagesLayout({
   const conversations = await listConversationsForUser(session.user.id);
 
   return (
-    <div className="flex h-[calc(100vh-5rem)] max-w-(--breakpoint-xl) mx-auto">
+    <div className="flex h-[calc(100vh-5rem)] w-full">
       <ConversationSidebar
         initialConversations={conversations}
         currentUserId={session.user.id}
