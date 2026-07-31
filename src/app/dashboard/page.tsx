@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MessageCircle, Plus, Receipt } from "lucide-react";
+import { MessageCircle, Plus, ListOrdered, User, ShieldCheck, ShieldAlert } from "lucide-react";
 
 import { auth } from "@/auth";
 import { getTenantByOwnerId } from "@/db/queries/tenants";
@@ -15,66 +15,111 @@ export default async function DashboardPage() {
   }
 
   const tenant = await getTenantByOwnerId(session.user.id);
+  const studentStatus = session.user.studentStatus || "unverified";
 
   return (
-    <div className="max-w-(--breakpoint-md) mx-auto w-full px-4 py-12">
-      <h1 className="font-display font-bold text-3xl mb-1">
-        Welcome, {session.user.name?.split(" ")[0]}
-      </h1>
-      <p className="text-black/60 mb-8">
-        Manage your store and listings from here.
-      </p>
+    <div className="max-w-4xl mx-auto w-full px-4 py-10 space-y-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="font-display font-extrabold text-3xl text-slate-900 tracking-tight">
+            Welcome back, {session.user.name?.split(" ")[0]} 👋
+          </h1>
+          <p className="text-sm text-slate-600">
+            Manage your store items, messages, and student profile.
+          </p>
+        </div>
 
-      <div className="flex flex-wrap gap-3 mb-8">
-        <Link
-          href="/dashboard/messages"
-          className="flex items-center gap-3 p-4 rounded-lg border-2 border-black bg-white shadow-[var(--shadow-cartoon-sm)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all w-fit"
-        >
-          <span className="flex items-center justify-center h-9 w-9 rounded-full bg-[var(--brand-yellow)] border-2 border-black">
-            <MessageCircle className="h-4 w-4" />
-          </span>
-          <span>
-            <span className="block text-xs text-black/50">Buyers & sellers</span>
-            <span className="font-medium">Messages</span>
-          </span>
-        </Link>
-
-        <Link
-          href="/dashboard/sales"
-          className="flex items-center gap-3 p-4 rounded-lg border-2 border-black bg-white shadow-[var(--shadow-cartoon-sm)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all w-fit"
-        >
-          <span className="flex items-center justify-center h-9 w-9 rounded-full bg-[var(--brand-yellow)] border-2 border-black">
-            <Receipt className="h-4 w-4" />
-          </span>
-          <span>
-            <span className="block text-xs text-black/50">Order history</span>
-            <span className="font-medium">Sales</span>
-          </span>
+        <Link href="/sell">
+          <Button size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl shadow-md shadow-indigo-100">
+            <Plus className="h-5 w-5 mr-1" /> Sell New Item
+          </Button>
         </Link>
       </div>
 
+      {/* Quick Action Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <Link
+          href="/dashboard/my-listings"
+          className="flex items-center gap-3.5 p-5 rounded-3xl border border-slate-200 bg-white hover:border-indigo-200 hover:shadow-md transition-all group"
+        >
+          <span className="flex items-center justify-center h-12 w-12 rounded-2xl bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors shrink-0">
+            <ListOrdered className="h-6 w-6" />
+          </span>
+          <div>
+            <span className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Dashboard</span>
+            <span className="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors text-base">My Listings</span>
+          </div>
+        </Link>
+
+        <Link
+          href="/dashboard/messages"
+          className="flex items-center gap-3.5 p-5 rounded-3xl border border-slate-200 bg-white hover:border-indigo-200 hover:shadow-md transition-all group"
+        >
+          <span className="flex items-center justify-center h-12 w-12 rounded-2xl bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors shrink-0">
+            <MessageCircle className="h-6 w-6" />
+          </span>
+          <div>
+            <span className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Chat</span>
+            <span className="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors text-base">Messages</span>
+          </div>
+        </Link>
+
+        <Link
+          href="/profile"
+          className="flex items-center gap-3.5 p-5 rounded-3xl border border-slate-200 bg-white hover:border-indigo-200 hover:shadow-md transition-all group"
+        >
+          <span className="flex items-center justify-center h-12 w-12 rounded-2xl bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors shrink-0">
+            <User className="h-6 w-6" />
+          </span>
+          <div>
+            <span className="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Account</span>
+            <span className="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors text-base">My Profile</span>
+          </div>
+        </Link>
+      </div>
+
+      {/* Student Status Card */}
+      {studentStatus !== "verified" && (
+        <div className="p-6 rounded-3xl bg-amber-50 border border-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <ShieldAlert className="w-6 h-6 text-amber-600 shrink-0 mt-0.5" />
+            <div>
+              <h3 className="font-bold text-amber-950 font-display">Unverified Seller Status</h3>
+              <p className="text-xs text-amber-800 leading-relaxed">
+                Unverified sellers can list up to 2 items max. Get Student Verified using your PTU Portal to unlock unlimited listings and higher trust rank!
+              </p>
+            </div>
+          </div>
+          <Link href="/student-verification" className="shrink-0">
+            <Button size="sm" className="bg-amber-600 hover:bg-amber-700 text-white rounded-2xl text-xs font-bold px-4">
+              Get Verified
+            </Button>
+          </Link>
+        </div>
+      )}
+
+      {/* Listings Section */}
       {!tenant ? (
-        <div className="p-6 rounded-lg border-2 border-black bg-white shadow-[var(--shadow-cartoon)]">
-          <h2 className="font-display font-semibold text-lg mb-2">
-            You don&apos;t have a store yet
+        <div className="p-8 rounded-3xl border border-slate-200 bg-white text-center space-y-3">
+          <h2 className="font-display font-bold text-lg text-slate-900">
+            Create Your Seller Storefront
           </h2>
-          <p className="text-black/60 text-sm mb-4">
-            Set one up to start listing items for sale.
+          <p className="text-slate-600 text-sm max-w-md mx-auto">
+            Set up your storefront in one click to post unused books, lab tools, or electronics.
           </p>
           <Link href="/sell">
-            <Button variant="brand">Set up my store</Button>
+            <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl">Create Storefront</Button>
           </Link>
         </div>
       ) : (
         <div className="flex flex-col gap-6">
           <div className="flex items-center justify-between">
-            <h2 className="font-display font-semibold text-xl">
-              Your listings
+            <h2 className="font-display font-bold text-xl text-slate-900">
+              Active Store Items
             </h2>
-            <Link href="/sell">
-              <Button variant="elevated" size="sm">
-                <Plus className="h-4 w-4" />
-                New listing
+            <Link href="/dashboard/my-listings">
+              <Button variant="ghost" size="sm" className="text-xs font-semibold text-indigo-600">
+                View All Listings →
               </Button>
             </Link>
           </div>
@@ -91,9 +136,11 @@ async function ListingsList({ tenantId }: { tenantId: string }) {
 
   if (listings.length === 0) {
     return (
-      <p className="text-black/50 text-sm py-8 text-center border-2 border-dashed border-black/20 rounded-lg">
-        No listings yet — create your first one above.
-      </p>
+      <div className="text-center py-12 bg-white rounded-3xl border border-slate-200 p-8 space-y-2">
+        <p className="text-slate-500 text-sm">
+          No listings yet — click &quot;Sell New Item&quot; to post your first textbook or item.
+        </p>
+      </div>
     );
   }
 

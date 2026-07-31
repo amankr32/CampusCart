@@ -32,7 +32,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const [user] = await db
           .select()
           .from(users)
-          .where(eq(users.email, email))
+          .where(eq(users.email, email.toLowerCase().trim()))
           .limit(1);
 
         if (!user) {
@@ -48,12 +48,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return null;
         }
 
+        // Email Verification Check: Must be verified before logging in
+        if (!user.emailVerifiedAt) {
+          throw new Error("UNVERIFIED_EMAIL");
+        }
+
         return {
           id: user.id,
           name: user.name,
           email: user.email,
           username: user.username,
           isAdmin: user.isAdmin,
+          studentStatus: user.studentStatus,
+          trustScore: user.trustScore,
         };
       },
     }),
@@ -61,9 +68,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     jwt: ({ token, user }) => {
       if (user) {
-        token.id = user.id as string;
-        token.username = (user as { username: string }).username;
-        token.isAdmin = (user as { isAdmin: boolean }).isAdmin;
+        const u = user as unknown as {
+          id: string;
+          username: string;
+          isAdmin: boolean;
+          studentStatus?: string;
+          trustScore?: number;
+        };
+        token.id = u.id;
+        token.username = u.username;
+        token.isAdmin = u.isAdmin;
+        token.studentStatus = u.studentStatus;
+        token.trustScore = u.trustScore;
       }
       return token;
     },
@@ -72,6 +88,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.id = token.id as string;
         session.user.username = token.username as string;
         session.user.isAdmin = token.isAdmin as boolean;
+        session.user.studentStatus = token.studentStatus as string;
+        session.user.trustScore = token.trustScore as number;
       }
       return session;
     },

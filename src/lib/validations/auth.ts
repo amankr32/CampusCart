@@ -6,16 +6,6 @@ export const signUpSchema = z.object({
     .trim()
     .min(2, "Enter your full name.")
     .max(80, "That name is too long."),
-  username: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .min(3, "Username must be at least 3 characters.")
-    .max(24, "Username must be under 24 characters.")
-    .regex(
-      /^[a-z0-9_]+$/,
-      "Use only lowercase letters, numbers, and underscores."
-    ),
   email: z
     .string()
     .trim()
@@ -25,8 +15,6 @@ export const signUpSchema = z.object({
     .string()
     .min(8, "Password must be at least 8 characters.")
     .max(72, "Password is too long."),
-  hostel: z.string().trim().max(80).optional().or(z.literal("")),
-  branch: z.string().trim().max(80).optional().or(z.literal("")),
 });
 
 export type SignUpInput = z.infer<typeof signUpSchema>;
@@ -37,3 +25,30 @@ export const signInSchema = z.object({
 });
 
 export type SignInInput = z.infer<typeof signInSchema>;
+
+export const verifyOtpSchema = z.object({
+  email: z.string().trim().toLowerCase().email("Enter a valid email address."),
+  code: z
+    .string()
+    .trim()
+    .length(6, "Verification code must be 6 digits.")
+    .regex(/^\d{6}$/, "Verification code must contain only numbers."),
+});
+
+export type VerifyOtpInput = z.infer<typeof verifyOtpSchema>;
+
+export const forgotPasswordSchema = z.object({
+  email: z.string().trim().toLowerCase().email("Enter a valid email address."),
+});
+
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
+
+export const resetPasswordSchema = z.object({
+  token: z.string().min(1, "Invalid password reset token."),
+  password: z
+    .string()
+    .min(8, "New password must be at least 8 characters.")
+    .max(72, "Password is too long."),
+});
+
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;

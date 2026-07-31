@@ -16,6 +16,10 @@ import {
   ShoppingCart,
   Tag,
   X,
+  User,
+  ShieldCheck,
+  ListOrdered,
+  ShieldAlert,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -23,7 +27,7 @@ import { Input } from "@/components/ui/input";
 
 const navLinks = [
   { href: "/browse", label: "Browse", icon: LayoutGrid },
-  { href: "/sell", label: "Sell", icon: Tag },
+  { href: "/sell", label: "Sell Item", icon: Tag },
   { href: "/how-it-works", label: "How it works", icon: Info },
 ];
 
@@ -40,6 +44,9 @@ export function Navbar() {
   const profileRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
+  const studentStatus = session?.user?.studentStatus || "unverified";
+  const isAdmin = session?.user?.isAdmin;
+
   useEffect(() => {
     if (!isProfileOpen) return;
     const handleClick = (e: MouseEvent) => {
@@ -51,9 +58,6 @@ export function Navbar() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, [isProfileOpen]);
 
-  // Real unread-message count, reused here as the navbar's "notifications"
-  // signal — there's no separate notifications table/feature in the schema,
-  // so this stays honest rather than showing a fake hardcoded badge.
   useEffect(() => {
     if (!session?.user) {
       setUnreadCount(0);
@@ -69,7 +73,7 @@ export function Navbar() {
         const data = await res.json();
         if (!cancelled) setUnreadCount(data.count ?? 0);
       } catch {
-        // Silently ignore — the badge just won't update this cycle.
+        // Silently ignore
       }
     };
 
@@ -82,7 +86,6 @@ export function Navbar() {
     };
   }, [session?.user]);
 
-  // Cmd/Ctrl+K focuses the search box, matching the ⌘K hint shown in it.
   useEffect(() => {
     const handleKeydown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
@@ -108,12 +111,12 @@ export function Navbar() {
     <div className="sticky top-0 z-50 px-3 pt-3 sm:px-4 sm:pt-4 bg-[var(--background)]">
       <nav className="rounded-3xl border border-black/5 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
         <div className="h-[72px] w-full flex items-center gap-4 px-4 sm:px-6">
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <span className="flex items-center justify-center h-9 w-9 rounded-xl bg-blue-600 text-white">
-              <ShoppingCart className="h-4.5 w-4.5" strokeWidth={2} />
+          <Link href="/" className="flex items-center gap-2.5 shrink-0">
+            <span className="flex items-center justify-center h-10 w-10 rounded-2xl bg-indigo-600 text-white shadow-md shadow-indigo-200">
+              <ShoppingCart className="h-5 w-5" strokeWidth={2.2} />
             </span>
-            <span className="font-display font-bold text-lg tracking-tight hidden sm:inline">
-              CampusCart
+            <span className="font-display font-bold text-xl tracking-tight text-slate-900 hidden sm:inline">
+              Campus<span className="text-indigo-600">Cart</span>
             </span>
           </Link>
 
@@ -125,11 +128,11 @@ export function Navbar() {
               ref={searchInputRef}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search for items, categories or users..."
-              className="h-10 rounded-full bg-black/[0.03] border-black/5 pl-10 pr-12"
+              placeholder="Search books, lab tools, electronics..."
+              className="h-10 rounded-full bg-slate-100/80 border-slate-200 pl-10 pr-12 text-sm focus:bg-white transition-all"
             />
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-black/35" />
-            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 min-w-5 px-1 rounded border border-[var(--border-subtle)] bg-black/[0.03] text-[10px] font-medium text-black/40">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 min-w-5 px-1.5 rounded border border-slate-200 bg-white text-[10px] font-semibold text-slate-400">
               ⌘K
             </span>
           </form>
@@ -143,8 +146,8 @@ export function Navbar() {
                   href={link.href}
                   className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium border-b-2 transition-colors ${
                     active
-                      ? "text-blue-600 border-blue-600"
-                      : "text-black/70 border-transparent hover:text-blue-600"
+                      ? "text-indigo-600 border-indigo-600"
+                      : "text-slate-600 border-transparent hover:text-indigo-600"
                   }`}
                 >
                   <link.icon className="h-4 w-4" strokeWidth={active ? 2.25 : 1.75} />
@@ -153,20 +156,30 @@ export function Navbar() {
               );
             })}
             {session?.user && (
-              <Link
-                href="/orders"
-                className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium border-b-2 transition-colors ${
-                  isActive("/orders")
-                    ? "text-blue-600 border-blue-600"
-                    : "text-black/70 border-transparent hover:text-blue-600"
-                }`}
-              >
-                <Package
-                  className="h-4 w-4"
-                  strokeWidth={isActive("/orders") ? 2.25 : 1.75}
-                />
-                Orders
-              </Link>
+              <>
+                <Link
+                  href="/dashboard/my-listings"
+                  className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium border-b-2 transition-colors ${
+                    isActive("/dashboard/my-listings")
+                      ? "text-indigo-600 border-indigo-600"
+                      : "text-slate-600 border-transparent hover:text-indigo-600"
+                  }`}
+                >
+                  <ListOrdered className="h-4 w-4" />
+                  My Listings
+                </Link>
+                <Link
+                  href="/orders"
+                  className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium border-b-2 transition-colors ${
+                    isActive("/orders")
+                      ? "text-indigo-600 border-indigo-600"
+                      : "text-slate-600 border-transparent hover:text-indigo-600"
+                  }`}
+                >
+                  <Package className="h-4 w-4" />
+                  Orders
+                </Link>
+              </>
             )}
           </div>
 
@@ -174,69 +187,119 @@ export function Navbar() {
 
           {session?.user && (
             <>
-              <div className="hidden lg:block h-6 w-px bg-black/10 shrink-0" />
+              <div className="hidden lg:block h-6 w-px bg-slate-200 shrink-0" />
               <Link
                 href="/dashboard/messages"
-                className="relative hidden sm:flex items-center justify-center h-9 w-9 rounded-lg hover:bg-black/5 transition-colors shrink-0"
-                aria-label="Notifications"
+                className="relative hidden sm:flex items-center justify-center h-10 w-10 rounded-full hover:bg-slate-100 transition-colors shrink-0"
+                aria-label="Messages & Notifications"
               >
-                <Bell className="h-5 w-5 text-black/60" />
+                <Bell className="h-5 w-5 text-slate-600" />
                 {unreadCount > 0 && (
-                  <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500" />
+                  <span className="absolute top-1.5 right-1.5 h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-white" />
                 )}
               </Link>
             </>
           )}
 
-          {/* Desktop auth actions */}
+          {/* Desktop profile menu */}
           <div className="hidden lg:flex items-center gap-3 shrink-0">
             {status === "loading" ? (
-              <div className="h-9 w-24 rounded-lg bg-black/5 animate-pulse" />
+              <div className="h-9 w-24 rounded-lg bg-slate-100 animate-pulse" />
             ) : session?.user ? (
               <div className="relative" ref={profileRef}>
                 <button
                   type="button"
                   onClick={() => setIsProfileOpen((v) => !v)}
-                  className="flex items-center gap-1 pl-1 pr-1 h-9 rounded-lg hover:bg-black/5 transition-colors"
+                  className="flex items-center gap-2 pl-2 pr-1.5 py-1 rounded-full hover:bg-slate-100 border border-slate-200 transition-all"
                 >
-                  <span className="flex items-center justify-center h-8 w-8 rounded-full bg-blue-600 text-white font-display font-semibold text-xs shrink-0">
-                    {session.user.username?.slice(0, 2).toUpperCase()}
+                  <span className="flex items-center justify-center h-8 w-8 rounded-full bg-indigo-600 text-white font-semibold text-xs shadow-sm">
+                    {session.user.name?.slice(0, 2).toUpperCase() || "US"}
                   </span>
-                  <ChevronDown className="h-3.5 w-3.5 text-black/40" />
+                  <div className="flex flex-col items-start text-left leading-tight hidden xl:flex">
+                    <span className="text-xs font-semibold text-slate-800">{session.user.name}</span>
+                    <span className="text-[10px] font-medium text-slate-500">
+                      {studentStatus === "verified" ? "Verified Student" : "Unverified"}
+                    </span>
+                  </div>
+                  <ChevronDown className="h-3.5 w-3.5 text-slate-400 ml-0.5" />
                 </button>
 
                 {isProfileOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-44 rounded-lg border border-[var(--border-subtle)] bg-white shadow-[var(--shadow-card-hover)] py-1.5 z-50">
-                    <Link
-                      href="/dashboard"
-                      onClick={() => setIsProfileOpen(false)}
-                      className="block px-3 py-2 text-sm hover:bg-black/[0.03] transition-colors"
-                    >
-                      Dashboard
-                    </Link>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsProfileOpen(false);
-                        signOut({ callbackUrl: "/" });
-                      }}
-                      className="flex w-full items-center gap-2 px-3 py-2 text-sm text-left hover:bg-black/[0.03] transition-colors"
-                    >
-                      <LogOut className="h-3.5 w-3.5" />
-                      Sign out
-                    </button>
+                  <div className="absolute right-0 top-full mt-2 w-56 rounded-2xl border border-slate-200 bg-white shadow-xl py-2 z-50 divide-y divide-slate-100">
+                    <div className="px-4 py-2.5">
+                      <p className="text-xs font-semibold text-slate-900">{session.user.name}</p>
+                      <p className="text-[11px] text-slate-500 truncate">{session.user.email}</p>
+                      <div className="mt-2 flex items-center gap-1.5">
+                        {studentStatus === "verified" ? (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200">
+                            <ShieldCheck className="w-3 h-3" /> Verified Student
+                          </span>
+                        ) : (
+                          <Link
+                            href="/student-verification"
+                            onClick={() => setIsProfileOpen(false)}
+                            className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-600 border border-amber-200 hover:bg-amber-100"
+                          >
+                            <ShieldAlert className="w-3 h-3" /> Verify Student Status
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="py-1">
+                      <Link
+                        href="/profile"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                      >
+                        <User className="w-4 h-4 text-slate-400" />
+                        My Profile
+                      </Link>
+                      <Link
+                        href="/dashboard/my-listings"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                      >
+                        <ListOrdered className="w-4 h-4 text-slate-400" />
+                        My Listings Dashboard
+                      </Link>
+                      {isAdmin && (
+                        <Link
+                          href="/admin/verifications"
+                          onClick={() => setIsProfileOpen(false)}
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-indigo-600 font-medium hover:bg-indigo-50 transition-colors"
+                        >
+                          <ShieldCheck className="w-4 h-4 text-indigo-600" />
+                          Admin Verification Desk
+                        </Link>
+                      )}
+                    </div>
+
+                    <div className="py-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsProfileOpen(false);
+                          signOut({ callbackUrl: "/" });
+                        }}
+                        className="flex w-full items-center gap-2 px-4 py-2 text-sm text-rose-600 font-medium hover:bg-rose-50 transition-colors"
+                      >
+                        <LogOut className="w-4 h-4 text-rose-500" />
+                        Sign out
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
             ) : (
               <>
                 <Link href="/sign-in">
-                  <Button variant="ghost" size="sm">
+                  <Button variant="ghost" size="sm" className="rounded-full">
                     Sign in
                   </Button>
                 </Link>
                 <Link href="/sign-up">
-                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700 rounded-full">
+                  <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-medium shadow-md shadow-indigo-100">
                     Join CampusCart
                   </Button>
                 </Link>
@@ -244,29 +307,28 @@ export function Navbar() {
             )}
           </div>
 
-          {/* Mobile menu toggle - the only way to reach nav links, search,
-              and auth actions below the lg breakpoint */}
+          {/* Mobile menu button */}
           <button
             type="button"
             onClick={() => setIsMenuOpen((open) => !open)}
-            className="flex lg:hidden items-center justify-center h-9 w-9 rounded-md hover:bg-black/5 transition-colors shrink-0"
-            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={isMenuOpen}
+            className="flex lg:hidden items-center justify-center h-10 w-10 rounded-full hover:bg-slate-100 transition-colors shrink-0"
+            aria-label="Toggle Navigation"
           >
             {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
 
+        {/* Mobile Dropdown */}
         {isMenuOpen && (
-          <div className="lg:hidden border-t border-[var(--border-subtle)] bg-white px-4 py-4 flex flex-col gap-4 rounded-b-3xl">
+          <div className="lg:hidden border-t border-slate-100 bg-white px-4 py-4 flex flex-col gap-4 rounded-b-3xl">
             <form onSubmit={handleSearch} className="flex md:hidden">
               <Input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search for items, categories or users..."
-                className="h-9"
+                placeholder="Search items..."
+                className="h-10 rounded-full"
               />
-              <Button type="submit" variant="ghost" size="icon" className="h-9 w-9 -ml-9">
+              <Button type="submit" variant="ghost" size="icon" className="h-10 w-10 -ml-10">
                 <Search className="h-4 w-4" />
               </Button>
             </form>
@@ -277,69 +339,64 @@ export function Navbar() {
                   key={link.label}
                   href={link.href}
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center gap-2 text-sm font-medium py-2 hover:opacity-70 transition-opacity"
+                  className="flex items-center gap-2.5 text-sm font-medium py-2.5 px-3 rounded-xl hover:bg-slate-50 transition-colors"
                 >
-                  <link.icon className="h-4 w-4" strokeWidth={1.75} />
+                  <link.icon className="h-4 w-4 text-slate-500" />
                   {link.label}
                 </Link>
               ))}
               {session?.user && (
                 <>
                   <Link
-                    href="/orders"
+                    href="/dashboard/my-listings"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-2 text-sm font-medium py-2 hover:opacity-70 transition-opacity"
+                    className="flex items-center gap-2.5 text-sm font-medium py-2.5 px-3 rounded-xl hover:bg-slate-50 transition-colors"
                   >
-                    <Package className="h-4 w-4" strokeWidth={1.75} />
-                    Orders
+                    <ListOrdered className="h-4 w-4 text-slate-500" />
+                    My Listings Dashboard
                   </Link>
                   <Link
-                    href="/dashboard/messages"
+                    href="/profile"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-2 text-sm font-medium py-2 hover:opacity-70 transition-opacity"
+                    className="flex items-center gap-2.5 text-sm font-medium py-2.5 px-3 rounded-xl hover:bg-slate-50 transition-colors"
                   >
-                    Notifications
-                    {unreadCount > 0 && (
-                      <span className="flex items-center justify-center h-4 min-w-4 px-1 rounded-full bg-red-500 text-white text-[10px] font-medium">
-                        {unreadCount > 9 ? "9+" : unreadCount}
-                      </span>
-                    )}
+                    <User className="h-4 w-4 text-slate-500" />
+                    My Profile
+                  </Link>
+                  <Link
+                    href="/student-verification"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center gap-2.5 text-sm font-medium py-2.5 px-3 rounded-xl hover:bg-amber-50 text-amber-700 transition-colors"
+                  >
+                    <ShieldCheck className="h-4 w-4 text-amber-600" />
+                    Student Verification
                   </Link>
                 </>
               )}
             </div>
 
-            <div className="flex flex-col gap-2 pt-2 border-t border-black/10">
-              {status === "loading" ? (
-                <div className="h-9 w-full rounded-md bg-black/5 animate-pulse" />
-              ) : session?.user ? (
-                <>
-                  <Link href="/dashboard" onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="ghost" size="sm" className="w-full">
-                      {session.user.username}
-                    </Button>
-                  </Link>
-                  <Button
-                    variant="elevated"
-                    size="sm"
-                    className="w-full"
-                    onClick={() => {
-                      setIsMenuOpen(false);
-                      signOut({ callbackUrl: "/" });
-                    }}
-                  >
-                    Sign out
-                  </Button>
-                </>
+            <div className="flex flex-col gap-2 pt-2 border-t border-slate-100">
+              {session?.user ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full text-rose-600 border-rose-200"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    signOut({ callbackUrl: "/" });
+                  }}
+                >
+                  Sign out
+                </Button>
               ) : (
                 <>
                   <Link href="/sign-in" onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="ghost" size="sm" className="w-full">
+                    <Button variant="outline" size="sm" className="w-full rounded-full">
                       Sign in
                     </Button>
                   </Link>
                   <Link href="/sign-up" onClick={() => setIsMenuOpen(false)}>
-                    <Button size="sm" className="w-full bg-blue-600 hover:bg-blue-700">
+                    <Button size="sm" className="w-full bg-indigo-600 text-white rounded-full">
                       Join CampusCart
                     </Button>
                   </Link>

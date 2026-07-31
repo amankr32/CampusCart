@@ -16,7 +16,7 @@ export function MessageSellerButton({
   productId: string;
   productSlug: string;
   sellerId: string;
-  productStatus: "available" | "reserved" | "sold";
+  productStatus: "available" | "reserved" | "sold" | "hidden";
 }) {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -25,7 +25,7 @@ export function MessageSellerButton({
 
   if (status !== "loading" && session?.user?.id === sellerId) {
     return (
-      <p className="text-sm text-black/50 border-2 border-dashed border-black/20 rounded-md px-4 py-3 w-fit">
+      <p className="text-sm text-slate-500 border border-dashed border-slate-300 rounded-xl px-4 py-3 w-fit">
         This is your listing — buyers will message you here.
       </p>
     );
@@ -33,8 +33,16 @@ export function MessageSellerButton({
 
   if (productStatus === "sold") {
     return (
-      <p className="text-sm text-black/50 border-2 border-dashed border-black/20 rounded-md px-4 py-3 w-fit">
+      <p className="text-sm text-slate-500 border border-dashed border-slate-300 rounded-xl px-4 py-3 w-fit">
         This item has already been sold.
+      </p>
+    );
+  }
+
+  if (productStatus === "hidden") {
+    return (
+      <p className="text-sm text-slate-500 border border-dashed border-slate-300 rounded-xl px-4 py-3 w-fit">
+        This listing is currently hidden by the seller.
       </p>
     );
   }
@@ -75,15 +83,15 @@ export function MessageSellerButton({
   return (
     <div className="flex flex-col gap-2 w-fit">
       <Button
-        variant="brand"
         size="lg"
         onClick={handleClick}
         disabled={isLoading || status === "loading"}
+        className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-semibold shadow-md shadow-indigo-100"
       >
         <MessageCircle className="h-4 w-4" />
         {isLoading ? "Starting chat..." : "Message Seller"}
       </Button>
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-rose-600">{error}</p>}
     </div>
   );
 }

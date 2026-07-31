@@ -11,21 +11,24 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #18181b;
+  --foreground: #0f172a;
 
-  /* Brand */
-  --brand-yellow: #f5730c;
-  --brand-orange: #f5730c;
-  --brand-orange-dark: #e2600a;
-  --brand-orange-light: #fff1e7;
-  --brand-black: #18181b;
-  --border-subtle: #e7e5e4;
+  /* Campus Cart Unified Brand Palette (Indigo / Slate) */
+  --brand-primary: #4f46e5;
+  --brand-primary-hover: #4338ca;
+  --brand-primary-light: #eef2ff;
+  --brand-yellow: #4f46e5;
+  --brand-orange: #4f46e5;
+  --brand-orange-dark: #4338ca;
+  --brand-orange-light: #eef2ff;
+  --brand-black: #0f172a;
+  --border-subtle: #e2e8f0;
 
-  /* Soft card shadow */
-  --shadow-cartoon: 0 1px 2px 0 rgba(24, 24, 27, 0.05);
-  --shadow-cartoon-sm: 0 1px 2px 0 rgba(24, 24, 27, 0.04);
-  --shadow-card: 0 1px 3px 0 rgba(24, 24, 27, 0.08), 0 1px 2px -1px rgba(24, 24, 27, 0.06);
-  --shadow-card-hover: 0 4px 12px -2px rgba(24, 24, 27, 0.12), 0 2px 4px -2px rgba(24, 24, 27, 0.08);
+  /* Card shadows */
+  --shadow-cartoon: 0 1px 3px 0 rgba(15, 23, 42, 0.05);
+  --shadow-cartoon-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
+  --shadow-card: 0 1px 3px 0 rgba(15, 23, 42, 0.08), 0 1px 2px -1px rgba(15, 23, 42, 0.06);
+  --shadow-card-hover: 0 10px 25px -5px rgba(79, 70, 229, 0.12), 0 8px 10px -6px rgba(79, 70, 229, 0.08);
 }
 
 @theme inline {

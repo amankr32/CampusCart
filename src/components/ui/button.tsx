@@ -9,17 +9,21 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-[var(--brand-orange)] text-white hover:bg-[var(--brand-orange-dark)]",
+          "bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm",
         elevated:
-          "border border-[var(--border-subtle)] bg-white text-foreground shadow-[var(--shadow-cartoon)] hover:bg-black/[0.03]",
+          "border border-slate-200 bg-white text-slate-800 shadow-xs hover:bg-slate-50",
+        outline:
+          "border border-slate-200 bg-white text-slate-800 hover:bg-slate-50",
+        destructive:
+          "bg-rose-600 text-white hover:bg-rose-700 shadow-sm",
         brand:
-          "bg-[var(--brand-orange)] text-white hover:bg-[var(--brand-orange-dark)]",
-        ghost: "hover:bg-black/5",
-        link: "underline-offset-4 hover:underline",
+          "bg-indigo-600 text-white hover:bg-indigo-700",
+        ghost: "hover:bg-slate-100 text-slate-700",
+        link: "underline-offset-4 hover:underline text-indigo-600",
       },
       size: {
         default: "h-10 px-4 py-2",
-        sm: "h-9 px-3",
+        sm: "h-9 px-3 text-xs",
         lg: "h-12 px-6 text-base",
         icon: "h-10 w-10",
       },

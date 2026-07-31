@@ -15,9 +15,9 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const STATUS_STYLES: Record<string, string> = {
-  seller_confirmed: "bg-[var(--brand-yellow)]/40 text-black",
-  completed: "bg-green-100 text-green-800",
-  cancelled: "bg-black/5 text-black/50",
+  seller_confirmed: "bg-amber-100 text-amber-800",
+  completed: "bg-emerald-100 text-emerald-800",
+  cancelled: "bg-slate-100 text-slate-500",
 };
 
 export default async function SalesPage() {
@@ -42,34 +42,37 @@ export default async function SalesPage() {
   ];
 
   return (
-    <div className="max-w-(--breakpoint-sm) mx-auto w-full px-4 py-12">
-      <h1 className="font-display font-bold text-3xl mb-2">Your sales</h1>
-      <p className="text-sm text-black/50 mb-8">
-        Items you&apos;ve sold — mark orders as sold from the buyer&apos;s conversation.
-      </p>
+    <div className="max-w-4xl mx-auto w-full px-4 py-10 space-y-6">
+      <div>
+        <h1 className="font-display font-bold text-3xl text-slate-900 tracking-tight">Your Sales</h1>
+        <p className="text-sm text-slate-600">
+          Items you&apos;ve sold — mark orders as sold from the buyer&apos;s conversation thread.
+        </p>
+      </div>
 
       {!tenant || sales.length === 0 ? (
-        <p className="text-black/50 text-sm py-8 text-center border-2 border-dashed border-black/20 rounded-lg">
-          No sales yet — mark an item as sold from a conversation with a
-          buyer to see it here.
-        </p>
+        <div className="text-center py-12 bg-white border border-slate-200 rounded-3xl p-8 space-y-2">
+          <p className="text-slate-500 text-sm">
+            No sales yet — mark an item as sold from a chat conversation with a buyer to see it here.
+          </p>
+        </div>
       ) : (
         <div className="flex flex-col gap-8">
           {groups.map(
             (group) =>
               group.sales.length > 0 && (
-                <section key={group.label}>
-                  <h2 className="text-sm font-semibold text-black/50 uppercase tracking-wide mb-3">
-                    {group.label} sales
+                <section key={group.label} className="space-y-3">
+                  <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                    {group.label} Sales ({group.sales.length})
                   </h2>
                   <div className="flex flex-col gap-3">
                     {group.sales.map((sale) => (
                       <Link
                         key={sale.id}
                         href={`/product/${sale.product.slug}`}
-                        className="flex items-center gap-4 p-4 rounded-lg border-2 border-black bg-white hover:bg-black/5 transition-colors"
+                        className="flex items-center gap-4 p-4 rounded-2xl border border-slate-200 bg-white hover:shadow-md transition-shadow"
                       >
-                        <div className="relative h-16 w-16 rounded-md bg-black/5 border-2 border-black overflow-hidden shrink-0">
+                        <div className="relative h-16 w-16 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden shrink-0">
                           {sale.product.images[0] ? (
                             <Image
                               src={sale.product.images[0]}
@@ -78,19 +81,19 @@ export default async function SalesPage() {
                               className="object-cover"
                             />
                           ) : (
-                            <div className="flex items-center justify-center h-full text-black/20">
+                            <div className="flex items-center justify-center h-full text-slate-300">
                               <ImageOff className="h-5 w-5" />
                             </div>
                           )}
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium truncate">{sale.product.name}</p>
-                          <p className="text-sm text-black/50 flex items-center gap-1.5">
-                            Buyer: {sale.buyer.name}
+                          <p className="font-semibold text-slate-900 truncate">{sale.product.name}</p>
+                          <p className="text-xs text-slate-500 flex items-center gap-1.5 mt-0.5">
+                            Buyer: <span className="font-semibold text-slate-700">{sale.buyer.name}</span>
                             {(reputationByBuyerId.get(sale.buyer.id)?.reviewCount ?? 0) > 0 && (
-                              <span className="flex items-center gap-0.5 text-xs text-black/60">
-                                <Star className="h-3 w-3 fill-[var(--brand-yellow)] text-black" />
+                              <span className="flex items-center gap-0.5 text-xs text-slate-600">
+                                <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
                                 {reputationByBuyerId.get(sale.buyer.id)!.averageRating.toFixed(1)}
                               </span>
                             )}
@@ -98,11 +101,11 @@ export default async function SalesPage() {
                         </div>
 
                         <div className="text-right shrink-0">
-                          <p className="font-display font-semibold">
+                          <p className="font-bold text-indigo-600 text-base">
                             {formatPrice(sale.totalCents)}
                           </p>
                           <span
-                            className={`inline-block text-xs font-medium rounded-full px-2 py-0.5 mt-1 ${STATUS_STYLES[sale.status] ?? ""}`}
+                            className={`inline-block text-[10px] font-bold uppercase tracking-wider rounded-full px-2.5 py-0.5 mt-1 ${STATUS_STYLES[sale.status] ?? ""}`}
                           >
                             {STATUS_LABELS[sale.status] ?? sale.status}
                           </span>

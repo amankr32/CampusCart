@@ -28,26 +28,41 @@ export const productStatusEnum = pgEnum("product_status", [
   "available",
   "reserved",
   "sold",
+  "hidden",
 ]);
 
-// Orders only come into existence once a seller hits "Mark as Sold" inside
-// a conversation, so "pending"/"negotiating" are conversation-level states,
-// not order-level ones — the order itself starts life already seller-side
-// confirmed.
 export const orderStatusEnum = pgEnum("order_status", [
   "seller_confirmed",
   "completed",
   "cancelled",
 ]);
 
-// System messages ("Seller marked this as sold", etc.) are inserted by the
-// app itself to surface order-flow events inline in the chat, rather than
-// building a separate notification center.
 export const messageTypeEnum = pgEnum("message_type", ["text", "system"]);
 
+export const studentStatusEnum = pgEnum("student_status", [
+  "unverified",
+  "pending",
+  "verified",
+  "rejected",
+]);
+
+export const verificationStatusEnum = pgEnum("verification_status", [
+  "pending",
+  "approved",
+  "rejected",
+]);
+
+export const reportStatusEnum = pgEnum("report_status", [
+  "pending",
+  "reviewed",
+  "dismissed",
+  "actioned",
+]);
+
+export const reportTargetEnum = pgEnum("report_target", ["product", "user"]);
+
 // ---------------------------------------------------------------------------
-// Users — every student who signs up. A user becomes a "seller" the moment
-// they open a tenant (store), but every user starts as a plain buyer.
+// Users — every student who signs up for Campus Cart
 // ---------------------------------------------------------------------------
 
 export const users = pgTable(
@@ -58,9 +73,18 @@ export const users = pgTable(
     email: text("email").notNull(),
     passwordHash: text("password_hash").notNull(),
     username: text("username").notNull(),
+    avatarUrl: text("avatar_url"),
+    bio: text("bio"),
+    yearSemester: text("year_semester"),
     hostel: text("hostel"),
     branch: text("branch"),
     isAdmin: boolean("is_admin").notNull().default(false),
+    emailVerifiedAt: timestamp("email_verified_at"),
+    studentStatus: studentStatusEnum("student_status")
+      .notNull()
+      .default("unverified"),
+    trustScore: integer("trust_score").notNull().default(20),
+    rejectionReason: text("rejection_reason"),
     lastActiveAt: timestamp("last_active_at"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
@@ -86,11 +110,91 @@ export const usersRelations = relations(users, ({ one, many }) => ({
     relationName: "conversations_as_seller",
   }),
   messages: many(messages),
+  studentVerifications: many(studentVerifications),
+  reportsSubmitted: many(reports),
 }));
 
 // ---------------------------------------------------------------------------
-// Tenants — one storefront per selling student. Kept 1:1 with a user for
-// simplicity (a student runs a single stall), addressable at /store/[slug].
+// Verification Codes — 6-digit email OTPs for initial registration
+// ---------------------------------------------------------------------------
+
+export const verificationCodes = pgTable(
+  "verification_codes",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    email: text("email").notNull(),
+    code: text("code").notNull(),
+    expiresAt: timestamp("expires_at").notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => [index("verification_codes_email_idx").on(table.email)]
+);
+
+// ---------------------------------------------------------------------------
+// Password Reset Tokens — single-use secure reset link tokens
+// ---------------------------------------------------------------------------
+
+export const passwordResetTokens = pgTable(
+  "password_reset_tokens",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    email: text("email").notNull(),
+    token: text("token").notNull(),
+    expiresAt: timestamp("expires_at").notNull(),
+    usedAt: timestamp("used_at"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("password_reset_token_idx").on(table.token),
+    index("password_reset_email_idx").on(table.email),
+  ]
+);
+
+// ---------------------------------------------------------------------------
+// Student Verification Requests — PTU portal verification with anti-fraud code
+// ---------------------------------------------------------------------------
+
+export const studentVerifications = pgTable(
+  "student_verifications",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    ptuRollNo: text("ptu_roll_no").notNull(),
+    portalScreenshotUrl: text("portal_screenshot_url").notNull(),
+    liveVerificationCode: text("live_verification_code").notNull(),
+    status: verificationStatusEnum("status").notNull().default("pending"),
+    rejectionReason: text("rejection_reason"),
+    reviewedBy: uuid("reviewed_by").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    reviewedAt: timestamp("reviewed_at"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (table) => [
+    index("student_verifications_user_idx").on(table.userId),
+    index("student_verifications_status_idx").on(table.status),
+  ]
+);
+
+export const studentVerificationsRelations = relations(
+  studentVerifications,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [studentVerifications.userId],
+      references: [users.id],
+    }),
+    reviewer: one(users, {
+      fields: [studentVerifications.reviewedBy],
+      references: [users.id],
+    }),
+  })
+);
+
+// ---------------------------------------------------------------------------
+// Tenants — one storefront per selling student (addressable at /store/[slug])
 // ---------------------------------------------------------------------------
 
 export const tenants = pgTable(
@@ -120,8 +224,7 @@ export const tenantsRelations = relations(tenants, ({ one, many }) => ({
 }));
 
 // ---------------------------------------------------------------------------
-// Categories — flat list with an optional parent, for category/subcategory
-// browsing (e.g. "Books" -> "Semester Notes").
+// Categories
 // ---------------------------------------------------------------------------
 
 export const categories = pgTable(
@@ -171,6 +274,8 @@ export const products = pgTable(
     branch: text("branch"),
     tags: jsonb("tags").$type<string[]>().notNull().default([]),
     images: jsonb("images").$type<string[]>().notNull().default([]),
+    views: integer("views").notNull().default(0),
+    favoritesCount: integer("favorites_count").notNull().default(0),
     isArchived: boolean("is_archived").notNull().default(false),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
@@ -180,6 +285,7 @@ export const products = pgTable(
     index("products_tenant_idx").on(table.tenantId),
     index("products_category_idx").on(table.categoryId),
     index("products_archived_idx").on(table.isArchived),
+    index("products_status_idx").on(table.status),
   ]
 );
 
@@ -198,11 +304,7 @@ export const productsRelations = relations(products, ({ one, many }) => ({
 }));
 
 // ---------------------------------------------------------------------------
-// Orders — one row per product sold. Created the moment a seller hits
-// "Mark as Sold" inside a conversation (already seller-confirmed at that
-// point); becomes "completed" once the buyer confirms they received the
-// item. Buyer and seller settle payment offline — the app just tracks the
-// order's status through that offline handoff.
+// Orders
 // ---------------------------------------------------------------------------
 
 export const orders = pgTable(
@@ -255,16 +357,13 @@ export const ordersRelations = relations(orders, ({ one, many }) => ({
 }));
 
 // ---------------------------------------------------------------------------
-// Reviews — one per buyer per product, and only after a completed order.
+// Reviews
 // ---------------------------------------------------------------------------
 
 export const reviews = pgTable(
   "reviews",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    // Nullable so existing/demo reviews that predate the order flow keep
-    // working; the review actions always set it for anything submitted
-    // through the app from here on.
     orderId: uuid("order_id").references(() => orders.id, {
       onDelete: "cascade",
     }),
@@ -274,9 +373,6 @@ export const reviews = pgTable(
     userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    // Null = the buyer reviewing the product/listing (shows on the product
-    // page). Set = the seller reviewing this buyer (shows on their profile
-    // as a buyer, not tied to any product's star rating).
     revieweeId: uuid("reviewee_id").references(() => users.id, {
       onDelete: "cascade",
     }),
@@ -313,9 +409,7 @@ export const reviewsRelations = relations(reviews, ({ one }) => ({
 }));
 
 // ---------------------------------------------------------------------------
-// Conversations — one private thread per (buyer, seller, product). Created
-// the moment a buyer hits "Message Seller"; this is where price, condition,
-// and pickup details get negotiated before an offline handoff.
+// Conversations
 // ---------------------------------------------------------------------------
 
 export const conversations = pgTable(
@@ -332,13 +426,9 @@ export const conversations = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").notNull().defaultNow(),
-    // Bumped on every new message so the conversation list can sort by
-    // "most recently active" without a join against messages.
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },
   (table) => [
-    // One thread per buyer+seller+product — this is what makes "Message
-    // Seller" idempotent (open existing thread instead of duplicating it).
     uniqueIndex("conversations_buyer_seller_product_idx").on(
       table.buyerId,
       table.sellerId,
@@ -372,8 +462,7 @@ export const conversationsRelations = relations(
 );
 
 // ---------------------------------------------------------------------------
-// Messages — individual chat messages within a conversation. A message
-// carries text, an image, or both.
+// Messages
 // ---------------------------------------------------------------------------
 
 export const messages = pgTable(
@@ -411,3 +500,50 @@ export const messagesRelations = relations(messages, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+// ---------------------------------------------------------------------------
+// Reports — User and Listing Moderation System
+// ---------------------------------------------------------------------------
+
+export const reports = pgTable(
+  "reports",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    reporterId: uuid("reporter_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    targetType: reportTargetEnum("target_type").notNull(),
+    targetId: uuid("target_id").notNull(),
+    reason: text("reason").notNull(),
+    details: text("details"),
+    status: reportStatusEnum("status").notNull().default("pending"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => [
+    index("reports_reporter_idx").on(table.reporterId),
+    index("reports_status_idx").on(table.status),
+  ]
+);
+
+export const reportsRelations = relations(reports, ({ one }) => ({
+  reporter: one(users, {
+    fields: [reports.reporterId],
+    references: [users.id],
+  }),
+}));
+
+// ---------------------------------------------------------------------------
+// Audit Logs — Security and Action Tracking
+// ---------------------------------------------------------------------------
+
+export const auditLogs = pgTable(
+  "audit_logs",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
+    action: text("action").notNull(),
+    details: jsonb("details"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => [index("audit_logs_user_idx").on(table.userId)]
+);

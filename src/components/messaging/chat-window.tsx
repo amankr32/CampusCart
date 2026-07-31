@@ -85,7 +85,7 @@ export function ChatWindow({
     slug: string;
     priceCents: number;
     image: string | null;
-    status: "available" | "reserved" | "sold";
+    status: "available" | "reserved" | "sold" | "hidden";
   };
   initialMessages: ChatMessage[];
   initialOrder: OrderState | null;

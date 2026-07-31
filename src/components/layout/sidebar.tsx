@@ -10,40 +10,21 @@ import {
   PlusCircle,
   Package,
   MessageCircle,
-  Heart,
-  Tag,
-  ClipboardList,
+  ListOrdered,
   User,
-  Settings,
-  Gift,
-//   Instagram,
-//   Twitter,
-//   Linkedin,
+  ShieldCheck,
+  ShieldAlert,
 } from "lucide-react";
 
 const POLL_INTERVAL_MS = 15_000;
-
-// Items with an `href` map to real, working routes. Items without one
-// (`comingSoon: true`) mirror the reference design but have no backing
-// feature in the schema/queries yet — they render as disabled rather than
-// linking somewhere that 404s.
-const navItems = [
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Browse", href: "/browse", icon: Search },
-  { label: "Sell an Item", href: "/sell", icon: PlusCircle },
-  { label: "Orders", href: "/orders", icon: Package },
-  { label: "Messages", href: "/dashboard/messages", icon: MessageCircle, showUnread: true },
-  { label: "Saved Items", href: null, icon: Heart, comingSoon: true },
-  { label: "Deals", href: null, icon: Tag, comingSoon: true },
-  { label: "My Listings", href: "/dashboard/sales", icon: ClipboardList },
-  { label: "Profile", href: null, icon: User, comingSoon: true },
-  { label: "Settings", href: null, icon: Settings, comingSoon: true },
-];
 
 export function Sidebar() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [unreadCount, setUnreadCount] = useState(0);
+
+  const studentStatus = session?.user?.studentStatus || "unverified";
+  const isAdmin = session?.user?.isAdmin;
 
   useEffect(() => {
     if (!session?.user) return;
@@ -57,7 +38,7 @@ export function Sidebar() {
         const data = await res.json();
         if (!cancelled) setUnreadCount(data.count ?? 0);
       } catch {
-        // Silently ignore — the badge just won't update this cycle.
+        // Silently ignore
       }
     };
 
@@ -70,46 +51,53 @@ export function Sidebar() {
     };
   }, [session?.user]);
 
-  return (
-    <aside className="hidden md:flex w-64 shrink-0 flex-col border-r border-[var(--border-subtle)] bg-white sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto">
-      <nav className="flex-1 flex flex-col gap-1 p-4">
-        {navItems.map(({ label, href, icon: Icon, showUnread, comingSoon }) => {
-          const isActive = href && pathname.startsWith(href);
+  const navItems = [
+    { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+    { label: "Browse Items", href: "/browse", icon: Search },
+    { label: "Sell an Item", href: "/sell", icon: PlusCircle },
+    { label: "My Listings", href: "/dashboard/my-listings", icon: ListOrdered },
+    { label: "My Profile", href: "/profile", icon: User },
+    { label: "Student Verification", href: "/student-verification", icon: ShieldCheck },
+    { label: "Orders", href: "/orders", icon: Package },
+    { label: "Messages", href: "/dashboard/messages", icon: MessageCircle, showUnread: true },
+  ];
 
-          if (comingSoon || !href) {
-            return (
-              <div
-                key={label}
-                className="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-black/30 cursor-not-allowed"
-                title="Coming soon"
-              >
-                <span className="flex items-center gap-3">
-                  <Icon className="h-4.5 w-4.5" strokeWidth={2} />
-                  <span className="text-sm font-medium">{label}</span>
-                </span>
-                <span className="text-[10px] font-medium uppercase tracking-wide text-black/30">
-                  Soon
-                </span>
-              </div>
-            );
-          }
+  if (isAdmin) {
+    navItems.push({
+      label: "Admin Verification Desk",
+      href: "/admin/verifications",
+      icon: ShieldCheck,
+    });
+  }
+
+  return (
+    <aside className="hidden md:flex w-64 shrink-0 flex-col border-r border-slate-200 bg-white sticky top-[84px] h-[calc(100vh-5.25rem)] overflow-y-auto">
+      <nav className="flex-1 flex flex-col gap-1.5 p-4">
+        <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+          Navigation
+        </div>
+
+        {navItems.map(({ label, href, icon: Icon, showUnread }) => {
+          const isActive = pathname === href || (href !== "/dashboard" && pathname.startsWith(href));
 
           return (
             <Link
               key={label}
               href={href}
-              className={`flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg transition-colors ${
+              className={`flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-2xl transition-all font-medium text-sm ${
                 isActive
-                  ? "bg-indigo-50 text-indigo-600"
-                  : "text-black/70 hover:bg-black/[0.03]"
+                  ? "bg-indigo-600 text-white font-semibold shadow-md shadow-indigo-100"
+                  : "text-slate-700 hover:bg-indigo-50/70 hover:text-indigo-600"
               }`}
             >
               <span className="flex items-center gap-3">
-                <Icon className="h-4.5 w-4.5" strokeWidth={2} />
-                <span className="text-sm font-medium">{label}</span>
+                <Icon className={`h-4.5 w-4.5 ${isActive ? "text-white" : "text-slate-500"}`} strokeWidth={2} />
+                <span>{label}</span>
               </span>
               {showUnread && unreadCount > 0 && (
-                <span className="flex items-center justify-center h-5 min-w-5 px-1.5 rounded-full bg-indigo-600 text-white text-[11px] font-medium">
+                <span className={`flex items-center justify-center h-5 min-w-5 px-1.5 rounded-full text-[11px] font-bold ${
+                  isActive ? "bg-white text-indigo-600" : "bg-indigo-600 text-white"
+                }`}>
                   {unreadCount > 9 ? "9+" : unreadCount}
                 </span>
               )}
@@ -118,54 +106,33 @@ export function Sidebar() {
         })}
       </nav>
 
-      {/* Decorative — there's no referral/rewards system behind this yet.
-          Kept visually per the reference design; "Invite Now" does nothing. */}
-      <div className="m-4 p-4 rounded-xl bg-indigo-50">
-        <span className="flex items-center justify-center h-9 w-9 rounded-lg bg-indigo-600 text-white mb-3">
-          <Gift className="h-4.5 w-4.5" strokeWidth={2} />
-        </span>
-        <p className="font-display font-semibold text-sm mb-1">Invite &amp; Earn</p>
-        <p className="text-xs text-black/50 mb-3">
-          Invite friends and earn exciting rewards.
-        </p>
-        <button
-          type="button"
-          disabled
-          title="Coming soon"
-          className="w-full h-9 rounded-lg bg-indigo-600 text-white text-sm font-medium opacity-60 cursor-not-allowed"
-        >
-          Invite Now
-        </button>
-      </div>
-
-      {/* <div className="px-4 pb-4 pt-2 border-t border-[var(--border-subtle)] flex items-center justify-between">
-        <p className="text-xs text-black/40">
-          &copy; {new Date().getFullYear()} CampusCart
-        </p>
-        <div className="flex items-center gap-2">
-          <a
-            href="https://instagram.com"
-            aria-label="Instagram"
-            className="text-black/30 hover:text-indigo-600 transition-colors"
-          >
-            <Instagram className="h-3.5 w-3.5" />
-          </a>
-          <a
-            href="https://twitter.com"
-            aria-label="Twitter"
-            className="text-black/30 hover:text-indigo-600 transition-colors"
-          >
-            <Twitter className="h-3.5 w-3.5" />
-          </a>
-          <a
-            href="https://linkedin.com"
-            aria-label="LinkedIn"
-            className="text-black/30 hover:text-indigo-600 transition-colors"
-          >
-            <Linkedin className="h-3.5 w-3.5" />
-          </a>
+      {/* Student Status Quick Card */}
+      {session?.user && (
+        <div className="m-4 p-4 rounded-2xl bg-indigo-50/80 border border-indigo-100 space-y-2">
+          <div className="flex items-center gap-2">
+            {studentStatus === "verified" ? (
+              <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
+            ) : (
+              <ShieldAlert className="w-5 h-5 text-amber-600 shrink-0" />
+            )}
+            <span className="text-xs font-bold text-slate-900">
+              {studentStatus === "verified" ? "Verified Student" : "Unverified Seller"}
+            </span>
+          </div>
+          <p className="text-[11px] text-slate-600 leading-snug">
+            {studentStatus === "verified"
+              ? "You have unlimited selling privileges on Campus Cart."
+              : "Unverified sellers can list up to 2 items. Verify your PTU portal to unlock unlimited listings."}
+          </p>
+          {studentStatus !== "verified" && (
+            <Link href="/student-verification" className="block pt-1">
+              <span className="inline-block w-full text-center text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 py-2 rounded-xl transition-colors shadow-xs">
+                Get Student Verified
+              </span>
+            </Link>
+          )}
         </div>
-      </div> */}
+      )}
     </aside>
   );
 }
