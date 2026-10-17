@@ -3,38 +3,26 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle } from "@/components/ui/material-symbol";
 
-const POLL_INTERVAL_MS = 15_000;
+import { subscribeToUnreadCount } from "@/lib/unread-store";
 
 export function MessagesNavLink({ onClick }: { onClick?: () => void }) {
   const { data: session } = useSession();
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    if (!session?.user) return;
+    if (!session?.user) {
+      setCount(0);
+      return;
+    }
 
-    let cancelled = false;
+    const unsubscribe = subscribeToUnreadCount((newCount) => {
+      setCount(newCount);
+    });
 
-    const poll = async () => {
-      try {
-        const res = await fetch("/api/messages/unread-count");
-        if (!res.ok) return;
-        const data = await res.json();
-        if (!cancelled) setCount(data.count ?? 0);
-      } catch {
-        // Silently ignore — the badge just won't update this cycle.
-      }
-    };
-
-    poll();
-    const interval = setInterval(poll, POLL_INTERVAL_MS);
-
-    return () => {
-      cancelled = true;
-      clearInterval(interval);
-    };
-  }, [session?.user]);
+    return unsubscribe;
+  }, [session?.user?.id]);
 
   if (!session?.user) return null;
 

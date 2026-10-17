@@ -84,9 +84,9 @@ export default async function PublicSellerProfilePage({
   return (
     <div className="max-w-5xl mx-auto px-4 py-10 space-y-8">
       {/* Seller Header */}
-      <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 shadow-sm space-y-6">
+      <div className="bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] p-6 sm:p-10 shadow-xs space-y-6">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
-          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-3xl overflow-hidden border-4 border-white shadow-md shrink-0">
+          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-3xl overflow-hidden border-4 border-[var(--card-bg)] shadow-md shrink-0">
             {seller.avatarUrl ? (
               <img src={seller.avatarUrl} alt={seller.name} className="w-full h-full object-cover" />
             ) : (
@@ -97,8 +97,8 @@ export default async function PublicSellerProfilePage({
           <div className="flex-1 space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <h1 className="text-2xl font-bold font-display text-slate-900">{seller.name}</h1>
-                <p className="text-xs text-slate-500 font-mono">@{seller.username}</p>
+                <h1 className="text-2xl font-bold font-display text-[var(--text-primary)]">{seller.name}</h1>
+                <p className="text-xs text-[var(--text-muted)] font-mono">@{seller.username}</p>
               </div>
 
               {activeListings.length > 0 && (
@@ -113,12 +113,12 @@ export default async function PublicSellerProfilePage({
             {/* Badges */}
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
               {seller.studentStatus === "verified" ? (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" /> Verified Student Seller
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                  <ShieldCheck className="w-4 h-4 text-emerald-500" /> Verified Student Seller
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200">
-                  <ShieldAlert className="w-4 h-4 text-slate-400" /> Unverified Seller
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[var(--input-bg)] text-[var(--text-muted)] border border-[var(--border-subtle)]">
+                  <ShieldAlert className="w-4 h-4 text-[var(--text-muted)]" /> Unverified Seller
                 </span>
               )}
 
@@ -128,10 +128,10 @@ export default async function PublicSellerProfilePage({
             </div>
 
             {seller.bio && (
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed pt-1">{seller.bio}</p>
+              <p className="text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed pt-1">{seller.bio}</p>
             )}
 
-            <div className="flex items-center justify-center sm:justify-start gap-4 text-xs text-slate-500 pt-2 border-t border-slate-100">
+            <div className="flex items-center justify-center sm:justify-start gap-4 text-xs text-[var(--text-muted)] pt-2 border-t border-[var(--border-subtle)]">
               <span className="flex items-center gap-1">
                 <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
                 {totalReviews > 0 ? `${averageRating.toFixed(1)} (${totalReviews} reviews)` : "No ratings yet"}
@@ -152,16 +152,16 @@ export default async function PublicSellerProfilePage({
       {/* Seller Listings */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold font-display text-slate-900 flex items-center gap-2">
-            <Package className="w-5 h-5 text-indigo-600" /> Active Listings ({activeListings.length})
+          <h2 className="text-xl font-bold font-display text-[var(--text-primary)] flex items-center gap-2">
+            <Package className="w-5 h-5 text-[var(--brand-primary)]" /> Active Listings ({activeListings.length})
           </h2>
         </div>
 
         {activeListings.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-3xl border border-slate-200 p-8 space-y-2">
-            <Tag className="w-10 h-10 text-slate-300 mx-auto" />
-            <h3 className="text-base font-bold text-slate-800">No Active Listings</h3>
-            <p className="text-xs text-slate-500">This seller currently has no active items for sale.</p>
+          <div className="text-center py-12 bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] p-8 space-y-2">
+            <Tag className="w-10 h-10 text-[var(--text-muted)]/40 mx-auto" />
+            <h3 className="text-base font-bold text-[var(--text-primary)]">No Active Listings</h3>
+            <p className="text-xs text-[var(--text-muted)]">This seller currently has no active items for sale.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -174,9 +174,9 @@ export default async function PublicSellerProfilePage({
                 <Link
                   key={item.id}
                   href={`/product/${item.slug}`}
-                  className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition-all group"
+                  className="bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] overflow-hidden shadow-xs hover:shadow-md transition-all group"
                 >
-                  <div className="h-48 w-full bg-slate-100 relative overflow-hidden">
+                  <div className="h-48 w-full bg-[var(--input-bg)] relative overflow-hidden">
                     <img
                       src={primaryImg}
                       alt={item.name}
@@ -187,11 +187,11 @@ export default async function PublicSellerProfilePage({
                     </div>
                   </div>
                   <div className="p-4 space-y-2">
-                    <h3 className="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">
+                    <h3 className="font-bold text-[var(--text-primary)] group-hover:text-[var(--brand-primary)] transition-colors line-clamp-1">
                       {item.name}
                     </h3>
-                    <p className="text-xs text-slate-500 line-clamp-2">{item.description}</p>
-                    <div className="pt-2 flex items-center justify-between text-[11px] text-slate-400 border-t border-slate-100">
+                    <p className="text-xs text-[var(--text-muted)] line-clamp-2">{item.description}</p>
+                    <div className="pt-2 flex items-center justify-between text-[11px] text-[var(--text-muted)] border-t border-[var(--border-subtle)]">
                       <span className="capitalize">{item.condition.replace("_", " ")}</span>
                       <span>{new Date(item.createdAt).toLocaleDateString()}</span>
                     </div>

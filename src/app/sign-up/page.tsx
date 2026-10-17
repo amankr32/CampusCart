@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { ShieldCheck, Users, BadgePercent } from "lucide-react";
 
 import { SignUpForm } from "@/components/auth/sign-up-form";
@@ -25,24 +24,24 @@ export default function SignUpPage() {
   return (
     <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-(--breakpoint-xl) mx-auto w-full px-4 lg:px-12 py-12 lg:py-20 items-center">
       <div className="hidden lg:flex flex-col gap-6">
-        <h1 className="font-display font-bold text-4xl leading-tight">
-          Join <span className="text-[var(--brand-orange)]">Campus Cart</span>
+        <h1 className="font-display font-bold text-4xl leading-tight text-[var(--text-primary)]">
+          Join <span className="text-[var(--brand-primary)]">Campus Cart</span>
           <br />
           Start buying &amp; selling on campus 👋
         </h1>
-        <p className="text-black/60 text-lg max-w-md">
+        <p className="text-[var(--text-muted)] text-lg max-w-md">
           Create your account in less than a minute and connect with verified
           IKGPTU students.
         </p>
         <div className="flex flex-col gap-4 mt-2">
           {perks.map(({ icon: Icon, title, body }) => (
             <div key={title} className="flex items-start gap-3">
-              <span className="flex items-center justify-center h-9 w-9 rounded-lg bg-[var(--brand-orange-light)] text-[var(--brand-orange)] shrink-0">
+              <span className="flex items-center justify-center h-9 w-9 rounded-xl bg-[var(--brand-primary-light)] text-[var(--brand-primary)] shrink-0">
                 <Icon className="h-4 w-4" strokeWidth={2} />
               </span>
               <div>
-                <p className="font-medium text-sm">{title}</p>
-                <p className="text-sm text-black/50">{body}</p>
+                <p className="font-semibold text-sm text-[var(--text-primary)]">{title}</p>
+                <p className="text-sm text-[var(--text-muted)]">{body}</p>
               </div>
             </div>
           ))}
@@ -51,34 +50,24 @@ export default function SignUpPage() {
 
       <div className="w-full max-w-md mx-auto">
         <div className="text-center mb-6 lg:hidden">
-          <h1 className="font-display font-bold text-3xl mb-2">
+          <h1 className="font-display font-bold text-3xl mb-2 text-[var(--text-primary)]">
             Join Campus Cart
           </h1>
-          <p className="text-black/60">
+          <p className="text-[var(--text-muted)]">
             Buy and sell with IK Gujral Punjab University students — set up
             your account in under a minute.
           </p>
         </div>
 
-        <div className="border border-[var(--border-subtle)] rounded-xl bg-white shadow-[var(--shadow-card)] p-6 sm:p-8">
-          <h2 className="font-display font-semibold text-xl mb-1">
+        <div className="border border-[var(--border-subtle)] rounded-3xl bg-[var(--card-bg)] shadow-xl p-6 sm:p-8">
+          <h2 className="font-display font-semibold text-xl mb-1 text-[var(--text-primary)]">
             Create your account
           </h2>
-          <p className="text-sm text-black/50 mb-6">
+          <p className="text-sm text-[var(--text-muted)] mb-6">
             Fill in your details to get started.
           </p>
           <SignUpForm />
         </div>
-
-        <p className="text-center text-sm text-black/60 mt-6">
-          Already have an account?{" "}
-          <Link
-            href="/sign-in"
-            className="font-medium text-[var(--brand-orange)] hover:underline"
-          >
-            Sign in
-          </Link>
-        </p>
       </div>
     </div>
   );

@@ -16,12 +16,15 @@ export default async function MessagesLayout({
   const conversations = await listConversationsForUser(session.user.id);
 
   return (
-    <div className="flex h-[calc(100vh-5rem)] w-full">
-      <ConversationSidebar
-        initialConversations={conversations}
-        currentUserId={session.user.id}
-      />
-      <div className="flex-1 min-w-0">{children}</div>
+    <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12 py-6">
+      <div className="bg-[var(--card-bg)] border border-[var(--border-subtle)] rounded-3xl shadow-xs overflow-hidden flex h-[calc(100vh-9rem)] min-h-[500px] w-full">
+        <ConversationSidebar
+          initialConversations={conversations}
+          currentUserId={session.user.id}
+        />
+        <div className="flex-1 min-w-0 flex flex-col h-full bg-[var(--card-bg)]">{children}</div>
+      </div>
     </div>
   );
 }
+

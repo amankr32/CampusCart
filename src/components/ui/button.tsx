@@ -9,17 +9,17 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm",
+          "bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white shadow-sm shadow-indigo-500/20",
         elevated:
-          "border border-slate-200 bg-white text-slate-800 shadow-xs hover:bg-slate-50",
+          "border border-[var(--border-subtle)] bg-[var(--card-bg)] text-[var(--text-primary)] shadow-xs hover:bg-[var(--border-subtle)]/40",
         outline:
-          "border border-slate-200 bg-white text-slate-800 hover:bg-slate-50",
+          "border border-[var(--border-subtle)] bg-[var(--card-bg)] text-[var(--text-primary)] hover:bg-[var(--border-subtle)]/40",
         destructive:
-          "bg-rose-600 text-white hover:bg-rose-700 shadow-sm",
+          "bg-rose-600 text-white hover:bg-rose-700 shadow-sm shadow-rose-500/20",
         brand:
-          "bg-indigo-600 text-white hover:bg-indigo-700",
-        ghost: "hover:bg-slate-100 text-slate-700",
-        link: "underline-offset-4 hover:underline text-indigo-600",
+          "bg-[var(--brand-primary)] text-white hover:bg-[var(--brand-primary)]/90",
+        ghost: "hover:bg-[var(--border-subtle)]/40 text-[var(--text-primary)]",
+        link: "underline-offset-4 hover:underline text-[var(--brand-primary)]",
       },
       size: {
         default: "h-10 px-4 py-2",

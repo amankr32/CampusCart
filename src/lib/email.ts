@@ -1,4 +1,5 @@
 import "server-only";
+import { logger } from "@/lib/logger";
 
 const brevoApiKey = process.env.BREVO_API_KEY;
 const SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || process.env.FROM_EMAIL || "noreply@campuscart.com";
@@ -11,14 +12,24 @@ export async function sendVerificationOtpEmail(
   email: string,
   code: string
 ): Promise<{ success: boolean; error?: string }> {
-  // Always log the OTP code to terminal console for instant dev testing
-  console.log(`\n==================================================`);
-  console.log(`🔑 CAMPUS CART VERIFICATION CODE FOR ${email.toUpperCase()}`);
-  console.log(`👉 6-DIGIT OTP CODE: [ ${code} ]`);
-  console.log(`==================================================\n`);
+  // Redact OTP code in server logs (e.g. ***42) to prevent credential exposure
+  const maskedCode = "***" + code.slice(-2);
+  logger.info("EMAIL_OTP", `Sending OTP verification code to ${email}`, {
+    email,
+    code: maskedCode,
+  });
 
   if (!brevoApiKey) {
-    console.log(`ℹ️ [BREVO] API Key not configured in .env (BREVO_API_KEY). Using terminal console OTP logging.`);
+    if (process.env.NODE_ENV !== "production") {
+      console.log(
+        `\n[DEV ONLY] Verification OTP for ${email}: ${code}\n`
+      );
+    } else {
+      logger.warn(
+        "BREVO",
+        "BREVO_API_KEY is not configured in production. Email dispatch skipped."
+      );
+    }
     return { success: true };
   }
 
@@ -58,16 +69,15 @@ export async function sendVerificationOtpEmail(
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: response.statusText }));
-      console.error("⚠️ Brevo API Error:", errorData);
+      logger.error("BREVO_API", "Failed to send email via Brevo REST API", errorData);
       return { success: false, error: errorData.message || "Failed to send email via Brevo" };
     }
 
-    console.log(`✅ [BREVO] Verification email successfully delivered to ${email}`);
+    logger.info("BREVO", `Verification email successfully delivered to ${email}`);
     return { success: true };
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Failed to send email";
-    console.error("⚠️ Brevo sending exception:", errorMsg);
-    return { success: false, error: errorMsg };
+    logger.error("BREVO_EX", "Exception during email dispatch", err);
+    return { success: false, error: err instanceof Error ? err.message : "Failed to send email" };
   }
 }
 
@@ -78,13 +88,19 @@ export async function sendPasswordResetEmail(
   email: string,
   resetUrl: string
 ): Promise<{ success: boolean; error?: string }> {
-  console.log(`\n==================================================`);
-  console.log(`🔗 CAMPUS CART PASSWORD RESET URL FOR ${email.toUpperCase()}`);
-  console.log(`👉 LINK: ${resetUrl}`);
-  console.log(`==================================================\n`);
+  logger.info("EMAIL_RESET", `Sending password reset email to ${email}`, { email });
 
   if (!brevoApiKey) {
-    console.log(`ℹ️ [BREVO] API Key not configured in .env (BREVO_API_KEY). Using terminal console link logging.`);
+    if (process.env.NODE_ENV !== "production") {
+      console.log(
+        `\n[DEV ONLY] Password Reset URL for ${email}: ${resetUrl}\n`
+      );
+    } else {
+      logger.warn(
+        "BREVO",
+        "BREVO_API_KEY is not configured in production. Password reset email skipped."
+      );
+    }
     return { success: true };
   }
 
@@ -126,15 +142,15 @@ export async function sendPasswordResetEmail(
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: response.statusText }));
-      console.error("⚠️ Brevo Password Reset Error:", errorData);
+      logger.error("BREVO_RESET", "Brevo Password Reset Error", errorData);
       return { success: false, error: errorData.message || "Failed to send password reset email via Brevo" };
     }
 
-    console.log(`✅ [BREVO] Password reset email successfully delivered to ${email}`);
+    logger.info("BREVO", `Password reset email successfully delivered to ${email}`);
     return { success: true };
   } catch (err: unknown) {
-    const errorMsg = err instanceof Error ? err.message : "Failed to send password reset email";
-    console.error("⚠️ Brevo password reset exception:", errorMsg);
-    return { success: false, error: errorMsg };
+    logger.error("BREVO_RESET_EX", "Password reset email sending exception", err);
+    return { success: false, error: err instanceof Error ? err.message : "Failed to send password reset email" };
   }
 }
+

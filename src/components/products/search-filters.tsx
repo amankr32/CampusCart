@@ -2,7 +2,7 @@
 
 import { useCallback, useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Search } from "lucide-react";
+import { Search } from "@/components/ui/material-symbol";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -63,7 +63,7 @@ export function SearchFilters() {
   return (
     <div
       className={cn(
-        "flex flex-col gap-6 p-5 rounded-xl border border-[var(--border-subtle)] bg-white shadow-[var(--shadow-card)] h-fit",
+        "flex flex-col gap-6 p-5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--card-bg)] shadow-sm h-fit",
         isPending && "opacity-60"
       )}
     >
@@ -93,10 +93,10 @@ export function SearchFilters() {
         <select
           value={activeSort}
           onChange={(e) => updateParams({ sort: e.target.value })}
-          className="h-10 rounded-lg border border-[var(--border-subtle)] bg-white px-3 text-sm outline-none focus-visible:border-[var(--brand-orange)]"
+          className="h-10 rounded-xl border border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] px-3 text-sm outline-hidden focus-visible:border-[var(--brand-primary)]"
         >
           {SORT_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
+            <option key={option.value} value={option.value} className="bg-[var(--card-bg)] text-[var(--text-primary)]">
               {option.label}
             </option>
           ))}
@@ -109,13 +109,13 @@ export function SearchFilters() {
           {CONDITIONS.map((condition) => (
             <label
               key={condition}
-              className="flex items-center gap-2 text-sm cursor-pointer"
+              className="flex items-center gap-2 text-sm cursor-pointer text-[var(--text-primary)]"
             >
               <input
                 type="checkbox"
                 checked={activeConditions.includes(condition)}
                 onChange={() => toggleCondition(condition)}
-                className="h-4 w-4 accent-[var(--brand-orange)]"
+                className="h-4 w-4 accent-[var(--brand-primary)]"
               />
               {CONDITION_LABELS[condition]}
             </label>
@@ -139,7 +139,7 @@ export function SearchFilters() {
             value={minPrice}
             onChange={(e) => setMinPrice(e.target.value)}
           />
-          <span className="text-black/40">–</span>
+          <span className="text-[var(--text-muted)]">–</span>
           <Input
             type="number"
             min={0}

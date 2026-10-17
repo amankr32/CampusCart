@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ShieldCheck, XCircle, CheckCircle, ExternalLink, Loader2, Search } from "lucide-react";
+import { ShieldCheck, XCircle, CheckCircle, ExternalLink, Loader2, Search } from "@/components/ui/material-symbol";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { reviewStudentVerificationAction } from "@/lib/actions/verification";
@@ -80,7 +80,7 @@ export function AdminVerificationList({
   return (
     <div className="space-y-6">
       {/* Controls */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-[var(--card-bg)] p-4 rounded-2xl border border-[var(--border-subtle)] shadow-xs">
         <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto">
           {(["pending", "approved", "rejected", "all"] as const).map((tab) => (
             <button
@@ -89,7 +89,7 @@ export function AdminVerificationList({
               className={`px-4 py-2 text-xs font-semibold rounded-xl capitalize transition-all whitespace-nowrap ${
                 filter === tab
                   ? "bg-indigo-600 text-white shadow-sm"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  : "bg-[var(--input-bg)] text-[var(--text-muted)] hover:bg-[var(--border-subtle)]"
               }`}
             >
               {tab} ({requests.filter((r) => tab === "all" ? true : r.status === tab).length})
@@ -104,25 +104,25 @@ export function AdminVerificationList({
             placeholder="Search student, roll no..."
             className="pl-9 h-10 text-xs rounded-xl"
           />
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
         </div>
       </div>
 
       {filtered.length === 0 ? (
-        <div className="text-center py-12 bg-white rounded-3xl border border-slate-200 p-8 space-y-2">
-          <ShieldCheck className="w-12 h-12 text-slate-300 mx-auto" />
-          <h3 className="text-lg font-bold text-slate-800">No Verification Requests Found</h3>
-          <p className="text-sm text-slate-500">There are no student verification items matching your filter.</p>
+        <div className="text-center py-12 bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] p-8 space-y-2">
+          <ShieldCheck className="w-12 h-12 text-[var(--text-muted)]/50 mx-auto" />
+          <h3 className="text-lg font-bold text-[var(--text-primary)]">No Verification Requests Found</h3>
+          <p className="text-sm text-[var(--text-muted)]">There are no student verification items matching your filter.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4">
           {filtered.map((req) => (
             <div
               key={req.id}
-              className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm flex flex-col md:flex-row items-start gap-6"
+              className="bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] p-6 shadow-xs flex flex-col md:flex-row items-start gap-6"
             >
               {/* Proof Image Preview */}
-              <div className="w-full md:w-48 h-48 rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden relative group shrink-0">
+              <div className="w-full md:w-48 h-48 rounded-2xl bg-[var(--input-bg)] border border-[var(--border-subtle)] overflow-hidden relative group shrink-0">
                 <img
                   src={req.portalScreenshotUrl}
                   alt="Portal proof"
@@ -142,8 +142,8 @@ export function AdminVerificationList({
               <div className="flex-1 space-y-3">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="text-lg font-bold text-slate-900 font-display">{req.userName}</h3>
-                    <p className="text-xs text-slate-500">{req.userEmail}</p>
+                    <h3 className="text-lg font-bold text-[var(--text-primary)] font-display">{req.userName}</h3>
+                    <p className="text-xs text-[var(--text-muted)]">{req.userEmail}</p>
                   </div>
 
                   <span
@@ -159,14 +159,14 @@ export function AdminVerificationList({
                   </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 text-xs bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                <div className="grid grid-cols-2 gap-3 text-xs bg-[var(--input-bg)]/50 p-3 rounded-2xl border border-[var(--border-subtle)]">
                   <div>
-                    <span className="text-slate-500 block">PTU Roll Number:</span>
-                    <span className="font-bold text-slate-900">{req.ptuRollNo}</span>
+                    <span className="text-[var(--text-muted)] block">PTU Roll Number:</span>
+                    <span className="font-bold text-[var(--text-primary)]">{req.ptuRollNo}</span>
                   </div>
                   <div>
-                    <span className="text-slate-500 block">Required Anti-Fraud Code:</span>
-                    <span className="font-extrabold text-indigo-600 font-mono tracking-widest">
+                    <span className="text-[var(--text-muted)] block">Required Anti-Fraud Code:</span>
+                    <span className="font-extrabold text-[var(--brand-primary)] font-mono tracking-widest">
                       {req.liveVerificationCode}
                     </span>
                   </div>
@@ -211,7 +211,7 @@ export function AdminVerificationList({
                       value={rejectReason}
                       onChange={(e) => setRejectReason(e.target.value)}
                       placeholder="Enter rejection reason (e.g. anti-fraud code missing)..."
-                      className="text-xs h-9 rounded-xl bg-white"
+                      className="text-xs h-9 rounded-xl bg-[var(--input-bg)] border-[var(--border-subtle)] text-[var(--text-primary)]"
                     />
                     <div className="flex justify-end gap-2">
                       <Button

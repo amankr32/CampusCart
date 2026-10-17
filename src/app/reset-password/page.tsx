@@ -59,16 +59,16 @@ function ResetPasswordFormContent() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-3xl border border-slate-200 shadow-xl p-6 sm:p-8 space-y-6">
+    <div className="min-h-screen bg-[var(--background)] flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] shadow-xl p-6 sm:p-8 space-y-6">
         <div className="text-center space-y-2">
-          <div className="mx-auto flex items-center justify-center h-14 w-14 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 shadow-xs mb-3">
+          <div className="mx-auto flex items-center justify-center h-14 w-14 rounded-2xl bg-[var(--brand-primary-light)] border border-indigo-500/20 text-[var(--brand-primary)] shadow-xs mb-3">
             <Lock className="h-7 w-7" />
           </div>
-          <h1 className="text-2xl font-bold font-display text-slate-900 tracking-tight">
+          <h1 className="text-2xl font-bold font-display text-[var(--text-primary)] tracking-tight">
             Set New Password
           </h1>
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-[var(--text-muted)]">
             Choose a strong password with at least 8 characters.
           </p>
         </div>
@@ -92,21 +92,21 @@ function ResetPasswordFormContent() {
         ) : (
           <>
             {error && (
-              <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-sm font-medium">
+              <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-sm font-medium">
                 {error}
               </div>
             )}
 
             {successMsg && (
-              <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-medium flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+              <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-sm font-medium flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
                 {successMsg}
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5">
                   New Password
                 </label>
                 <div className="relative">
@@ -115,15 +115,15 @@ function ResetPasswordFormContent() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="At least 8 characters"
-                    className="pl-10 h-11 rounded-2xl border-slate-200"
+                    className="pl-10 h-11 rounded-2xl border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)]"
                     required
                   />
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5">
                   Confirm New Password
                 </label>
                 <div className="relative">
@@ -132,10 +132,10 @@ function ResetPasswordFormContent() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Repeat password"
-                    className="pl-10 h-11 rounded-2xl border-slate-200"
+                    className="pl-10 h-11 rounded-2xl border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)]"
                     required
                   />
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
                 </div>
               </div>
 
@@ -164,7 +164,7 @@ function ResetPasswordFormContent() {
 export default function ResetPasswordPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
         <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
       </div>
     }>

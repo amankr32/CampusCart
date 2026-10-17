@@ -14,7 +14,7 @@ export default function GuidelinesPage() {
       subtitle="Campus Cart works because it's small and trusted. These rules keep it that way."
     >
       <div>
-        <h2 className="font-display font-semibold text-black mb-2">
+        <h2 className="font-display font-semibold text-[var(--text-primary)] mb-2">
           List honestly
         </h2>
         <p>
@@ -25,7 +25,7 @@ export default function GuidelinesPage() {
       </div>
 
       <div>
-        <h2 className="font-display font-semibold text-black mb-2">
+        <h2 className="font-display font-semibold text-[var(--text-primary)] mb-2">
           Only list what you can actually hand over
         </h2>
         <p>
@@ -35,7 +35,7 @@ export default function GuidelinesPage() {
       </div>
 
       <div>
-        <h2 className="font-display font-semibold text-black mb-2">
+        <h2 className="font-display font-semibold text-[var(--text-primary)] mb-2">
           No prohibited items
         </h2>
         <p>
@@ -46,7 +46,7 @@ export default function GuidelinesPage() {
       </div>
 
       <div>
-        <h2 className="font-display font-semibold text-black mb-2">
+        <h2 className="font-display font-semibold text-[var(--text-primary)] mb-2">
           Treat other students with respect
         </h2>
         <p>
@@ -57,7 +57,7 @@ export default function GuidelinesPage() {
       </div>
 
       <div>
-        <h2 className="font-display font-semibold text-black mb-2">
+        <h2 className="font-display font-semibold text-[var(--text-primary)] mb-2">
           Reviews should be honest, not personal
         </h2>
         <p>
@@ -66,7 +66,7 @@ export default function GuidelinesPage() {
         </p>
       </div>
 
-      <p className="text-sm text-black/50 pt-4 border-t border-black/10">
+      <p className="text-sm text-[var(--text-muted)] pt-4 border-t border-[var(--border-subtle)]">
         Breaking these guidelines can result in a listing being taken down
         or an account being suspended. If you think a decision was made in
         error, reach out through the contact page.

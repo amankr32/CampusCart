@@ -77,29 +77,29 @@ function VerifyEmailFormContent() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-3xl border border-slate-200 shadow-xl p-6 sm:p-8 space-y-6">
+    <div className="min-h-screen bg-[var(--background)] flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] shadow-xl p-6 sm:p-8 space-y-6">
         <div className="text-center space-y-2">
-          <div className="mx-auto flex items-center justify-center h-14 w-14 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 shadow-xs mb-3">
+          <div className="mx-auto flex items-center justify-center h-14 w-14 rounded-2xl bg-[var(--brand-primary-light)] border border-[var(--brand-primary)]/20 text-[var(--brand-primary)] shadow-xs mb-3">
             <MailCheck className="h-7 w-7" />
           </div>
-          <h1 className="text-2xl font-bold font-display text-slate-900 tracking-tight">
+          <h1 className="text-2xl font-bold font-display text-[var(--text-primary)] tracking-tight">
             Verify Your Email
           </h1>
-          <p className="text-sm text-slate-600">
-            We sent a 6-digit verification code to <span className="font-semibold text-slate-900">{email || "your email"}</span>
+          <p className="text-sm text-[var(--text-muted)]">
+            We sent a 6-digit verification code to <span className="font-semibold text-[var(--text-primary)]">{email || "your email"}</span>
           </p>
         </div>
 
         {error && (
-          <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-sm font-medium">
+          <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-sm font-medium">
             {error}
           </div>
         )}
 
         {successMsg && (
-          <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-medium flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+          <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-sm font-medium flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
             {successMsg}
           </div>
         )}
@@ -107,7 +107,7 @@ function VerifyEmailFormContent() {
         <form onSubmit={handleVerify} className="space-y-5">
           {!emailParam && (
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5">
                 Email Address
               </label>
               <Input
@@ -115,14 +115,14 @@ function VerifyEmailFormContent() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="student@example.com"
-                className="h-11 rounded-2xl border-slate-200"
+                className="h-11 rounded-2xl bg-[var(--input-bg)] border-[var(--border-subtle)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/50"
                 required
               />
             </div>
           )}
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5 text-center">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5 text-center">
               6-Digit Verification Code
             </label>
             <Input
@@ -131,7 +131,7 @@ function VerifyEmailFormContent() {
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
               placeholder="1 2 3 4 5 6"
-              className="h-14 rounded-2xl border-slate-200 text-center text-2xl font-bold tracking-[0.5em] focus:tracking-[0.5em]"
+              className="h-14 rounded-2xl bg-[var(--input-bg)] border-[var(--border-subtle)] text-center text-2xl font-bold tracking-[0.5em] focus:tracking-[0.5em] text-[var(--text-primary)]"
               required
               autoFocus
             />
@@ -140,7 +140,7 @@ function VerifyEmailFormContent() {
           <Button
             type="submit"
             disabled={isPending || code.length !== 6}
-            className="w-full h-12 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm shadow-md shadow-indigo-100 transition-all"
+            className="w-full h-12 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-semibold text-sm shadow-md shadow-indigo-500/20 transition-all cursor-pointer"
           >
             {isPending ? (
               <>
@@ -153,8 +153,8 @@ function VerifyEmailFormContent() {
           </Button>
         </form>
 
-        <div className="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-slate-100">
-          <Link href="/sign-in" className="inline-flex items-center gap-1 font-medium text-slate-600 hover:text-indigo-600">
+        <div className="flex items-center justify-between text-xs text-[var(--text-muted)] pt-2 border-t border-[var(--border-subtle)]">
+          <Link href="/sign-in" className="inline-flex items-center gap-1 font-medium text-[var(--text-muted)] hover:text-[var(--brand-primary)]">
             <ArrowLeft className="w-3.5 h-3.5" /> Back to Sign In
           </Link>
 
@@ -162,7 +162,7 @@ function VerifyEmailFormContent() {
             type="button"
             onClick={handleResend}
             disabled={resendCooldown > 0}
-            className="inline-flex items-center gap-1 font-semibold text-indigo-600 hover:underline disabled:opacity-50 disabled:no-underline"
+            className="inline-flex items-center gap-1 font-semibold text-[var(--brand-primary)] hover:underline disabled:opacity-50 disabled:no-underline cursor-pointer"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${resendCooldown > 0 ? "animate-spin" : ""}`} />
             {resendCooldown > 0 ? `Resend code (${resendCooldown}s)` : "Resend Code"}
@@ -176,8 +176,8 @@ function VerifyEmailFormContent() {
 export default function VerifyEmailPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
+        <Loader2 className="w-8 h-8 text-[var(--brand-primary)] animate-spin" />
       </div>
     }>
       <VerifyEmailFormContent />

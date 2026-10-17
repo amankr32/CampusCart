@@ -1,6 +1,6 @@
 import "server-only";
 import { db } from "@/db";
-import { users, orders, reviews, reports } from "@/db/schema";
+import { users, orders, reviews, reports, tenants } from "@/db/schema";
 import { eq, and, count, avg } from "drizzle-orm";
 
 export interface TrustScoreDetails {
@@ -40,12 +40,22 @@ export async function calculateUserTrustScore(userId: string): Promise<number> {
   else if (ageDays >= 7) score += 5;
 
   // 4. Completed Sales (+5 per sale, max +25 pts)
-  const [salesResult] = await db
-    .select({ totalSales: count() })
-    .from(orders)
-    .where(and(eq(orders.status, "completed")));
-  const salesCount = Number(salesResult?.totalSales ?? 0);
+  const [userTenant] = await db
+    .select({ id: tenants.id })
+    .from(tenants)
+    .where(eq(tenants.ownerId, userId))
+    .limit(1);
+
+  let salesCount = 0;
+  if (userTenant) {
+    const [salesResult] = await db
+      .select({ totalSales: count() })
+      .from(orders)
+      .where(and(eq(orders.tenantId, userTenant.id), eq(orders.status, "completed")));
+    salesCount = Number(salesResult?.totalSales ?? 0);
+  }
   score += Math.min(25, salesCount * 5);
+
 
   // 5. Average Seller Rating (up to +15 pts)
   const [ratingResult] = await db
@@ -109,7 +119,7 @@ export function getTrustScoreBadge(score: number, studentStatus: string = "unver
   return {
     label: "Unverified Seller",
     level: "Basic",
-    colorClass: "bg-slate-500/10 text-slate-600 border-slate-500/20 dark:text-slate-400",
+    colorClass: "bg-[var(--border-subtle)]/50 text-[var(--text-muted)] border-[var(--border-subtle)]",
     icon: "AlertCircle",
   };
 }

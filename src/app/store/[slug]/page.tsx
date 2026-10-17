@@ -35,7 +35,7 @@ export default async function StorePage({ params }: Props) {
   return (
     <div className="max-w-(--breakpoint-xl) mx-auto w-full px-4 lg:px-12 py-10">
       <div className="flex items-center gap-4 mb-10">
-        <div className="relative flex items-center justify-center h-16 w-16 rounded-full border-2 border-black bg-[var(--brand-yellow)] overflow-hidden shrink-0">
+        <div className="relative flex items-center justify-center h-16 w-16 rounded-2xl border border-[var(--border-subtle)] bg-[var(--brand-primary-light)] text-[var(--brand-primary)] overflow-hidden shrink-0 shadow-xs">
           {tenant.imageUrl ? (
             <Image
               src={tenant.imageUrl}
@@ -44,14 +44,14 @@ export default async function StorePage({ params }: Props) {
               className="object-cover"
             />
           ) : (
-            <Store className="h-6 w-6" />
+            <Store className="h-7 w-7" />
           )}
         </div>
         <div>
-          <h1 className="font-display font-bold text-2xl">
+          <h1 className="font-display font-bold text-2xl text-[var(--text-primary)]">
             {tenant.storeName}
           </h1>
-          <p className="text-black/50 text-sm">
+          <p className="text-[var(--text-muted)] text-sm">
             {docs.length} {docs.length === 1 ? "listing" : "listings"}
           </p>
         </div>

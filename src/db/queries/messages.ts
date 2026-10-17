@@ -3,6 +3,7 @@ import { and, desc, eq, gt, inArray, ne, sql } from "drizzle-orm";
 
 import { db } from "@/db";
 import { conversations, messages, products, users } from "@/db/schema";
+import { publishChatEvent } from "@/lib/chat-events";
 
 const RECENT_MESSAGES_LIMIT = 50;
 
@@ -105,22 +106,23 @@ export async function getConversationDetail(conversationId: string) {
     return null;
   }
 
-  const [seller] = await db
-    .select({
-      id: users.id,
-      name: users.name,
-      username: users.username,
-      lastActiveAt: users.lastActiveAt,
-    })
-    .from(users)
-    .where(eq(users.id, row.sellerId))
-    .limit(1);
-
-  const [buyerPresence] = await db
-    .select({ lastActiveAt: users.lastActiveAt })
-    .from(users)
-    .where(eq(users.id, row.buyerId))
-    .limit(1);
+  const [[seller], [buyerPresence]] = await Promise.all([
+    db
+      .select({
+        id: users.id,
+        name: users.name,
+        username: users.username,
+        lastActiveAt: users.lastActiveAt,
+      })
+      .from(users)
+      .where(eq(users.id, row.sellerId))
+      .limit(1),
+    db
+      .select({ lastActiveAt: users.lastActiveAt })
+      .from(users)
+      .where(eq(users.id, row.buyerId))
+      .limit(1),
+  ]);
 
   return {
     ...row,
@@ -128,6 +130,7 @@ export async function getConversationDetail(conversationId: string) {
     seller,
   };
 }
+
 
 /** Lightweight membership check — participant ids plus the product being discussed. */
 export async function getConversationMembers(conversationId: string) {
@@ -194,6 +197,11 @@ export async function sendMessage({
     .set({ updatedAt: new Date() })
     .where(eq(conversations.id, conversationId));
 
+  publishChatEvent(conversationId, {
+    type: "message",
+    data: created,
+  });
+
   return created;
 }
 
@@ -227,6 +235,11 @@ export async function markConversationRead(
         eq(messages.isRead, false)
       )
     );
+
+  publishChatEvent(conversationId, {
+    type: "read",
+    data: { readerId },
+  });
 }
 
 /**

@@ -19,6 +19,16 @@ export function checkRateLimit(
   windowMs: number = 60 * 1000
 ): { success: boolean; remaining: number; resetMs: number } {
   const now = Date.now();
+
+  // Garbage collect expired entries periodically to prevent memory leaks
+  if (rateLimitStore.size > 500) {
+    for (const [k, v] of rateLimitStore.entries()) {
+      if (now > v.resetAt) {
+        rateLimitStore.delete(k);
+      }
+    }
+  }
+
   const record = rateLimitStore.get(key);
 
   if (!record || now > record.resetAt) {
@@ -44,3 +54,4 @@ export function checkRateLimit(
     resetMs: Math.max(0, record.resetAt - now),
   };
 }
+

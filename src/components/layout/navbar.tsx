@@ -7,31 +7,28 @@ import { useSession, signOut } from "next-auth/react";
 import {
   Bell,
   ChevronDown,
-  Info,
-  LayoutGrid,
+  Compass,
   LogOut,
   Menu,
-  Package,
+  MessageSquare,
+  Plus,
+  Receipt,
   Search,
-  ShoppingCart,
-  Tag,
-  X,
-  User,
-  ShieldCheck,
-  ListOrdered,
+  Settings,
   ShieldAlert,
-} from "lucide-react";
+  ShieldCheck,
+  ShoppingBag,
+  Store,
+  User,
+  Heart,
+  X,
+  CheckCircle2,
+} from "@/components/ui/material-symbol";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-const navLinks = [
-  { href: "/browse", label: "Browse", icon: LayoutGrid },
-  { href: "/sell", label: "Sell Item", icon: Tag },
-  { href: "/how-it-works", label: "How it works", icon: Info },
-];
-
-const UNREAD_POLL_INTERVAL_MS = 15_000;
+import { subscribeToUnreadCount } from "@/lib/unread-store";
+import { openCommandPalette } from "@/lib/command-palette";
 
 export function Navbar() {
   const { data: session, status } = useSession();
@@ -40,57 +37,50 @@ export function Navbar() {
   const [search, setSearch] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+
   const profileRef = useRef<HTMLDivElement>(null);
+  const notifRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const studentStatus = session?.user?.studentStatus || "unverified";
   const isAdmin = session?.user?.isAdmin;
 
+  // Close dropdowns on outside click
   useEffect(() => {
-    if (!isProfileOpen) return;
     const handleClick = (e: MouseEvent) => {
-      if (!profileRef.current?.contains(e.target as Node)) {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
         setIsProfileOpen(false);
+      }
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setIsNotifOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
-  }, [isProfileOpen]);
+  }, []);
 
+  // Subscribe to deduplicated shared unread count
   useEffect(() => {
     if (!session?.user) {
       setUnreadCount(0);
       return;
     }
 
-    let cancelled = false;
+    const unsubscribe = subscribeToUnreadCount((count) => {
+      setUnreadCount(count);
+    });
 
-    const poll = async () => {
-      try {
-        const res = await fetch("/api/messages/unread-count");
-        if (!res.ok) return;
-        const data = await res.json();
-        if (!cancelled) setUnreadCount(data.count ?? 0);
-      } catch {
-        // Silently ignore
-      }
-    };
+    return unsubscribe;
+  }, [session?.user?.id]);
 
-    poll();
-    const interval = setInterval(poll, UNREAD_POLL_INTERVAL_MS);
-
-    return () => {
-      cancelled = true;
-      clearInterval(interval);
-    };
-  }, [session?.user]);
-
+  // Keyboard shortcut Ctrl+K / Cmd+K for command palette
   useEffect(() => {
     const handleKeydown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        searchInputRef.current?.focus();
+        openCommandPalette();
       }
     };
     window.addEventListener("keydown", handleKeydown);
@@ -100,189 +90,290 @@ export function Navbar() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
-    if (search) params.set("search", search);
+    if (search.trim()) params.set("search", search.trim());
     setIsMenuOpen(false);
     router.push(`/browse?${params.toString()}`);
   };
 
-  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+  const isActive = (href: string) => pathname === href || (href !== "/" && pathname.startsWith(href));
 
   return (
-    <div className="sticky top-0 z-50 px-3 pt-3 sm:px-4 sm:pt-4 bg-[var(--background)]">
-      <nav className="rounded-3xl border border-black/5 bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
-        <div className="h-[72px] w-full flex items-center gap-4 px-4 sm:px-6">
-          <Link href="/" className="flex items-center gap-2.5 shrink-0">
-            <span className="flex items-center justify-center h-10 w-10 rounded-2xl bg-indigo-600 text-white shadow-md shadow-indigo-200">
-              <ShoppingCart className="h-5 w-5" strokeWidth={2.2} />
+    <header className="sticky top-0 z-40 bg-[var(--card-bg)]/95 backdrop-blur-md border-b border-[var(--border-subtle)] shadow-xs">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="h-16 flex items-center justify-between gap-3">
+          
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
+            <span className="flex items-center justify-center h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-500/20 group-hover:from-indigo-700 group-hover:to-indigo-600 transition-all">
+              <ShoppingBag className="h-5 w-5" strokeWidth={2} />
             </span>
-            <span className="font-display font-bold text-xl tracking-tight text-slate-900 hidden sm:inline">
-              Campus<span className="text-indigo-600">Cart</span>
+            <span className="font-display font-bold text-xl tracking-tight text-[var(--text-primary)]">
+              Campus<span className="text-[var(--brand-primary)]">Cart</span>
             </span>
           </Link>
 
-          <form
-            onSubmit={handleSearch}
-            className="hidden md:flex w-full max-w-md relative"
+          {/* Search Trigger Pill (Desktop/Tablet) */}
+          <button
+            type="button"
+            onClick={() => openCommandPalette()}
+            className="hidden sm:flex items-center flex-1 max-w-xs xl:max-w-md relative mx-3 h-9.5 rounded-full bg-[var(--input-bg)] border border-[var(--border-subtle)] pl-9 pr-3 text-xs text-[var(--text-muted)] hover:border-[var(--brand-primary)]/50 focus:outline-hidden transition-all shadow-2xs group cursor-pointer text-left"
           >
-            <Input
-              ref={searchInputRef}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search books, lab tools, electronics..."
-              className="h-10 rounded-full bg-slate-100/80 border-slate-200 pl-10 pr-12 text-sm focus:bg-white transition-all"
-            />
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 min-w-5 px-1.5 rounded border border-slate-200 bg-white text-[10px] font-semibold text-slate-400">
-              ⌘K
-            </span>
-          </form>
+            <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)] group-hover:text-[var(--brand-primary)] transition-colors" />
+            <span className="truncate">Search products, textbooks, hostel gear...</span>
+            <kbd className="ml-auto pointer-events-none hidden md:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono text-[var(--text-muted)] bg-[var(--card-bg)] border border-[var(--border-subtle)] rounded shadow-2xs">
+              <span className="text-[10px]">⌘</span>K
+            </kbd>
+          </button>
 
-          <div className="hidden lg:flex items-center gap-1 shrink-0">
-            {navLinks.map((link) => {
-              const active = isActive(link.href);
-              return (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium border-b-2 transition-colors ${
-                    active
-                      ? "text-indigo-600 border-indigo-600"
-                      : "text-slate-600 border-transparent hover:text-indigo-600"
-                  }`}
-                >
-                  <link.icon className="h-4 w-4" strokeWidth={active ? 2.25 : 1.75} />
-                  {link.label}
-                </Link>
-              );
-            })}
+          {/* Primary Top Navigation Links (Desktop & Laptop) */}
+          <nav className="hidden md:flex items-center gap-1">
+            {/* Browse */}
+            <Link
+              href="/browse"
+              prefetch={true}
+              className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl transition-all ${
+                isActive("/browse")
+                  ? "text-[var(--brand-primary)] bg-[var(--brand-primary-light)]"
+                  : "text-[var(--text-primary)] hover:text-[var(--brand-primary)] hover:bg-[var(--border-subtle)]/40"
+              }`}
+            >
+              <Compass className="h-4 w-4" strokeWidth={2} />
+              Browse
+            </Link>
+
+            {/* + Sell Item (Elevated Primary CTA Button) */}
+            <Link href="/sell" prefetch={true} className="mx-1">
+              <Button
+                size="sm"
+                className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow-md shadow-indigo-500/25 flex items-center gap-1.5 transition-all hover:shadow-lg hover:shadow-indigo-500/30 active:scale-95"
+              >
+                <Plus className="h-4 w-4 stroke-[2.5]" />
+                Sell Item
+              </Button>
+            </Link>
+
             {session?.user && (
               <>
+                {/* Messages (Core Feature) */}
+                <Link
+                  href="/dashboard/messages"
+                  prefetch={true}
+                  className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl transition-all relative ${
+                    isActive("/dashboard/messages")
+                      ? "text-[var(--brand-primary)] bg-[var(--brand-primary-light)]"
+                      : "text-[var(--text-primary)] hover:text-[var(--brand-primary)] hover:bg-[var(--border-subtle)]/40"
+                  }`}
+                >
+                  <MessageSquare className="h-4 w-4" strokeWidth={2} />
+                  Messages
+                  {unreadCount > 0 && (
+                    <span className="ml-1 flex items-center justify-center h-4.5 min-w-4.5 px-1.5 rounded-full bg-rose-500 text-white text-[10px] font-extrabold shadow-xs">
+                      {unreadCount > 9 ? "9+" : unreadCount}
+                    </span>
+                  )}
+                </Link>
+
+                {/* My Listings */}
                 <Link
                   href="/dashboard/my-listings"
-                  className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium border-b-2 transition-colors ${
+                  prefetch={true}
+                  className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl transition-all ${
                     isActive("/dashboard/my-listings")
-                      ? "text-indigo-600 border-indigo-600"
-                      : "text-slate-600 border-transparent hover:text-indigo-600"
+                      ? "text-[var(--brand-primary)] bg-[var(--brand-primary-light)]"
+                      : "text-[var(--text-primary)] hover:text-[var(--brand-primary)] hover:bg-[var(--border-subtle)]/40"
                   }`}
                 >
-                  <ListOrdered className="h-4 w-4" />
+                  <Store className="h-4 w-4" strokeWidth={2} />
                   My Listings
                 </Link>
+
+                {/* Orders */}
                 <Link
                   href="/orders"
-                  className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium border-b-2 transition-colors ${
+                  prefetch={true}
+                  className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl transition-all ${
                     isActive("/orders")
-                      ? "text-indigo-600 border-indigo-600"
-                      : "text-slate-600 border-transparent hover:text-indigo-600"
+                      ? "text-[var(--brand-primary)] bg-[var(--brand-primary-light)]"
+                      : "text-[var(--text-primary)] hover:text-[var(--brand-primary)] hover:bg-[var(--border-subtle)]/40"
                   }`}
                 >
-                  <Package className="h-4 w-4" />
+                  <Receipt className="h-4 w-4" strokeWidth={2} />
                   Orders
                 </Link>
               </>
             )}
-          </div>
+          </nav>
 
-          <div className="flex-1" />
+          {/* Right Action Icons (Notifications & Profile Dropdown) */}
+          <div className="flex items-center gap-2">
+            {session?.user && (
+              <div className="relative" ref={notifRef}>
+                <button
+                  type="button"
+                  onClick={() => setIsNotifOpen((v) => !v)}
+                  className="relative flex items-center justify-center h-9 w-9 rounded-xl text-[var(--text-muted)] hover:bg-[var(--border-subtle)]/50 hover:text-[var(--brand-primary)] transition-colors"
+                  aria-label="Notifications"
+                >
+                  <Bell className="h-4.5 w-4.5" />
+                  {unreadCount > 0 && (
+                    <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-[var(--card-bg)]" />
+                  )}
+                </button>
 
-          {session?.user && (
-            <>
-              <div className="hidden lg:block h-6 w-px bg-slate-200 shrink-0" />
-              <Link
-                href="/dashboard/messages"
-                className="relative hidden sm:flex items-center justify-center h-10 w-10 rounded-full hover:bg-slate-100 transition-colors shrink-0"
-                aria-label="Messages & Notifications"
-              >
-                <Bell className="h-5 w-5 text-slate-600" />
-                {unreadCount > 0 && (
-                  <span className="absolute top-1.5 right-1.5 h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-white" />
+                {/* Notifications Popover Dropdown */}
+                {isNotifOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-80 rounded-2xl border border-[var(--border-subtle)] bg-[var(--card-bg)] shadow-xl py-3 z-50 divide-y divide-[var(--border-subtle)]/60">
+                    <div className="px-4 pb-2 flex items-center justify-between">
+                      <h3 className="font-bold text-xs uppercase tracking-wider text-[var(--text-muted)]">Notifications</h3>
+                      {unreadCount > 0 && (
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[var(--brand-primary-light)] text-[var(--brand-primary)]">
+                          {unreadCount} New
+                        </span>
+                      )}
+                    </div>
+                    <div className="py-2 max-h-64 overflow-y-auto space-y-1">
+                      {unreadCount > 0 ? (
+                        <Link
+                          href="/dashboard/messages"
+                          onClick={() => setIsNotifOpen(false)}
+                          className="flex items-start gap-3 px-4 py-2.5 hover:bg-[var(--border-subtle)]/40 transition-colors"
+                        >
+                          <span className="flex items-center justify-center h-8 w-8 rounded-lg bg-[var(--brand-primary-light)] text-[var(--brand-primary)] shrink-0">
+                            <MessageSquare className="w-4 h-4" />
+                          </span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-semibold text-[var(--text-primary)]">New Unread Message</p>
+                            <p className="text-[11px] text-[var(--text-muted)] truncate">You have unread buyer/seller messages waiting.</p>
+                          </div>
+                        </Link>
+                      ) : (
+                        <div className="px-4 py-6 text-center text-xs text-[var(--text-muted)]">
+                          No new notifications
+                        </div>
+                      )}
+                      <div className="px-4 py-2.5 flex items-center gap-3">
+                        <span className="flex items-center justify-center h-8 w-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0">
+                          <CheckCircle2 className="w-4 h-4" />
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-semibold text-[var(--text-primary)]">CampusCart Active</p>
+                          <p className="text-[11px] text-[var(--text-muted)]">Your student account is signed in.</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="pt-2 px-4 text-center">
+                      <Link
+                        href="/dashboard/messages"
+                        onClick={() => setIsNotifOpen(false)}
+                        className="text-xs font-semibold text-[var(--brand-primary)] hover:underline"
+                      >
+                        View Messages →
+                      </Link>
+                    </div>
+                  </div>
                 )}
-              </Link>
-            </>
-          )}
+              </div>
+            )}
 
-          {/* Desktop profile menu */}
-          <div className="hidden lg:flex items-center gap-3 shrink-0">
+            {/* Profile Dropdown */}
             {status === "loading" ? (
-              <div className="h-9 w-24 rounded-lg bg-slate-100 animate-pulse" />
+              <div className="h-9 w-20 rounded-xl bg-[var(--border-subtle)]/40 animate-pulse" />
             ) : session?.user ? (
               <div className="relative" ref={profileRef}>
                 <button
                   type="button"
                   onClick={() => setIsProfileOpen((v) => !v)}
-                  className="flex items-center gap-2 pl-2 pr-1.5 py-1 rounded-full hover:bg-slate-100 border border-slate-200 transition-all"
+                  className="flex items-center gap-2 pl-2 pr-1.5 py-1 rounded-xl hover:bg-[var(--border-subtle)]/40 border border-[var(--border-subtle)] transition-all cursor-pointer"
                 >
-                  <span className="flex items-center justify-center h-8 w-8 rounded-full bg-indigo-600 text-white font-semibold text-xs shadow-sm">
+                  <span className="flex items-center justify-center h-7 w-7 rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold text-xs shadow-xs shrink-0">
                     {session.user.name?.slice(0, 2).toUpperCase() || "US"}
                   </span>
-                  <div className="flex flex-col items-start text-left leading-tight hidden xl:flex">
-                    <span className="text-xs font-semibold text-slate-800">{session.user.name}</span>
-                    <span className="text-[10px] font-medium text-slate-500">
-                      {studentStatus === "verified" ? "Verified Student" : "Unverified"}
-                    </span>
-                  </div>
-                  <ChevronDown className="h-3.5 w-3.5 text-slate-400 ml-0.5" />
+                  <span className="text-xs font-semibold text-[var(--text-primary)] hidden sm:inline max-w-[100px] truncate">
+                    {session.user.name?.split(" ")[0]}
+                  </span>
+                  <ChevronDown className="h-3.5 w-3.5 text-[var(--text-muted)]" />
                 </button>
 
+                {/* Profile Dropdown Menu */}
                 {isProfileOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-56 rounded-2xl border border-slate-200 bg-white shadow-xl py-2 z-50 divide-y divide-slate-100">
-                    <div className="px-4 py-2.5">
-                      <p className="text-xs font-semibold text-slate-900">{session.user.name}</p>
-                      <p className="text-[11px] text-slate-500 truncate">{session.user.email}</p>
+                  <div className="absolute right-0 top-full mt-2 w-64 rounded-2xl border border-[var(--border-subtle)] bg-[var(--card-bg)] shadow-xl py-2 z-50 divide-y divide-[var(--border-subtle)]/60">
+                    <div className="px-4 py-3">
+                      <p className="text-xs font-bold text-[var(--text-primary)] truncate">{session.user.name}</p>
+                      <p className="text-[11px] text-[var(--text-muted)] truncate">{session.user.email}</p>
                       <div className="mt-2 flex items-center gap-1.5">
                         {studentStatus === "verified" ? (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200">
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                             <ShieldCheck className="w-3 h-3" /> Verified Student
                           </span>
                         ) : (
                           <Link
                             href="/student-verification"
                             onClick={() => setIsProfileOpen(false)}
-                            className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-600 border border-amber-200 hover:bg-amber-100"
+                            className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 hover:bg-amber-500/20 transition-colors"
                           >
-                            <ShieldAlert className="w-3 h-3" /> Verify Student Status
+                            <ShieldAlert className="w-3 h-3" /> Unverified Seller
                           </Link>
                         )}
                       </div>
                     </div>
 
-                    <div className="py-1">
+                    <div className="py-1.5">
                       <Link
                         href="/profile"
                         onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--border-subtle)]/40 hover:text-[var(--brand-primary)] transition-colors"
                       >
-                        <User className="w-4 h-4 text-slate-400" />
+                        <User className="w-4 h-4 text-[var(--text-muted)]" />
                         My Profile
                       </Link>
+
                       <Link
-                        href="/dashboard/my-listings"
+                        href="/browse?saved=true"
                         onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--border-subtle)]/40 hover:text-[var(--brand-primary)] transition-colors"
                       >
-                        <ListOrdered className="w-4 h-4 text-slate-400" />
-                        My Listings Dashboard
+                        <Heart className="w-4 h-4 text-[var(--text-muted)]" />
+                        Saved Items
                       </Link>
+
+                      <Link
+                        href="/student-verification"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--border-subtle)]/40 hover:text-[var(--brand-primary)] transition-colors"
+                      >
+                        <ShieldCheck className="w-4 h-4 text-[var(--text-muted)]" />
+                        Student Verification
+                      </Link>
+
+                      <Link
+                        href="/profile"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--border-subtle)]/40 hover:text-[var(--brand-primary)] transition-colors"
+                      >
+                        <Settings className="w-4 h-4 text-[var(--text-muted)]" />
+                        Settings
+                      </Link>
+
                       {isAdmin && (
                         <Link
                           href="/admin/verifications"
                           onClick={() => setIsProfileOpen(false)}
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-indigo-600 font-medium hover:bg-indigo-50 transition-colors"
+                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-[var(--brand-primary)] hover:bg-[var(--brand-primary-light)] transition-colors"
                         >
-                          <ShieldCheck className="w-4 h-4 text-indigo-600" />
-                          Admin Verification Desk
+                          <ShieldCheck className="w-4 h-4 text-[var(--brand-primary)]" />
+                          Admin Desk
                         </Link>
                       )}
                     </div>
 
-                    <div className="py-1">
+                    <div className="py-1.5">
                       <button
                         type="button"
                         onClick={() => {
                           setIsProfileOpen(false);
                           signOut({ callbackUrl: "/" });
                         }}
-                        className="flex w-full items-center gap-2 px-4 py-2 text-sm text-rose-600 font-medium hover:bg-rose-50 transition-colors"
+                        className="flex w-full items-center gap-2.5 px-4 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-500/10 transition-colors cursor-pointer"
                       >
                         <LogOut className="w-4 h-4 text-rose-500" />
                         Sign out
@@ -292,95 +383,138 @@ export function Navbar() {
                 )}
               </div>
             ) : (
-              <>
+              <div className="flex items-center gap-2">
                 <Link href="/sign-in">
-                  <Button variant="ghost" size="sm" className="rounded-full">
+                  <Button variant="ghost" size="sm" className="text-xs font-semibold rounded-xl text-[var(--text-primary)]">
                     Sign in
                   </Button>
                 </Link>
                 <Link href="/sign-up">
-                  <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-full font-medium shadow-md shadow-indigo-100">
+                  <Button size="sm" className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow-md shadow-indigo-500/20">
                     Join CampusCart
                   </Button>
                 </Link>
-              </>
+              </div>
             )}
-          </div>
 
-          {/* Mobile menu button */}
-          <button
-            type="button"
-            onClick={() => setIsMenuOpen((open) => !open)}
-            className="flex lg:hidden items-center justify-center h-10 w-10 rounded-full hover:bg-slate-100 transition-colors shrink-0"
-            aria-label="Toggle Navigation"
-          >
-            {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
+            {/* Mobile Hamburger Menu Button */}
+            <button
+              type="button"
+              onClick={() => setIsMenuOpen((v) => !v)}
+              className="flex md:hidden items-center justify-center h-9 w-9 rounded-xl text-[var(--text-muted)] hover:bg-[var(--border-subtle)]/50 transition-colors"
+              aria-label="Toggle Navigation"
+            >
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
         </div>
 
-        {/* Mobile Dropdown */}
+        {/* Mobile Navigation Drawer Menu */}
         {isMenuOpen && (
-          <div className="lg:hidden border-t border-slate-100 bg-white px-4 py-4 flex flex-col gap-4 rounded-b-3xl">
-            <form onSubmit={handleSearch} className="flex md:hidden">
-              <Input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search items..."
-                className="h-10 rounded-full"
-              />
-              <Button type="submit" variant="ghost" size="icon" className="h-10 w-10 -ml-10">
-                <Search className="h-4 w-4" />
-              </Button>
-            </form>
+          <div className="md:hidden border-t border-[var(--border-subtle)] py-4 space-y-4">
+            <button
+              type="button"
+              onClick={() => {
+                setIsMenuOpen(false);
+                openCommandPalette();
+              }}
+              className="flex sm:hidden items-center relative w-full h-10 rounded-full bg-[var(--input-bg)] border border-[var(--border-subtle)] pl-10 pr-3 text-xs text-[var(--text-muted)] cursor-pointer text-left"
+            >
+              <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
+              <span>Search textbooks, lab tools, cycles...</span>
+            </button>
 
             <div className="flex flex-col gap-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center gap-2.5 text-sm font-medium py-2.5 px-3 rounded-xl hover:bg-slate-50 transition-colors"
-                >
-                  <link.icon className="h-4 w-4 text-slate-500" />
-                  {link.label}
-                </Link>
-              ))}
+              <Link
+                href="/browse"
+                onClick={() => setIsMenuOpen(false)}
+                className="flex items-center gap-2.5 text-xs font-semibold py-2.5 px-3 rounded-xl hover:bg-[var(--border-subtle)]/40 transition-colors text-[var(--text-primary)]"
+              >
+                <Compass className="h-4 w-4 text-[var(--text-muted)]" strokeWidth={2} />
+                Browse Marketplace
+              </Link>
+
+              <Link
+                href="/sell"
+                onClick={() => setIsMenuOpen(false)}
+                className="flex items-center gap-2.5 text-xs font-bold py-2.5 px-3 rounded-xl bg-[var(--brand-primary-light)] text-[var(--brand-primary)] transition-colors"
+              >
+                <Plus className="h-4 w-4 text-[var(--brand-primary)] stroke-[2.5]" />
+                Sell Item
+              </Link>
+
               {session?.user && (
                 <>
                   <Link
+                    href="/dashboard/messages"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center justify-between text-xs font-semibold py-2.5 px-3 rounded-xl hover:bg-[var(--border-subtle)]/40 transition-colors text-[var(--text-primary)]"
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <MessageSquare className="h-4 w-4 text-[var(--text-muted)]" strokeWidth={2} />
+                      Messages
+                    </span>
+                    {unreadCount > 0 && (
+                      <span className="px-2 py-0.5 rounded-full bg-rose-500 text-white text-[10px] font-extrabold">
+                        {unreadCount}
+                      </span>
+                    )}
+                  </Link>
+
+                  <Link
                     href="/dashboard/my-listings"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-2.5 text-sm font-medium py-2.5 px-3 rounded-xl hover:bg-slate-50 transition-colors"
+                    className="flex items-center gap-2.5 text-xs font-semibold py-2.5 px-3 rounded-xl hover:bg-[var(--border-subtle)]/40 transition-colors text-[var(--text-primary)]"
                   >
-                    <ListOrdered className="h-4 w-4 text-slate-500" />
-                    My Listings Dashboard
+                    <Store className="h-4 w-4 text-[var(--text-muted)]" strokeWidth={2} />
+                    My Listings
                   </Link>
+
+                  <Link
+                    href="/orders"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center gap-2.5 text-xs font-semibold py-2.5 px-3 rounded-xl hover:bg-[var(--border-subtle)]/40 transition-colors text-[var(--text-primary)]"
+                  >
+                    <Receipt className="h-4 w-4 text-[var(--text-muted)]" strokeWidth={2} />
+                    Orders
+                  </Link>
+
+                  <Link
+                    href="/browse?saved=true"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center gap-2.5 text-xs font-semibold py-2.5 px-3 rounded-xl hover:bg-[var(--border-subtle)]/40 transition-colors text-[var(--text-primary)]"
+                  >
+                    <Heart className="h-4 w-4 text-[var(--text-muted)]" />
+                    Saved Items
+                  </Link>
+
                   <Link
                     href="/profile"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-2.5 text-sm font-medium py-2.5 px-3 rounded-xl hover:bg-slate-50 transition-colors"
+                    className="flex items-center gap-2.5 text-xs font-semibold py-2.5 px-3 rounded-xl hover:bg-[var(--border-subtle)]/40 transition-colors text-[var(--text-primary)]"
                   >
-                    <User className="h-4 w-4 text-slate-500" />
+                    <User className="h-4 w-4 text-[var(--text-muted)]" />
                     My Profile
                   </Link>
+
                   <Link
                     href="/student-verification"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-2.5 text-sm font-medium py-2.5 px-3 rounded-xl hover:bg-amber-50 text-amber-700 transition-colors"
+                    className="flex items-center gap-2.5 text-xs font-semibold py-2.5 px-3 rounded-xl hover:bg-amber-500/10 text-amber-600 dark:text-amber-400 transition-colors"
                   >
-                    <ShieldCheck className="h-4 w-4 text-amber-600" />
+                    <ShieldCheck className="h-4 w-4 text-amber-500" />
                     Student Verification
                   </Link>
                 </>
               )}
             </div>
 
-            <div className="flex flex-col gap-2 pt-2 border-t border-slate-100">
+            <div className="pt-2 border-t border-[var(--border-subtle)] flex flex-col gap-2">
               {session?.user ? (
                 <Button
                   variant="outline"
                   size="sm"
-                  className="w-full text-rose-600 border-rose-200"
+                  className="w-full text-rose-600 border-rose-500/30 hover:bg-rose-500/10 rounded-xl font-semibold cursor-pointer"
                   onClick={() => {
                     setIsMenuOpen(false);
                     signOut({ callbackUrl: "/" });
@@ -389,23 +523,23 @@ export function Navbar() {
                   Sign out
                 </Button>
               ) : (
-                <>
+                <div className="grid grid-cols-2 gap-2">
                   <Link href="/sign-in" onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="outline" size="sm" className="w-full rounded-full">
+                    <Button variant="outline" size="sm" className="w-full rounded-xl font-semibold border-[var(--border-subtle)]">
                       Sign in
                     </Button>
                   </Link>
                   <Link href="/sign-up" onClick={() => setIsMenuOpen(false)}>
-                    <Button size="sm" className="w-full bg-indigo-600 text-white rounded-full">
-                      Join CampusCart
+                    <Button size="sm" className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-xl font-semibold">
+                      Join
                     </Button>
                   </Link>
-                </>
+                </div>
               )}
             </div>
           </div>
         )}
-      </nav>
-    </div>
+      </div>
+    </header>
   );
 }

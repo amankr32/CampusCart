@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { upload } from "@vercel/blob/client";
 import {
   User,
   ShieldCheck,
@@ -17,11 +19,13 @@ import {
   Mail,
   Camera,
   Trash2,
-} from "lucide-react";
+  Sliders,
+} from "@/components/ui/material-symbol";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { updateProfileAction, changePasswordAction } from "@/lib/actions/profile";
 import { getTrustScoreBadge } from "@/lib/trust-score-client";
+import { toast } from "@/lib/toast";
 
 interface UserProfileData {
   id: string;
@@ -51,6 +55,7 @@ export function UserProfileClient({
     averageRating: number;
   };
 }) {
+  const { update } = useSession();
   const [profile, setProfile] = useState(user);
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(profile.name);
@@ -82,19 +87,15 @@ export function UserProfileClient({
     setErr(null);
 
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
+      const blob = await upload(file.name, file, {
+        access: "public",
+        handleUploadUrl: "/api/upload",
       });
-
-      if (!res.ok) throw new Error("Upload failed");
-      const data = await res.json();
-      setAvatarUrl(data.url);
+      setAvatarUrl(blob.url);
+      toast.success("Avatar uploaded", { description: "Your profile picture has been updated." });
     } catch {
       setErr("Failed to upload avatar photo.");
+      toast.error("Avatar upload failed");
     } finally {
       setIsUploading(false);
     }
@@ -118,6 +119,7 @@ export function UserProfileClient({
 
       if (!res.success) {
         setErr(res.error);
+        toast.error("Profile update failed", { description: res.error });
         setIsSaving(false);
         return;
       }
@@ -132,10 +134,15 @@ export function UserProfileClient({
         avatarUrl,
       }));
       setMsg("Profile updated successfully!");
+      toast.success("Profile Updated!", {
+        description: "Your student details have been saved.",
+      });
       setIsEditing(false);
       setIsSaving(false);
+      void update();
     } catch {
       setErr("Failed to update profile.");
+      toast.error("Failed to update profile.");
       setIsSaving(false);
     }
   };
@@ -150,16 +157,21 @@ export function UserProfileClient({
       const res = await changePasswordAction({ currentPassword, newPassword });
       if (!res.success) {
         setPasswordErr(res.error);
+        toast.error("Password change failed", { description: res.error });
         setIsChangingPass(false);
         return;
       }
 
       setPasswordMsg("Password changed successfully!");
+      toast.success("Password Updated!", {
+        description: "Your security credentials have been updated.",
+      });
       setCurrentPassword("");
       setNewPassword("");
       setIsChangingPass(false);
     } catch {
       setPasswordErr("Failed to update password.");
+      toast.error("Failed to update password.");
       setIsChangingPass(false);
     }
   };
@@ -167,11 +179,11 @@ export function UserProfileClient({
   return (
     <div className="space-y-8">
       {/* Profile Header Banner */}
-      <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+      <div className="bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] p-6 sm:p-8 shadow-xs space-y-6">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
           {/* Avatar Upload Container */}
           <div className="relative group shrink-0">
-            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-3xl overflow-hidden border-4 border-white shadow-md">
+            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-3xl overflow-hidden border-4 border-[var(--card-bg)] shadow-md">
               {avatarUrl ? (
                 <img src={avatarUrl} alt={profile.name} className="w-full h-full object-cover" />
               ) : (
@@ -188,13 +200,18 @@ export function UserProfileClient({
           <div className="flex-1 space-y-2">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <h1 className="text-2xl font-bold font-display text-slate-900">{profile.name}</h1>
-                <p className="text-xs text-slate-500 font-mono">@{profile.username}</p>
+                <h1 className="text-2xl font-bold font-display text-[var(--text-primary)]">{profile.name}</h1>
+                <p className="text-xs text-[var(--text-muted)] font-mono">@{profile.username}</p>
               </div>
 
-              <div className="flex items-center justify-center sm:justify-end gap-2">
+              <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2">
+                <Link href="/settings">
+                  <Button variant="outline" size="sm" className="rounded-2xl text-xs gap-1 font-semibold border-indigo-500/30 text-[var(--brand-primary)] hover:bg-[var(--brand-primary-light)]">
+                    <Sliders className="w-3.5 h-3.5 text-[var(--brand-primary)]" /> Settings & Theme
+                  </Button>
+                </Link>
                 <Link href={`/seller/${profile.username}`}>
-                  <Button variant="outline" size="sm" className="rounded-2xl text-xs gap-1">
+                  <Button variant="outline" size="sm" className="rounded-2xl text-xs gap-1 border-[var(--border-subtle)] text-[var(--text-primary)]">
                     <ExternalLink className="w-3.5 h-3.5" /> Public View
                   </Button>
                 </Link>
@@ -210,20 +227,20 @@ export function UserProfileClient({
 
             {/* Badges */}
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
-              <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-100">
-                <Mail className="w-3.5 h-3.5 text-indigo-600" /> Email Verified
+              <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-[var(--brand-primary)] border border-indigo-500/20">
+                <Mail className="w-3.5 h-3.5 text-[var(--brand-primary)]" /> Email Verified
               </span>
 
               {profile.studentStatus === "verified" ? (
-                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Verified Student
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> Verified Student
                 </span>
               ) : (
                 <Link
                   href="/student-verification"
-                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100"
+                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-500 border border-amber-500/20 hover:bg-amber-500/20"
                 >
-                  <ShieldAlert className="w-3.5 h-3.5 text-amber-600" /> Unverified Seller (Verify Now)
+                  <ShieldAlert className="w-3.5 h-3.5 text-amber-500" /> Unverified Seller (Verify Now)
                 </Link>
               )}
 
@@ -232,34 +249,34 @@ export function UserProfileClient({
               </span>
             </div>
 
-            {profile.bio && <p className="text-xs text-slate-600 pt-1 leading-relaxed">{profile.bio}</p>}
+            {profile.bio && <p className="text-xs text-[var(--text-muted)] pt-1 leading-relaxed">{profile.bio}</p>}
           </div>
         </div>
 
         {/* Quick Stats Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-slate-100">
-          <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 text-center">
-            <span className="text-xs text-slate-500 block">Listings</span>
-            <span className="text-lg font-bold text-slate-900 flex items-center justify-center gap-1">
-              <Package className="w-4 h-4 text-indigo-600" /> {stats.activeListingsCount}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-[var(--border-subtle)]">
+          <div className="bg-[var(--input-bg)]/50 p-3.5 rounded-2xl border border-[var(--border-subtle)] text-center">
+            <span className="text-xs text-[var(--text-muted)] block">Listings</span>
+            <span className="text-lg font-bold text-[var(--text-primary)] flex items-center justify-center gap-1">
+              <Package className="w-4 h-4 text-[var(--brand-primary)]" /> {stats.activeListingsCount}
             </span>
           </div>
-          <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 text-center">
-            <span className="text-xs text-slate-500 block">Successful Sales</span>
-            <span className="text-lg font-bold text-slate-900 flex items-center justify-center gap-1">
-              <ShoppingBag className="w-4 h-4 text-emerald-600" /> {stats.totalSalesCount}
+          <div className="bg-[var(--input-bg)]/50 p-3.5 rounded-2xl border border-[var(--border-subtle)] text-center">
+            <span className="text-xs text-[var(--text-muted)] block">Successful Sales</span>
+            <span className="text-lg font-bold text-[var(--text-primary)] flex items-center justify-center gap-1">
+              <ShoppingBag className="w-4 h-4 text-emerald-500" /> {stats.totalSalesCount}
             </span>
           </div>
-          <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 text-center">
-            <span className="text-xs text-slate-500 block">Avg Rating</span>
-            <span className="text-lg font-bold text-slate-900 flex items-center justify-center gap-1">
+          <div className="bg-[var(--input-bg)]/50 p-3.5 rounded-2xl border border-[var(--border-subtle)] text-center">
+            <span className="text-xs text-[var(--text-muted)] block">Avg Rating</span>
+            <span className="text-lg font-bold text-[var(--text-primary)] flex items-center justify-center gap-1">
               <Star className="w-4 h-4 text-amber-500 fill-amber-500" />{" "}
               {stats.averageRating > 0 ? stats.averageRating.toFixed(1) : "N/A"}
             </span>
           </div>
-          <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 text-center">
-            <span className="text-xs text-slate-500 block">Member Since</span>
-            <span className="text-sm font-bold text-slate-900 block mt-1">
+          <div className="bg-[var(--input-bg)]/50 p-3.5 rounded-2xl border border-[var(--border-subtle)] text-center">
+            <span className="text-xs text-[var(--text-muted)] block">Member Since</span>
+            <span className="text-sm font-bold text-[var(--text-primary)] block mt-1">
               {new Date(profile.createdAt).toLocaleDateString(undefined, { month: "short", year: "numeric" })}
             </span>
           </div>
@@ -279,41 +296,41 @@ export function UserProfileClient({
 
       {/* Edit Profile Form */}
       {isEditing && (
-        <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-5 animate-in fade-in">
-          <h2 className="text-xl font-bold font-display text-slate-900">Edit Profile Details</h2>
+        <div className="bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] p-6 sm:p-8 shadow-xs space-y-5 animate-in fade-in">
+          <h2 className="text-xl font-bold font-display text-[var(--text-primary)]">Edit Profile Details</h2>
           <form onSubmit={handleSaveProfile} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1">
                   Full Name
                 </label>
-                <Input value={name} onChange={(e) => setName(e.target.value)} className="h-11 rounded-2xl" required />
+                <Input value={name} onChange={(e) => setName(e.target.value)} className="h-11 rounded-2xl bg-[var(--input-bg)] border-[var(--border-subtle)] text-[var(--text-primary)]" required />
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1">
                   Branch / Department
                 </label>
-                <Input value={branch} onChange={(e) => setBranch(e.target.value)} placeholder="e.g. CSE, ECE, ME" className="h-11 rounded-2xl" />
+                <Input value={branch} onChange={(e) => setBranch(e.target.value)} placeholder="e.g. CSE, ECE, ME" className="h-11 rounded-2xl bg-[var(--input-bg)] border-[var(--border-subtle)] text-[var(--text-primary)]" />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1">
                   Year / Semester
                 </label>
-                <Input value={yearSemester} onChange={(e) => setYearSemester(e.target.value)} placeholder="e.g. 3rd Year / 6th Sem" className="h-11 rounded-2xl" />
+                <Input value={yearSemester} onChange={(e) => setYearSemester(e.target.value)} placeholder="e.g. 3rd Year / 6th Sem" className="h-11 rounded-2xl bg-[var(--input-bg)] border-[var(--border-subtle)] text-[var(--text-primary)]" />
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1">
                   Hostel / Campus Residency
                 </label>
-                <Input value={hostel} onChange={(e) => setHostel(e.target.value)} placeholder="e.g. Boys Hostel 2, Room 304" className="h-11 rounded-2xl" />
+                <Input value={hostel} onChange={(e) => setHostel(e.target.value)} placeholder="e.g. Boys Hostel 2, Room 304" className="h-11 rounded-2xl bg-[var(--input-bg)] border-[var(--border-subtle)] text-[var(--text-primary)]" />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1">
                 Bio / About Seller
               </label>
               <textarea
@@ -321,7 +338,7 @@ export function UserProfileClient({
                 onChange={(e) => setBio(e.target.value)}
                 placeholder="Tell other students what you study or sell..."
                 rows={3}
-                className="w-full p-3 rounded-2xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full p-3 rounded-2xl border border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
 
@@ -332,7 +349,7 @@ export function UserProfileClient({
                   variant="outline"
                   size="sm"
                   onClick={() => setAvatarUrl("")}
-                  className="text-xs text-rose-600 border-rose-200 hover:bg-rose-50 rounded-xl"
+                  className="text-xs text-rose-500 border-rose-500/30 hover:bg-rose-500/10 rounded-xl"
                 >
                   <Trash2 className="w-3.5 h-3.5 mr-1" /> Remove Profile Photo
                 </Button>
@@ -340,7 +357,7 @@ export function UserProfileClient({
             )}
 
             <div className="flex justify-end gap-3 pt-2">
-              <Button type="button" variant="outline" onClick={() => setIsEditing(false)} className="rounded-2xl">
+              <Button type="button" variant="outline" onClick={() => setIsEditing(false)} className="rounded-2xl border-[var(--border-subtle)] text-[var(--text-primary)]">
                 Cancel
               </Button>
               <Button type="submit" disabled={isSaving} className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-6">
@@ -352,24 +369,24 @@ export function UserProfileClient({
       )}
 
       {/* Security & Change Password */}
-      <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-4">
+      <div className="bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] p-6 sm:p-8 shadow-xs space-y-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-2xl bg-[var(--brand-primary-light)] text-[var(--brand-primary)] flex items-center justify-center">
             <Lock className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-lg font-bold font-display text-slate-900">Change Password</h2>
-            <p className="text-xs text-slate-500">Update your account password secured with Argon2 hashing.</p>
+            <h2 className="text-lg font-bold font-display text-[var(--text-primary)]">Change Password</h2>
+            <p className="text-xs text-[var(--text-muted)]">Update your account password secured with Argon2 hashing.</p>
           </div>
         </div>
 
         {passwordMsg && (
-          <div className="p-3.5 rounded-2xl bg-emerald-50 text-emerald-800 text-xs font-medium">
+          <div className="p-3.5 rounded-2xl bg-emerald-500/10 text-emerald-500 text-xs font-medium">
             {passwordMsg}
           </div>
         )}
         {passwordErr && (
-          <div className="p-3.5 rounded-2xl bg-rose-50 text-rose-700 text-xs font-medium">
+          <div className="p-3.5 rounded-2xl bg-rose-500/10 text-rose-500 text-xs font-medium">
             {passwordErr}
           </div>
         )}
@@ -377,26 +394,26 @@ export function UserProfileClient({
         <form onSubmit={handleChangePassword} className="space-y-4 pt-2">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1">
                 Current Password
               </label>
               <Input
                 type="password"
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
-                className="h-11 rounded-2xl"
+                className="h-11 rounded-2xl bg-[var(--input-bg)] border-[var(--border-subtle)] text-[var(--text-primary)]"
                 required
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1">
                 New Password (Min 8 chars)
               </label>
               <Input
                 type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="h-11 rounded-2xl"
+                className="h-11 rounded-2xl bg-[var(--input-bg)] border-[var(--border-subtle)] text-[var(--text-primary)]"
                 required
               />
             </div>

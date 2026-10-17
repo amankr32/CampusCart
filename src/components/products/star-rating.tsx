@@ -1,4 +1,4 @@
-import { Star } from "lucide-react";
+import { Star } from "@/components/ui/material-symbol";
 
 import { cn } from "@/lib/utils";
 
@@ -16,7 +16,7 @@ export function StarRating({
   const iconSize = size === "sm" ? "h-3.5 w-3.5" : "h-4 w-4";
 
   if (showCount && !count) {
-    return <span className="text-xs text-black/40">No reviews yet</span>;
+    return <span className="text-xs text-[var(--text-muted)]">No reviews yet</span>;
   }
 
   return (
@@ -25,18 +25,18 @@ export function StarRating({
         {Array.from({ length: 5 }).map((_, index) => (
           <Star
             key={index}
+            filled={index < Math.round(rating)}
             className={cn(
               iconSize,
               index < Math.round(rating)
-                ? "fill-amber-400 text-amber-400"
-                : "fill-transparent text-black/20"
+                ? "text-amber-400"
+                : "text-[var(--text-muted)]/30"
             )}
-            strokeWidth={1.5}
           />
         ))}
       </div>
       {showCount && (
-        <span className="text-xs text-black/50">
+        <span className="text-xs text-[var(--text-muted)]">
           {rating.toFixed(1)} ({count})
         </span>
       )}

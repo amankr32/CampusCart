@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ImageOff } from "lucide-react";
+import { ImageOff } from "@/components/ui/material-symbol";
 
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/format";
@@ -41,8 +41,8 @@ export function ListingRow({ product }: { product: ListingRowProduct }) {
   };
 
   return (
-    <div className="flex items-center gap-4 p-4 rounded-xl border border-slate-200 bg-white">
-      <div className="relative h-16 w-16 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden shrink-0">
+    <div className="flex items-center gap-4 p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--card-bg)]">
+      <div className="relative h-16 w-16 rounded-xl bg-[var(--input-bg)] border border-[var(--border-subtle)] overflow-hidden shrink-0">
         {product.images[0] ? (
           <Image
             src={product.images[0]}
@@ -51,19 +51,19 @@ export function ListingRow({ product }: { product: ListingRowProduct }) {
             className="object-cover"
           />
         ) : (
-          <div className="flex items-center justify-center h-full text-slate-300">
+          <div className="flex items-center justify-center h-full text-[var(--text-muted)]/40">
             <ImageOff className="h-5 w-5" />
           </div>
         )}
       </div>
 
       <div className="flex-1 min-w-0">
-        <p className="font-semibold text-slate-900 truncate">{product.name}</p>
-        <p className="text-sm text-slate-500">
+        <p className="font-semibold text-[var(--text-primary)] truncate">{product.name}</p>
+        <p className="text-sm text-[var(--text-muted)]">
           {formatPrice(product.priceCents)} &middot; Qty {product.quantity}
         </p>
         {isArchived && (
-          <span className="inline-block text-[11px] font-semibold bg-slate-100 text-slate-600 rounded-full px-2.5 py-0.5 mt-1">
+          <span className="inline-block text-[11px] font-semibold bg-[var(--input-bg)] text-[var(--text-muted)] rounded-full px-2.5 py-0.5 mt-1">
             Hidden
           </span>
         )}

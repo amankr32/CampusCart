@@ -17,7 +17,7 @@ const STATUS_LABELS: Record<string, string> = {
 const STATUS_STYLES: Record<string, string> = {
   seller_confirmed: "bg-amber-100 text-amber-800",
   completed: "bg-emerald-100 text-emerald-800",
-  cancelled: "bg-slate-100 text-slate-500",
+  cancelled: "bg-[var(--border-subtle)] text-[var(--text-muted)]",
 };
 
 export default async function SalesPage() {
@@ -44,15 +44,15 @@ export default async function SalesPage() {
   return (
     <div className="max-w-4xl mx-auto w-full px-4 py-10 space-y-6">
       <div>
-        <h1 className="font-display font-bold text-3xl text-slate-900 tracking-tight">Your Sales</h1>
-        <p className="text-sm text-slate-600">
+        <h1 className="font-display font-bold text-3xl text-[var(--text-primary)] tracking-tight">Your Sales</h1>
+        <p className="text-sm text-[var(--text-muted)]">
           Items you&apos;ve sold — mark orders as sold from the buyer&apos;s conversation thread.
         </p>
       </div>
 
       {!tenant || sales.length === 0 ? (
-        <div className="text-center py-12 bg-white border border-slate-200 rounded-3xl p-8 space-y-2">
-          <p className="text-slate-500 text-sm">
+        <div className="text-center py-12 bg-[var(--card-bg)] border border-[var(--border-subtle)] rounded-3xl p-8 space-y-2">
+          <p className="text-[var(--text-muted)] text-sm">
             No sales yet — mark an item as sold from a chat conversation with a buyer to see it here.
           </p>
         </div>
@@ -62,7 +62,7 @@ export default async function SalesPage() {
             (group) =>
               group.sales.length > 0 && (
                 <section key={group.label} className="space-y-3">
-                  <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                  <h2 className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">
                     {group.label} Sales ({group.sales.length})
                   </h2>
                   <div className="flex flex-col gap-3">
@@ -70,9 +70,9 @@ export default async function SalesPage() {
                       <Link
                         key={sale.id}
                         href={`/product/${sale.product.slug}`}
-                        className="flex items-center gap-4 p-4 rounded-2xl border border-slate-200 bg-white hover:shadow-md transition-shadow"
+                        className="flex items-center gap-4 p-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--card-bg)] hover:shadow-md transition-shadow"
                       >
-                        <div className="relative h-16 w-16 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden shrink-0">
+                        <div className="relative h-16 w-16 rounded-xl bg-[var(--border-subtle)]/40 border border-[var(--border-subtle)] overflow-hidden shrink-0">
                           {sale.product.images[0] ? (
                             <Image
                               src={sale.product.images[0]}
@@ -81,18 +81,18 @@ export default async function SalesPage() {
                               className="object-cover"
                             />
                           ) : (
-                            <div className="flex items-center justify-center h-full text-slate-300">
+                            <div className="flex items-center justify-center h-full text-[var(--text-muted)]">
                               <ImageOff className="h-5 w-5" />
                             </div>
                           )}
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-slate-900 truncate">{sale.product.name}</p>
-                          <p className="text-xs text-slate-500 flex items-center gap-1.5 mt-0.5">
-                            Buyer: <span className="font-semibold text-slate-700">{sale.buyer.name}</span>
+                          <p className="font-semibold text-[var(--text-primary)] truncate">{sale.product.name}</p>
+                          <p className="text-xs text-[var(--text-muted)] flex items-center gap-1.5 mt-0.5">
+                            Buyer: <span className="font-semibold text-[var(--text-primary)]">{sale.buyer.name}</span>
                             {(reputationByBuyerId.get(sale.buyer.id)?.reviewCount ?? 0) > 0 && (
-                              <span className="flex items-center gap-0.5 text-xs text-slate-600">
+                              <span className="flex items-center gap-0.5 text-xs text-[var(--text-muted)]">
                                 <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
                                 {reputationByBuyerId.get(sale.buyer.id)!.averageRating.toFixed(1)}
                               </span>
@@ -101,7 +101,7 @@ export default async function SalesPage() {
                         </div>
 
                         <div className="text-right shrink-0">
-                          <p className="font-bold text-indigo-600 text-base">
+                          <p className="font-bold text-[var(--brand-primary)] text-base">
                             {formatPrice(sale.totalCents)}
                           </p>
                           <span

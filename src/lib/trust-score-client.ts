@@ -29,7 +29,7 @@ export function getTrustScoreBadge(score: number, studentStatus: string = "unver
   return {
     label: "Unverified Seller",
     level: "Basic",
-    colorClass: "bg-slate-500/10 text-slate-600 border-slate-500/20 dark:text-slate-400",
+    colorClass: "bg-[var(--border-subtle)]/50 text-[var(--text-muted)] border-[var(--border-subtle)]",
     icon: "AlertCircle",
   };
 }

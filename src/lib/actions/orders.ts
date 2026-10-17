@@ -14,6 +14,7 @@ import {
   getActiveOrderForConversation,
   getOrderById,
 } from "@/db/queries/orders";
+import { publishChatEvent } from "@/lib/chat-events";
 import { formatPrice } from "@/lib/format";
 
 type ActionResult<T = undefined> =
@@ -103,6 +104,15 @@ export async function markAsSoldAction(
     `📦 The seller marked "${product.name}" (${formatPrice(product.priceCents)}) as sold. Waiting for the buyer to confirm they received it.`
   );
 
+  publishChatEvent(conversationId, {
+    type: "order",
+    data: {
+      id: order.id,
+      status: "seller_confirmed",
+      buyerId: conversation.buyerId,
+    },
+  });
+
   revalidatePath(`/dashboard/messages/${conversationId}`);
   revalidatePath("/dashboard/messages");
 
@@ -150,6 +160,14 @@ export async function confirmReceiptAction(
       session.user.id,
       `✅ ${buyer?.name ?? "The buyer"} confirmed they received the item. Order completed — you can both leave a review now.`
     );
+    publishChatEvent(order.conversationId, {
+      type: "order",
+      data: {
+        id: order.id,
+        status: "completed",
+        buyerId: order.buyerId,
+      },
+    });
   } else {
     await sendSystemMessage(
       order.conversationId,
@@ -203,6 +221,15 @@ export async function cancelOrderAction(orderId: string): Promise<ActionResult> 
     session.user.id,
     `❌ ${actor?.name ?? "Someone"} cancelled the order. The listing is available again.`
   );
+
+  publishChatEvent(order.conversationId, {
+    type: "order",
+    data: {
+      id: order.id,
+      status: "cancelled",
+      buyerId: order.buyerId,
+    },
+  });
 
   revalidatePath(`/dashboard/messages/${order.conversationId}`);
   revalidatePath("/dashboard/messages");

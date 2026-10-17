@@ -41,40 +41,40 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-3xl border border-slate-200 shadow-xl p-6 sm:p-8 space-y-6">
+    <div className="min-h-screen bg-[var(--background)] flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] shadow-xl p-6 sm:p-8 space-y-6">
         <div className="text-center space-y-2">
-          <div className="mx-auto flex items-center justify-center h-14 w-14 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 shadow-xs mb-3">
+          <div className="mx-auto flex items-center justify-center h-14 w-14 rounded-2xl bg-[var(--brand-primary-light)] border border-indigo-500/20 text-[var(--brand-primary)] shadow-xs mb-3">
             <Mail className="h-7 w-7" />
           </div>
-          <h1 className="text-2xl font-bold font-display text-slate-900 tracking-tight">
+          <h1 className="text-2xl font-bold font-display text-[var(--text-primary)] tracking-tight">
             Reset Password
           </h1>
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-[var(--text-muted)]">
             Enter your email and we&apos;ll send you a single-use password reset link.
           </p>
         </div>
 
         {error && (
-          <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-sm font-medium">
+          <div className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-sm font-medium">
             {error}
           </div>
         )}
 
         {submitted ? (
-          <div className="p-5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm space-y-3">
-            <div className="flex items-center gap-2 font-semibold text-emerald-900">
-              <CheckCircle className="w-5 h-5 text-emerald-600" /> Reset Link Sent
+          <div className="p-5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-sm space-y-3">
+            <div className="flex items-center gap-2 font-semibold text-emerald-500">
+              <CheckCircle className="w-5 h-5 text-emerald-500" /> Reset Link Sent
             </div>
             <p>
               If an account with <span className="font-semibold">{email}</span> exists, we have sent a secure password reset link to your email.
             </p>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-[var(--text-muted)]">
               The link will expire in 15 minutes. Check your spam folder if you don&apos;t see it.
             </p>
             <div className="pt-2">
               <Link href="/sign-in">
-                <Button variant="outline" className="w-full rounded-2xl">
+                <Button variant="outline" className="w-full rounded-2xl border-[var(--border-subtle)] text-[var(--text-primary)]">
                   Back to Sign In
                 </Button>
               </Link>
@@ -83,7 +83,7 @@ export default function ForgotPasswordPage() {
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-1.5">
                 Email Address
               </label>
               <div className="relative">
@@ -92,10 +92,10 @@ export default function ForgotPasswordPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="student@example.com"
-                  className="pl-10 h-11 rounded-2xl border-slate-200"
+                  className="pl-10 h-11 rounded-2xl border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)]"
                   required
                 />
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
               </div>
             </div>
 
@@ -115,7 +115,7 @@ export default function ForgotPasswordPage() {
             </Button>
 
             <div className="text-center pt-2">
-              <Link href="/sign-in" className="inline-flex items-center gap-1 text-xs font-medium text-slate-600 hover:text-indigo-600">
+              <Link href="/sign-in" className="inline-flex items-center gap-1 text-xs font-medium text-[var(--text-muted)] hover:text-[var(--brand-primary)]">
                 <ArrowLeft className="w-3 h-3" /> Return to Sign In
               </Link>
             </div>

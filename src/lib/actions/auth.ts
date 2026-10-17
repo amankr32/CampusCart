@@ -24,12 +24,14 @@ import {
   type ResetPasswordInput,
 } from "@/lib/validations/auth";
 
+import { createInternalAuthToken } from "@/lib/auth-token";
+
 type ActionResult<T = undefined> =
   | { success: true; data?: T; message?: string }
   | { success: false; error: string; isUnverified?: boolean; email?: string };
 
 /**
- * Robust Sign-In Action with Explicit Email Verification Enforcement
+ * Robust Sign-In Action with Single-Pass Argon2 Verification & Email Verification Enforcement
  */
 export async function credentialsSignInAction(
   input: SignInInput
@@ -46,6 +48,15 @@ export async function credentialsSignInAction(
   const { email, password } = parsed.data;
   const cleanEmail = email.toLowerCase().trim();
 
+  // Rate limit: 5 attempts per minute per email
+  const rateLimit = checkRateLimit(`login:${cleanEmail}`, 5, 60 * 1000);
+  if (!rateLimit.success) {
+    return {
+      success: false,
+      error: `Too many sign-in attempts. Please wait ${Math.ceil(rateLimit.resetMs / 1000)}s before trying again.`,
+    };
+  }
+
   // Find user by email
   const [user] = await db
     .select()
@@ -57,7 +68,7 @@ export async function credentialsSignInAction(
     return { success: false, error: "Invalid email address or password." };
   }
 
-  // Verify password with Argon2
+  // Verify password with Argon2 (Single Pass)
   const isValidPassword = await verifyPassword(password, user.passwordHash);
 
   if (!isValidPassword) {
@@ -86,11 +97,15 @@ export async function credentialsSignInAction(
     };
   }
 
+  // Generate short-lived HMAC token so Auth.js authorize() skips duplicate Argon2 verification
+  const preVerifiedToken = createInternalAuthToken(user.id);
+
   // Sign in via Auth.js / NextAuth
   try {
     await signIn("credentials", {
       email: cleanEmail,
       password,
+      preVerifiedToken,
       redirect: false,
     });
   } catch (error) {

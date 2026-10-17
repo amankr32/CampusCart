@@ -16,9 +16,11 @@ import {
   Loader2,
   Tag,
   Search,
-} from "lucide-react";
+  Sparkles,
+} from "@/components/ui/material-symbol";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/lib/toast";
 import {
   deleteProductAction,
   updateProductStatusAction,
@@ -70,12 +72,15 @@ export function MyListingsDashboard({
       if (res.success) {
         setProductList((prev) => prev.filter((p) => p.id !== deleteTarget.id));
         setDeleteTarget(null);
+        toast.success("Listing deleted permanently", {
+          description: `"${deleteTarget.name}" has been removed.`,
+        });
         router.refresh();
       } else {
-        alert(res.error);
+        toast.error("Failed to delete", { description: res.error });
       }
     } catch {
-      alert("Failed to delete listing.");
+      toast.error("Failed to delete listing.");
     } finally {
       setIsDeleting(false);
     }
@@ -92,12 +97,19 @@ export function MyListingsDashboard({
         setProductList((prev) =>
           prev.map((p) => (p.id === productId ? { ...p, status: newStatus } : p))
         );
+        const statusLabel =
+          newStatus === "sold"
+            ? "Marked as Sold"
+            : newStatus === "hidden"
+              ? "Listing Paused / Hidden"
+              : "Listing Status Updated";
+        toast.success(statusLabel);
         router.refresh();
       } else {
-        alert(res.error);
+        toast.error("Update failed", { description: res.error });
       }
     } catch {
-      alert("Failed to update product status.");
+      toast.error("Failed to update product status.");
     } finally {
       setActionPendingId(null);
     }
@@ -111,12 +123,15 @@ export function MyListingsDashboard({
         setProductList((prev) =>
           prev.map((p) => (p.id === productId ? { ...p, status: "available" } : p))
         );
+        toast.success("Listing Republished!", {
+          description: "Your item is now active and visible to campus buyers.",
+        });
         router.refresh();
       } else {
-        alert(res.error);
+        toast.error("Republish failed", { description: res.error });
       }
     } catch {
-      alert("Failed to republish listing.");
+      toast.error("Failed to republish listing.");
     } finally {
       setActionPendingId(null);
     }
@@ -125,7 +140,7 @@ export function MyListingsDashboard({
   return (
     <div className="space-y-6">
       {/* Header controls & tabs */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-3xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-[var(--card-bg)] p-4 rounded-3xl border border-[var(--border-subtle)] shadow-xs">
         <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto">
           {(["all", "available", "sold", "hidden"] as const).map((tab) => (
             <button
@@ -134,7 +149,7 @@ export function MyListingsDashboard({
               className={`px-4 py-2 text-xs font-semibold rounded-2xl capitalize transition-all whitespace-nowrap ${
                 activeTab === tab
                   ? "bg-indigo-600 text-white shadow-sm"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  : "bg-[var(--input-bg)] text-[var(--text-muted)] hover:bg-[var(--border-subtle)]"
               }`}
             >
               {tab} ({productList.filter((p) => (tab === "all" ? true : p.status === tab)).length})
@@ -148,13 +163,13 @@ export function MyListingsDashboard({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search your listings..."
-              className="pl-9 h-10 text-xs rounded-2xl"
+              className="pl-9 h-10 text-xs rounded-2xl bg-[var(--input-bg)] border-[var(--border-subtle)] text-[var(--text-primary)]"
             />
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
           </div>
 
           <Link href="/sell">
-            <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl shrink-0 h-10">
+            <Button size="sm" className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white rounded-2xl shrink-0 h-10 shadow-md shadow-indigo-500/20">
               <Plus className="w-4 h-4 mr-1.5" /> Post New Item
             </Button>
           </Link>
@@ -162,18 +177,48 @@ export function MyListingsDashboard({
       </div>
 
       {filteredProducts.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-3xl border border-slate-200 p-8 space-y-3 shadow-xs">
-          <div className="w-14 h-14 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto">
-            <Tag className="w-7 h-7" />
+        <div className="text-center py-16 bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] p-8 space-y-4 shadow-xs max-w-md mx-auto">
+          <div className="w-16 h-16 rounded-3xl bg-[var(--brand-primary-light)] text-[var(--brand-primary)] border border-[var(--brand-primary)]/20 flex items-center justify-center mx-auto shadow-sm">
+            <Tag className="w-8 h-8" />
           </div>
-          <h3 className="text-xl font-bold font-display text-slate-900">No Listings Found</h3>
-          <p className="text-sm text-slate-500 max-w-sm mx-auto">
-            You don&apos;t have any products in this category yet. Post your unused textbooks or lab equipment!
-          </p>
-          <div className="pt-2">
+          <div className="space-y-1.5">
+            <h3 className="text-xl font-bold font-display text-[var(--text-primary)]">
+              {search.trim()
+                ? `No items matching "${search}"`
+                : activeTab !== "all"
+                  ? `No ${activeTab} items found`
+                  : "You haven't listed any items yet"}
+            </h3>
+            <p className="text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed">
+              {search.trim()
+                ? "Try searching for a different keyword or clear the search input."
+                : activeTab !== "all"
+                  ? `You don't have any items currently marked as ${activeTab}.`
+                  : "Sell your unused textbooks, drafters, calculators, or hostel gear to students on campus in minutes."}
+            </p>
+          </div>
+          <div className="pt-2 flex items-center justify-center gap-3">
+            {search.trim() ? (
+              <Button
+                variant="outline"
+                onClick={() => setSearch("")}
+                className="rounded-2xl text-xs font-bold px-5 h-10 border-[var(--border-subtle)] cursor-pointer"
+              >
+                Clear Search
+              </Button>
+            ) : activeTab !== "all" ? (
+              <Button
+                variant="outline"
+                onClick={() => setActiveTab("all")}
+                className="rounded-2xl text-xs font-bold px-5 h-10 border-[var(--border-subtle)] cursor-pointer"
+              >
+                Show All Items
+              </Button>
+            ) : null}
+
             <Link href="/sell">
-              <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-6">
-                Create First Listing
+              <Button className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white rounded-2xl px-5 h-10 font-bold text-xs shadow-md shadow-indigo-500/20 cursor-pointer">
+                <Plus className="w-4 h-4 mr-1" /> Post First Listing
               </Button>
             </Link>
           </div>
@@ -188,11 +233,11 @@ export function MyListingsDashboard({
             return (
               <div
                 key={product.id}
-                className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between"
+                className="bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] overflow-hidden shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between"
               >
                 <div>
                   {/* Image & Status Badge */}
-                  <div className="h-48 w-full bg-slate-100 relative overflow-hidden group">
+                  <div className="h-48 w-full bg-[var(--input-bg)] relative overflow-hidden group">
                     <img
                       src={primaryImg}
                       alt={product.name}
@@ -221,16 +266,16 @@ export function MyListingsDashboard({
                   {/* Content */}
                   <div className="p-5 space-y-3">
                     <div className="flex items-start justify-between gap-2">
-                      <h3 className="font-bold text-slate-900 line-clamp-1 font-display text-base">
+                      <h3 className="font-bold text-[var(--text-primary)] line-clamp-1 font-display text-base">
                         {product.name}
                       </h3>
-                      <span className="font-bold text-indigo-600 text-lg shrink-0">
+                      <span className="font-bold text-[var(--brand-primary)] text-lg shrink-0">
                         ₹{priceRs}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2 text-xs text-slate-500">
-                      <span className="capitalize bg-slate-100 px-2.5 py-0.5 rounded-full font-medium text-slate-700">
+                    <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
+                      <span className="capitalize bg-[var(--input-bg)] px-2.5 py-0.5 rounded-full font-medium text-[var(--text-primary)]">
                         Condition: {product.condition.replace("_", " ")}
                       </span>
                       <span>•</span>
@@ -240,14 +285,14 @@ export function MyListingsDashboard({
                 </div>
 
                 {/* Actions Bar */}
-                <div className="p-4 bg-slate-50/80 border-t border-slate-100 flex items-center justify-between gap-2">
+                <div className="p-4 bg-[var(--input-bg)]/40 border-t border-[var(--border-subtle)] flex items-center justify-between gap-2">
                   <div className="flex items-center gap-1">
                     {/* Edit button */}
                     <Link href={`/sell/${product.id}`}>
                       <Button
                         size="icon"
                         variant="ghost"
-                        className="h-9 w-9 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl"
+                        className="h-9 w-9 text-[var(--text-muted)] hover:text-[var(--brand-primary)] hover:bg-[var(--brand-primary-light)] rounded-xl"
                         title="Edit Listing"
                       >
                         <Edit3 className="w-4 h-4" />
@@ -323,21 +368,21 @@ export function MyListingsDashboard({
       {/* Permanent Delete Confirmation Dialog Modal */}
       {deleteTarget && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 space-y-5 shadow-2xl animate-in fade-in zoom-in-95">
+          <div className="bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] max-w-md w-full p-6 space-y-5 shadow-2xl animate-in fade-in zoom-in-95">
             <div className="flex items-center gap-3 text-rose-600">
-              <div className="w-12 h-12 rounded-2xl bg-rose-100 flex items-center justify-center shrink-0">
-                <AlertTriangle className="w-6 h-6 text-rose-600" />
+              <div className="w-12 h-12 rounded-2xl bg-rose-500/10 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-6 h-6 text-rose-500" />
               </div>
               <div>
-                <h3 className="text-lg font-bold font-display text-slate-900">
+                <h3 className="text-lg font-bold font-display text-[var(--text-primary)]">
                   Delete Listing Permanently?
                 </h3>
-                <p className="text-xs text-slate-500">This action cannot be undone.</p>
+                <p className="text-xs text-[var(--text-muted)]">This action cannot be undone.</p>
               </div>
             </div>
 
-            <p className="text-sm text-slate-600 leading-relaxed">
-              Are you sure you want to permanently delete <strong className="text-slate-900 font-semibold">&quot;{deleteTarget.name}&quot;</strong>? This will remove all listing details and associated photos from storage.
+            <p className="text-sm text-[var(--text-muted)] leading-relaxed">
+              Are you sure you want to permanently delete <strong className="text-[var(--text-primary)] font-semibold">&quot;{deleteTarget.name}&quot;</strong>? This will remove all listing details and associated photos from storage.
             </p>
 
             <div className="flex items-center justify-end gap-3 pt-2">

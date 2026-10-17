@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Star } from "lucide-react";
+import { Star } from "@/components/ui/material-symbol";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -41,7 +41,7 @@ export function ReviewForm({ productId }: { productId: string }) {
 
   if (submitted) {
     return (
-      <p className="text-sm text-black/60 p-4 rounded-lg border-2 border-black bg-white">
+      <p className="text-sm text-emerald-500 p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 font-medium">
         Thanks for your review!
       </p>
     );
@@ -50,9 +50,9 @@ export function ReviewForm({ productId }: { productId: string }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-3 p-4 rounded-lg border-2 border-black bg-white"
+      className="flex flex-col gap-3 p-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--card-bg)] shadow-xs"
     >
-      <p className="font-medium text-sm">Leave a review</p>
+      <p className="font-semibold text-sm text-[var(--text-primary)]">Leave a review</p>
 
       <div className="flex items-center gap-1">
         {Array.from({ length: 5 }).map((_, index) => {
@@ -65,13 +65,14 @@ export function ReviewForm({ productId }: { productId: string }) {
               onMouseEnter={() => setHoverRating(value)}
               onMouseLeave={() => setHoverRating(0)}
               aria-label={`Rate ${value} stars`}
+              className="cursor-pointer"
             >
               <Star
                 className={cn(
                   "h-6 w-6 transition-colors",
                   value <= (hoverRating || rating)
-                    ? "fill-[var(--brand-yellow)] text-black"
-                    : "fill-transparent text-black/20"
+                    ? "fill-amber-400 text-amber-400"
+                    : "fill-transparent text-[var(--text-muted)]/40"
                 )}
                 strokeWidth={1.5}
               />
@@ -85,17 +86,16 @@ export function ReviewForm({ productId }: { productId: string }) {
         placeholder="How was it? (optional)"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
-        className="w-full rounded-md border-2 border-black bg-white px-3 py-2 text-sm outline-none focus-visible:shadow-[var(--shadow-cartoon-sm)]"
+        className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] px-3 py-2 text-sm outline-hidden focus:border-[var(--brand-primary)] placeholder:text-[var(--text-muted)]/50"
       />
 
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && <p className="text-xs text-rose-500 font-medium">{error}</p>}
 
       <Button
         type="submit"
-        variant="elevated"
         size="sm"
         disabled={isSubmitting}
-        className="self-start"
+        className="self-start rounded-xl text-xs font-semibold"
       >
         {isSubmitting ? "Submitting..." : "Submit review"}
       </Button>

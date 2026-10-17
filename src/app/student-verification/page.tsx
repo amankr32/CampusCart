@@ -3,14 +3,16 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { upload } from "@vercel/blob/client";
 import { ShieldCheck, ShieldAlert, Upload, Loader2, CheckCircle2, Copy, AlertTriangle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { submitStudentVerificationAction } from "@/lib/actions/verification";
+import { toast } from "@/lib/toast";
 
 export default function StudentVerificationPage() {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const router = useRouter();
 
   const [ptuRollNo, setPtuRollNo] = useState("");
@@ -26,6 +28,10 @@ export default function StudentVerificationPage() {
     // Generate 6-character anti-fraud session token e.g. CART-8492
     const randomNum = Math.floor(1000 + Math.random() * 9000);
     setAntiFraudCode(`CART-${randomNum}`);
+
+    // Refresh JWT session once on mount to reflect latest admin approval or status changes
+    void update();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (status === "loading") {
@@ -51,20 +57,11 @@ export default function StudentVerificationPage() {
     setError(null);
 
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
+      const blob = await upload(file.name, file, {
+        access: "public",
+        handleUploadUrl: "/api/upload",
       });
-
-      if (!res.ok) {
-        throw new Error("Failed to upload screenshot.");
-      }
-
-      const data = await res.json();
-      setScreenshotUrl(data.url);
+      setScreenshotUrl(blob.url);
     } catch {
       setError("Failed to upload screenshot image. Please try again.");
     } finally {
@@ -75,6 +72,9 @@ export default function StudentVerificationPage() {
   const handleCopyCode = () => {
     navigator.clipboard.writeText(antiFraudCode);
     setCopied(true);
+    toast.success("Verification code copied!", {
+      description: `Code "${antiFraudCode}" copied to clipboard.`,
+    });
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -85,11 +85,13 @@ export default function StudentVerificationPage() {
 
     if (!ptuRollNo.trim()) {
       setError("Please enter your PTU Roll Number / Student Registration ID.");
+      toast.error("Roll number required");
       return;
     }
 
     if (!screenshotUrl) {
       setError("Please upload your PTU portal verification screenshot.");
+      toast.error("Proof screenshot required");
       return;
     }
 
@@ -103,17 +105,23 @@ export default function StudentVerificationPage() {
 
       if (!res.success) {
         setError(res.error);
+        toast.error("Submission failed", { description: res.error });
         setIsSubmitting(false);
         return;
       }
 
       setSuccess(res.message || "Verification request submitted successfully!");
+      toast.success("Verification Request Submitted!", {
+        description: "Our admin desk will review your PTU screenshot shortly.",
+      });
       setIsSubmitting(false);
+      await update();
       setTimeout(() => {
         router.refresh();
-      }, 2000);
+      }, 1500);
     } catch {
       setError("Failed to submit verification. Please try again.");
+      toast.error("Submission error");
       setIsSubmitting(false);
     }
   };
@@ -121,13 +129,13 @@ export default function StudentVerificationPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-10 sm:py-14 space-y-8">
       <div className="text-center space-y-3">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-semibold">
-          <ShieldCheck className="w-4 h-4 text-indigo-600" /> Safe & Trusted Campus Community
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[var(--brand-primary-light)] border border-indigo-500/20 text-[var(--brand-primary)] text-xs font-semibold">
+          <ShieldCheck className="w-4 h-4 text-[var(--brand-primary)]" /> Safe & Trusted Campus Community
         </div>
-        <h1 className="text-3xl sm:text-4xl font-bold font-display text-slate-900 tracking-tight">
+        <h1 className="text-3xl sm:text-4xl font-bold font-display text-[var(--text-primary)] tracking-tight">
           Student Identity Verification
         </h1>
-        <p className="text-sm sm:text-base text-slate-600 max-w-xl mx-auto">
+        <p className="text-sm sm:text-base text-[var(--text-muted)] max-w-xl mx-auto">
           Get verified using your PTU Student Portal to unlock unlimited listing privileges, higher search rank, and your Student Verified Badge!
         </p>
       </div>
@@ -161,25 +169,25 @@ export default function StudentVerificationPage() {
           </p>
         </div>
       ) : (
-        <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-6 sm:p-10 space-y-8">
+        <div className="bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] shadow-xl p-6 sm:p-10 space-y-8">
           {studentStatus === "rejected" && (
-            <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-sm space-y-1">
-              <div className="flex items-center gap-2 font-semibold text-rose-900">
-                <AlertTriangle className="w-5 h-5 text-rose-600" /> Previous Request Rejected
+            <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-sm space-y-1">
+              <div className="flex items-center gap-2 font-semibold text-rose-500">
+                <AlertTriangle className="w-5 h-5 text-rose-500" /> Previous Request Rejected
               </div>
-              <p>Please resubmit with a clear screenshot of your PTU portal containing the live code below.</p>
+              <p className="text-xs text-[var(--text-muted)]">Please resubmit with a clear screenshot of your PTU portal containing the live code below.</p>
             </div>
           )}
 
           {error && (
-            <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-sm font-medium">
+            <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-sm font-medium">
               {error}
             </div>
           )}
 
           {success && (
-            <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-medium flex items-center gap-2">
-              <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+            <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-sm font-medium flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-emerald-500" />
               {success}
             </div>
           )}
@@ -210,7 +218,7 @@ export default function StudentVerificationPage() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2">
                 1. PTU Roll Number / University ID
               </label>
               <Input
@@ -218,44 +226,44 @@ export default function StudentVerificationPage() {
                 value={ptuRollNo}
                 onChange={(e) => setPtuRollNo(e.target.value)}
                 placeholder="e.g. 21012345 or PTU/BC/2022/104"
-                className="h-12 rounded-2xl border-slate-200 text-base"
+                className="h-12 rounded-2xl border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] text-base"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2">
                 2. PTU Portal Proof Image (With Code {antiFraudCode})
               </label>
-              <div className="border-2 border-dashed border-slate-300 rounded-3xl p-6 text-center hover:border-indigo-400 transition-colors bg-slate-50/50">
+              <div className="border-2 border-dashed border-[var(--border-subtle)] rounded-3xl p-6 text-center hover:border-indigo-400 transition-colors bg-[var(--input-bg)]/30">
                 {screenshotUrl ? (
                   <div className="space-y-3">
                     <img
                       src={screenshotUrl}
                       alt="PTU Portal Proof"
-                      className="max-h-56 mx-auto rounded-2xl object-cover border border-slate-200 shadow-sm"
+                      className="max-h-56 mx-auto rounded-2xl object-cover border border-[var(--border-subtle)] shadow-sm"
                     />
                     <button
                       type="button"
                       onClick={() => setScreenshotUrl("")}
-                      className="text-xs font-semibold text-rose-600 hover:underline"
+                      className="text-xs font-semibold text-rose-500 hover:underline"
                     >
                       Remove & Upload Different Photo
                     </button>
                   </div>
                 ) : (
                   <label className="cursor-pointer flex flex-col items-center gap-2">
-                    <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-2xl bg-[var(--brand-primary-light)] text-[var(--brand-primary)] flex items-center justify-center">
                       {isUploading ? (
                         <Loader2 className="w-6 h-6 animate-spin" />
                       ) : (
                         <Upload className="w-6 h-6" />
                       )}
                     </div>
-                    <span className="text-sm font-semibold text-slate-800">
+                    <span className="text-sm font-semibold text-[var(--text-primary)]">
                       {isUploading ? "Uploading Screenshot..." : "Click to Upload PTU Portal Photo"}
                     </span>
-                    <span className="text-xs text-slate-500">
+                    <span className="text-xs text-[var(--text-muted)]">
                       PNG, JPG, or WEBP (Max 5MB) showing portal profile + code {antiFraudCode}
                     </span>
                     <input

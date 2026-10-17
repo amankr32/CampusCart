@@ -84,13 +84,13 @@ export function ProductForm({
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6 items-start"
+      className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-8 items-start"
     >
       {/* Left column: photos + safety note */}
       <div className="flex flex-col gap-5">
-        <div className="rounded-xl border border-[var(--border-subtle)] bg-white p-5">
-          <Label>Upload Photos</Label>
-          <p className="text-xs text-black/50 mt-1 mb-3">
+        <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--card-bg)] p-5">
+          <Label className="font-bold text-[var(--text-primary)]">Upload Photos</Label>
+          <p className="text-xs text-[var(--text-muted)] mt-1 mb-3">
             Add clear photos of your item (up to 6 photos)
           </p>
           <ImageUploader
@@ -102,25 +102,25 @@ export function ProductForm({
           )}
         </div>
 
-        <div className="rounded-xl border border-orange-200 bg-orange-50 p-4">
-          <p className="text-sm font-medium">Your safety matters</p>
-          <p className="text-xs text-black/60 mt-1">
-            Don&apos;t share personal info like phone number, address or
-            payment details.
+        <div className="rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4 text-amber-500">
+          <p className="text-xs font-bold">Your safety matters</p>
+          <p className="text-xs text-[var(--text-muted)] mt-1 leading-relaxed">
+            Don&apos;t share personal phone numbers or payment details until you confirm in chat.
           </p>
         </div>
       </div>
 
       {/* Right column: item details card */}
-      <div className="rounded-xl border border-[var(--border-subtle)] bg-white p-6 flex flex-col gap-5">
-        <h2 className="font-semibold text-lg">Item Details</h2>
+      <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--card-bg)] p-6 flex flex-col gap-5">
+        <h2 className="font-bold text-lg text-[var(--text-primary)] font-display">Item Details</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="name">Title</Label>
+            <Label htmlFor="name" className="text-xs font-semibold text-[var(--text-primary)]">Title</Label>
             <Input
               id="name"
               placeholder="e.g. Engineering Mathematics Vol. 2"
+              className="rounded-xl border border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] text-xs"
               {...register("name")}
             />
             {errors.name && (
@@ -129,10 +129,10 @@ export function ProductForm({
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="categoryId">Category</Label>
+            <Label htmlFor="categoryId" className="text-xs font-semibold text-[var(--text-primary)]">Category</Label>
             <select
               id="categoryId"
-              className="h-11 rounded-lg border border-[var(--border-subtle)] bg-white px-3 text-sm outline-none focus-visible:border-[var(--brand-orange)]"
+              className="h-10 rounded-xl border border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] px-3 text-xs outline-none focus:ring-2 focus:ring-indigo-500"
               {...register("categoryId")}
             >
               <option value="">Select a category</option>
@@ -146,12 +146,12 @@ export function ProductForm({
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="description">Description</Label>
+          <Label htmlFor="description" className="text-xs font-semibold text-[var(--text-primary)]">Description</Label>
           <textarea
             id="description"
             rows={4}
             placeholder="Condition, features and any other details about the item..."
-            className="w-full rounded-lg border border-[var(--border-subtle)] bg-white px-3 py-2 text-sm outline-none focus-visible:border-[var(--brand-orange)] focus-visible:ring-2 focus-visible:ring-[var(--brand-orange)]/15"
+            className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-indigo-500"
             {...register("description")}
           />
           {errors.description && (
@@ -161,11 +161,12 @@ export function ProductForm({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="priceRupees">Price (₹)</Label>
+            <Label htmlFor="priceRupees" className="text-xs font-semibold text-[var(--text-primary)]">Price (₹)</Label>
             <Input
               id="priceRupees"
               type="number"
               min={1}
+              className="rounded-xl border border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] text-xs"
               {...register("priceRupees", { valueAsNumber: true })}
             />
             {errors.priceRupees && (
@@ -174,17 +175,23 @@ export function ProductForm({
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="quantity">Quantity</Label>
-            <Input id="quantity" type="number" min={1} {...register("quantity", { valueAsNumber: true })} />
+            <Label htmlFor="quantity" className="text-xs font-semibold text-[var(--text-primary)]">Quantity</Label>
+            <Input
+              id="quantity"
+              type="number"
+              min={1}
+              className="rounded-xl border border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] text-xs"
+              {...register("quantity", { valueAsNumber: true })}
+            />
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="condition">Condition</Label>
+            <Label htmlFor="condition" className="text-xs font-semibold text-[var(--text-primary)]">Condition</Label>
             <select
               id="condition"
-              className="h-11 rounded-lg border border-[var(--border-subtle)] bg-white px-3 text-sm outline-none focus-visible:border-[var(--brand-orange)]"
+              className="h-10 rounded-xl border border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] px-3 text-xs outline-none focus:ring-2 focus:ring-indigo-500"
               {...register("condition")}
             >
               {PRODUCT_CONDITIONS.map((condition) => (
@@ -196,32 +203,46 @@ export function ProductForm({
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="hostel">Hostel / Location (optional)</Label>
-            <Input id="hostel" placeholder="e.g. Block C, Boys Hostel" {...register("hostel")} />
+            <Label htmlFor="hostel" className="text-xs font-semibold text-[var(--text-primary)]">Hostel / Location (optional)</Label>
+            <Input
+              id="hostel"
+              placeholder="e.g. Block C, Boys Hostel"
+              className="rounded-xl border border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] text-xs"
+              {...register("hostel")}
+            />
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="branch">Branch / Course (optional)</Label>
-            <Input id="branch" placeholder="e.g. CSE, ECE, ME" {...register("branch")} />
+            <Label htmlFor="branch" className="text-xs font-semibold text-[var(--text-primary)]">Branch / Course (optional)</Label>
+            <Input
+              id="branch"
+              placeholder="e.g. CSE, ECE, ME"
+              className="rounded-xl border border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] text-xs"
+              {...register("branch")}
+            />
           </div>
         </div>
 
         {formError && (
-          <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-md px-3 py-2">
+          <p className="text-xs text-red-600 bg-red-500/10 border border-red-500/20 rounded-xl px-3.5 py-2.5">
             {formError}
           </p>
         )}
 
-        <div className="flex flex-col sm:flex-row gap-3 pt-2">
-        <Button type="submit" variant="brand" size="lg" disabled={isSubmitting}>
-          {isSubmitting
-            ? "Saving..."
-            : productId
-              ? "Save changes"
-              : "Publish listing"}
-        </Button>
+        <div className="flex flex-col sm:flex-row gap-3 pt-4">
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full sm:w-auto bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold rounded-xl px-6 py-2.5 text-xs shadow-xs"
+          >
+            {isSubmitting
+              ? "Saving..."
+              : productId
+              ? "Save Changes"
+              : "Publish Listing"}
+          </Button>
         </div>
       </div>
     </form>

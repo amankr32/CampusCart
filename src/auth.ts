@@ -6,6 +6,7 @@ import { db } from "@/db";
 import { users } from "@/db/schema";
 import { verifyPassword } from "@/lib/password";
 import { signInSchema } from "@/lib/validations/auth";
+import { verifyInternalAuthToken } from "@/lib/auth-token";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: {
@@ -19,6 +20,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+        preVerifiedToken: { label: "Token", type: "text" },
       },
       authorize: async (rawCredentials) => {
         const parsed = signInSchema.safeParse(rawCredentials);
@@ -28,6 +30,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
 
         const { email, password } = parsed.data;
+        const preVerifiedToken =
+          typeof rawCredentials === "object" &&
+          rawCredentials !== null &&
+          "preVerifiedToken" in rawCredentials
+            ? (rawCredentials.preVerifiedToken as string)
+            : undefined;
 
         const [user] = await db
           .select()
@@ -39,13 +47,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return null;
         }
 
-        const isValidPassword = await verifyPassword(
-          password,
-          user.passwordHash
-        );
+        // Skip redundant Argon2 verification if the server action already confirmed it
+        const isPreVerified = verifyInternalAuthToken(preVerifiedToken, user.id);
+        if (!isPreVerified) {
+          const isValidPassword = await verifyPassword(
+            password,
+            user.passwordHash
+          );
 
-        if (!isValidPassword) {
-          return null;
+          if (!isValidPassword) {
+            return null;
+          }
         }
 
         // Email Verification Check: Must be verified before logging in
@@ -66,7 +78,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
-    jwt: ({ token, user }) => {
+    jwt: async ({ token, user, trigger, session }) => {
       if (user) {
         const u = user as unknown as {
           id: string;
@@ -81,6 +93,34 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.studentStatus = u.studentStatus;
         token.trustScore = u.trustScore;
       }
+
+      const userId = (token.id as string) || (token.sub as string);
+
+      if (trigger === "update" && userId) {
+        // Re-read latest status and scores directly from DB as source of truth
+        const [freshUser] = await db
+          .select({
+            studentStatus: users.studentStatus,
+            trustScore: users.trustScore,
+            isAdmin: users.isAdmin,
+            username: users.username,
+            name: users.name,
+            avatarUrl: users.avatarUrl,
+          })
+          .from(users)
+          .where(eq(users.id, userId))
+          .limit(1);
+
+        if (freshUser) {
+          token.studentStatus = freshUser.studentStatus;
+          token.trustScore = freshUser.trustScore;
+          token.isAdmin = freshUser.isAdmin;
+          if (freshUser.username) token.username = freshUser.username;
+          if (freshUser.name) token.name = freshUser.name;
+          if (freshUser.avatarUrl) token.picture = freshUser.avatarUrl;
+        }
+      }
+
       return token;
     },
     session: ({ session, token }) => {

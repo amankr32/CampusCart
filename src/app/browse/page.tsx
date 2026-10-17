@@ -58,7 +58,7 @@ export default async function BrowsePage({
     <div className="w-full px-4 lg:px-12 py-10">
       <div className="mb-6">
         <h1 className="font-display font-bold text-3xl mb-1">Browse listings</h1>
-        <p className="text-black/50 text-sm mb-4">
+        <p className="text-[var(--text-muted)] text-sm mb-4">
           Showing {totalCount} item{totalCount === 1 ? "" : "s"}
         </p>
         <CategoryPills activeCategorySlug={params.category} />
@@ -70,7 +70,7 @@ export default async function BrowsePage({
         </aside>
 
         <div>
-          <BrowseResults products={docs} totalCount={totalCount} />
+          <BrowseResults products={docs} totalCount={totalCount} filterParams={params} />
           <ProductPagination
             currentPage={currentPage}
             totalPages={totalPages}
@@ -84,28 +84,28 @@ export default async function BrowsePage({
           <ShieldCheck className="h-5 w-5 text-emerald-600 shrink-0" />
           <div>
             <p className="text-sm font-medium">Verified Students</p>
-            <p className="text-xs text-black/50">Campus email required</p>
+            <p className="text-xs text-[var(--text-muted)]">Campus email required</p>
           </div>
         </div>
         <div className="flex items-start gap-3">
           <MapPin className="h-5 w-5 text-blue-600 shrink-0" />
           <div>
             <p className="text-sm font-medium">Safe Campus Deals</p>
-            <p className="text-xs text-black/50">Meet in person on campus</p>
+            <p className="text-xs text-[var(--text-muted)]">Meet in person on campus</p>
           </div>
         </div>
         <div className="flex items-start gap-3">
           <IndianRupee className="h-5 w-5 text-orange-600 shrink-0" />
           <div>
             <p className="text-sm font-medium">No Platform Fee</p>
-            <p className="text-xs text-black/50">Keep 100% of your earnings</p>
+            <p className="text-xs text-[var(--text-muted)]">Keep 100% of your earnings</p>
           </div>
         </div>
         <div className="flex items-start gap-3">
           <MessageCircle className="h-5 w-5 text-violet-600 shrink-0" />
           <div>
             <p className="text-sm font-medium">Direct Chat</p>
-            <p className="text-xs text-black/50">Chat directly with sellers</p>
+            <p className="text-xs text-[var(--text-muted)]">Chat directly with sellers</p>
           </div>
         </div>
       </div>

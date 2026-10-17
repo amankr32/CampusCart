@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "@/components/ui/material-symbol";
 
 import { cn } from "@/lib/utils";
 
@@ -38,7 +38,7 @@ export function ProductPagination({
         <ChevronLeft className="h-4 w-4" />
       </PageLink>
 
-      <span className="text-sm text-black/60 px-3">
+      <span className="text-sm text-[var(--text-muted)] px-3">
         Page {currentPage} of {totalPages}
       </span>
 
@@ -67,7 +67,7 @@ function PageLink({
   if (disabled) {
     return (
       <span
-        className="flex items-center justify-center h-9 w-9 rounded-lg border border-[var(--border-subtle)] text-black/20"
+        className="flex items-center justify-center h-9 w-9 rounded-xl border border-[var(--border-subtle)] text-[var(--text-muted)]/40 bg-[var(--card-bg)]/50"
         aria-hidden
       >
         {children}
@@ -79,7 +79,7 @@ function PageLink({
     <Link
       href={href}
       className={cn(
-        "flex items-center justify-center h-9 w-9 rounded-lg border border-[var(--border-subtle)] bg-white hover:border-[var(--brand-orange)] hover:text-[var(--brand-orange)] transition-colors"
+        "flex items-center justify-center h-9 w-9 rounded-xl border border-[var(--border-subtle)] bg-[var(--card-bg)] text-[var(--text-primary)] hover:border-[var(--brand-primary)]/50 hover:text-[var(--brand-primary)] transition-all"
       )}
       {...props}
     >

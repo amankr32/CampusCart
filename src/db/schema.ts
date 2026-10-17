@@ -10,7 +10,7 @@ import {
   index,
   jsonb,
 } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 
 // ---------------------------------------------------------------------------
 // Enums
@@ -92,6 +92,7 @@ export const users = pgTable(
   (table) => [
     uniqueIndex("users_email_idx").on(table.email),
     uniqueIndex("users_username_idx").on(table.username),
+    index("users_student_status_idx").on(table.studentStatus),
   ]
 );
 
@@ -127,7 +128,10 @@ export const verificationCodes = pgTable(
     expiresAt: timestamp("expires_at").notNull(),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
-  (table) => [index("verification_codes_email_idx").on(table.email)]
+  (table) => [
+    index("verification_codes_email_idx").on(table.email),
+    index("verification_codes_email_code_idx").on(table.email, table.code),
+  ]
 );
 
 // ---------------------------------------------------------------------------
@@ -236,7 +240,10 @@ export const categories = pgTable(
     color: text("color"),
     parentId: uuid("parent_id"),
   },
-  (table) => [uniqueIndex("categories_slug_idx").on(table.slug)]
+  (table) => [
+    uniqueIndex("categories_slug_idx").on(table.slug),
+    index("categories_parent_idx").on(table.parentId),
+  ]
 );
 
 export const categoriesRelations = relations(categories, ({ one, many }) => ({
@@ -286,6 +293,26 @@ export const products = pgTable(
     index("products_category_idx").on(table.categoryId),
     index("products_archived_idx").on(table.isArchived),
     index("products_status_idx").on(table.status),
+    index("products_active_created_idx").on(
+      table.isArchived,
+      table.status,
+      table.createdAt
+    ),
+    index("products_category_active_idx").on(
+      table.categoryId,
+      table.isArchived,
+      table.status
+    ),
+    index("products_tenant_active_idx").on(
+      table.tenantId,
+      table.isArchived,
+      table.status
+    ),
+    index("products_price_cents_idx").on(table.priceCents),
+    index("products_search_idx").using(
+      "gin",
+      sql`to_tsvector('english', coalesce(${table.name}, '') || ' ' || coalesce(${table.description}, ''))`
+    ),
   ]
 );
 
@@ -333,6 +360,10 @@ export const orders = pgTable(
     index("orders_buyer_idx").on(table.buyerId),
     index("orders_tenant_idx").on(table.tenantId),
     index("orders_conversation_idx").on(table.conversationId),
+    index("orders_product_idx").on(table.productId),
+    index("orders_status_idx").on(table.status),
+    index("orders_tenant_status_idx").on(table.tenantId, table.status),
+    index("orders_buyer_status_idx").on(table.buyerId, table.status),
   ]
 );
 
@@ -384,6 +415,8 @@ export const reviews = pgTable(
     uniqueIndex("reviews_order_user_idx").on(table.orderId, table.userId),
     index("reviews_product_idx").on(table.productId),
     index("reviews_reviewee_idx").on(table.revieweeId),
+    index("reviews_user_idx").on(table.userId),
+    index("reviews_product_reviewee_idx").on(table.productId, table.revieweeId),
   ]
 );
 
@@ -437,6 +470,8 @@ export const conversations = pgTable(
     index("conversations_buyer_idx").on(table.buyerId),
     index("conversations_seller_idx").on(table.sellerId),
     index("conversations_product_idx").on(table.productId),
+    index("conversations_buyer_updated_idx").on(table.buyerId, table.updatedAt),
+    index("conversations_seller_updated_idx").on(table.sellerId, table.updatedAt),
   ]
 );
 
@@ -487,6 +522,11 @@ export const messages = pgTable(
       table.conversationId,
       table.createdAt
     ),
+    index("messages_unread_idx").on(
+      table.conversationId,
+      table.isRead,
+      table.senderId
+    ),
   ]
 );
 
@@ -522,8 +562,10 @@ export const reports = pgTable(
   (table) => [
     index("reports_reporter_idx").on(table.reporterId),
     index("reports_status_idx").on(table.status),
+    index("reports_target_status_idx").on(table.targetId, table.status),
   ]
 );
+
 
 export const reportsRelations = relations(reports, ({ one }) => ({
   reporter: one(users, {

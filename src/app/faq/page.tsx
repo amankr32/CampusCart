@@ -47,12 +47,12 @@ export default function FaqPage() {
         {FAQS.map((faq) => (
           <div
             key={faq.question}
-            className="p-5 rounded-lg border-2 border-black bg-white"
+            className="p-5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--card-bg)] shadow-xs transition-colors hover:border-[var(--brand-primary)]/30"
           >
-            <h2 className="font-display font-semibold text-black mb-2">
+            <h2 className="font-display font-semibold text-[var(--text-primary)] mb-2">
               {faq.question}
             </h2>
-            <p className="text-sm">{faq.answer}</p>
+            <p className="text-sm text-[var(--text-muted)]">{faq.answer}</p>
           </div>
         ))}
       </div>

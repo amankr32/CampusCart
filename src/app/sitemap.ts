@@ -26,28 +26,33 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: route === "" ? 1 : 0.6,
   }));
 
-  const [publishedProducts, allTenants] = await Promise.all([
-    db
-      .select({ slug: products.slug, updatedAt: products.updatedAt })
-      .from(products)
-      .where(eq(products.isArchived, false)),
-    db.select({ slug: tenants.slug }).from(tenants),
-  ]);
+  try {
+    const [publishedProducts, allTenants] = await Promise.all([
+      db
+        .select({ slug: products.slug, updatedAt: products.updatedAt })
+        .from(products)
+        .where(eq(products.isArchived, false)),
+      db.select({ slug: tenants.slug }).from(tenants),
+    ]);
 
-  const productEntries: MetadataRoute.Sitemap = publishedProducts.map(
-    (product) => ({
-      url: `${appUrl}/product/${product.slug}`,
-      lastModified: product.updatedAt,
+    const productEntries: MetadataRoute.Sitemap = publishedProducts.map(
+      (product) => ({
+        url: `${appUrl}/product/${product.slug}`,
+        lastModified: product.updatedAt,
+        changeFrequency: "weekly",
+        priority: 0.7,
+      })
+    );
+
+    const storeEntries: MetadataRoute.Sitemap = allTenants.map((tenant) => ({
+      url: `${appUrl}/store/${tenant.slug}`,
       changeFrequency: "weekly",
-      priority: 0.7,
-    })
-  );
+      priority: 0.5,
+    }));
 
-  const storeEntries: MetadataRoute.Sitemap = allTenants.map((tenant) => ({
-    url: `${appUrl}/store/${tenant.slug}`,
-    changeFrequency: "weekly",
-    priority: 0.5,
-  }));
-
-  return [...staticEntries, ...productEntries, ...storeEntries];
+    return [...staticEntries, ...productEntries, ...storeEntries];
+  } catch (error) {
+    console.warn("Failed to generate dynamic sitemap entries, falling back to static routes:", error);
+    return staticEntries;
+  }
 }

@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { upload } from "@vercel/blob/client";
 import Image from "next/image";
-import { Loader2, Upload, X } from "lucide-react";
+import { Loader2, Upload, X } from "@/components/ui/material-symbol";
 
 const MAX_IMAGES = 6;
 
@@ -65,13 +65,13 @@ export function ImageUploader({
         {value.map((url) => (
           <div
             key={url}
-            className="relative aspect-square rounded-md border-2 border-black overflow-hidden group"
+            className="relative aspect-square rounded-2xl border border-[var(--border-subtle)] overflow-hidden group shadow-xs"
           >
             <Image src={url} alt="Listing photo" fill className="object-cover" />
             <button
               type="button"
               onClick={() => removeImage(url)}
-              className="absolute top-1 right-1 flex items-center justify-center h-6 w-6 rounded-full bg-black text-white opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute top-1.5 right-1.5 flex items-center justify-center h-6 w-6 rounded-full bg-black/70 hover:bg-rose-600 text-white opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer shadow-xs"
               aria-label="Remove photo"
             >
               <X className="h-3.5 w-3.5" />
@@ -84,14 +84,14 @@ export function ImageUploader({
             type="button"
             onClick={() => inputRef.current?.click()}
             disabled={isUploading}
-            className="flex flex-col items-center justify-center gap-1 aspect-square rounded-md border-2 border-dashed border-black/30 hover:border-black/60 transition-colors disabled:opacity-50"
+            className="flex flex-col items-center justify-center gap-1 aspect-square rounded-2xl border-2 border-dashed border-[var(--border-subtle)] hover:border-[var(--brand-primary)] bg-[var(--input-bg)]/40 hover:bg-[var(--brand-primary-light)]/20 transition-all disabled:opacity-50 cursor-pointer"
           >
             {isUploading ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
+              <Loader2 className="h-5 w-5 animate-spin text-[var(--brand-primary)]" />
             ) : (
               <>
-                <Upload className="h-5 w-5 text-black/40" />
-                <span className="text-xs text-black/40">Add photo</span>
+                <Upload className="h-5 w-5 text-[var(--text-muted)]" />
+                <span className="text-xs font-semibold text-[var(--text-muted)]">Add photo</span>
               </>
             )}
           </button>
@@ -107,8 +107,8 @@ export function ImageUploader({
         onChange={(e) => handleFiles(e.target.files)}
       />
 
-      {error && <p className="text-xs text-red-600">{error}</p>}
-      <p className="text-xs text-black/40">
+      {error && <p className="text-xs text-rose-500 font-medium">{error}</p>}
+      <p className="text-xs text-[var(--text-muted)]">
         Up to {MAX_IMAGES} photos, JPEG/PNG/WebP, 8MB max each.
       </p>
     </div>

@@ -7,7 +7,9 @@ import { del } from "@vercel/blob";
 import { db } from "@/db";
 import { tenants, products, users, auditLogs } from "@/db/schema";
 import { auth } from "@/auth";
+import { logger } from "@/lib/logger";
 import { slugify, slugifyWithSuffix } from "@/lib/slugify";
+
 import {
   createStoreSchema,
   productSchema,
@@ -270,7 +272,7 @@ export async function deleteProductAction(productId: string): Promise<ActionResu
         try {
           await del(imgUrl);
         } catch (e) {
-          console.error("Failed to delete blob image:", imgUrl, e);
+          logger.error("BLOB_DELETE", "Failed to delete blob image", e, { imgUrl });
         }
       }
     }
@@ -377,6 +379,7 @@ export async function incrementProductViewAction(productId: string): Promise<voi
         .where(eq(products.id, productId));
     }
   } catch (e) {
-    console.error("Error incrementing product view count:", e);
+    logger.error("PRODUCT_VIEW", "Error incrementing product view count", e, { productId });
   }
 }
+
