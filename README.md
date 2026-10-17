@@ -151,6 +151,14 @@ CampusCart follows a marketplace flow centered around student trust and friction
 4. Verified student identity improves trust and posting limits
 5. Users connect and complete transactions on campus in person
 
+## Issue Reporting
+
+If you face any issue while setting up or running this project, please feel free to open an issue in the GitHub Issues section.
+
+We are always happy to help, and as a beginner, you are encouraged to ask questions and learn from the process. Every issue is a chance to improve, and we appreciate your interest in the project.
+
+Please describe the problem clearly, include the steps to reproduce it, and mention the expected vs actual result. This will help us fix the issue faster and improve the project together.
+
 ## Notes
 
 This project is tailored to a university environment and is designed around campus commerce, student verification, and safe local transactions. The current implementation is built as a modern full-stack marketplace using the App Router pattern in Next.js.
