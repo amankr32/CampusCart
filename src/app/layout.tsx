@@ -12,9 +12,40 @@ import { CommandPalette } from "@/components/layout/command-palette";
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: "Campus Cart — The student marketplace for IK Gujral Punjab University",
+  metadataBase: new URL(process.env.NEXTAUTH_URL || "http://localhost:3000"),
+  title: {
+    default: "CampusCart — Student Marketplace for IKGPTU",
+    template: "%s | CampusCart",
+  },
   description:
-    "Buy, sell, and swap textbooks, hostel essentials, cycles, and gadgets with fellow IK Gujral Punjab University students. Verified campus community, zero listing fees.",
+    "Buy, sell, and swap textbooks, hostel essentials, cycles, and gadgets with fellow IK Gujral Punjab Technical University students. Verified campus community, zero listing fees.",
+  keywords: [
+    "IKGPTU",
+    "CampusCart",
+    "PTU Bazar",
+    "Student Marketplace",
+    "College textbooks",
+    "Hostel essentials",
+    "Cycles",
+    "Jalandhar",
+    "Kapurthala",
+  ],
+  authors: [{ name: "CampusCart Team" }],
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    url: "/",
+    siteName: "CampusCart",
+    title: "CampusCart — Student Marketplace for IKGPTU",
+    description:
+      "Buy, sell, and swap textbooks, hostel essentials, cycles, and gadgets with fellow IK Gujral Punjab Technical University students.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CampusCart — Student Marketplace for IKGPTU",
+    description:
+      "Buy, sell, and swap textbooks, hostel essentials, cycles, and gadgets with fellow IK Gujral Punjab Technical University students.",
+  },
 };
 
 export default async function RootLayout({

@@ -115,6 +115,10 @@ export async function markAsSoldAction(
 
   revalidatePath(`/dashboard/messages/${conversationId}`);
   revalidatePath("/dashboard/messages");
+  revalidatePath("/orders");
+  revalidatePath("/dashboard/my-listings");
+  revalidatePath("/dashboard/sales");
+  revalidatePath("/browse");
 
   return { success: true, data: { orderId: order.id } };
 }
@@ -178,6 +182,9 @@ export async function confirmReceiptAction(
 
   revalidatePath(`/dashboard/messages/${order.conversationId}`);
   revalidatePath("/orders");
+  revalidatePath("/dashboard/my-listings");
+  revalidatePath("/dashboard/sales");
+  revalidatePath("/browse");
 
   return { success: true, data: undefined };
 }
@@ -234,6 +241,9 @@ export async function cancelOrderAction(orderId: string): Promise<ActionResult> 
   revalidatePath(`/dashboard/messages/${order.conversationId}`);
   revalidatePath("/dashboard/messages");
   revalidatePath("/orders");
+  revalidatePath("/dashboard/my-listings");
+  revalidatePath("/dashboard/sales");
+  revalidatePath("/browse");
 
   return { success: true, data: undefined };
 }

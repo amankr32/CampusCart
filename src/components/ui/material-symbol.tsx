@@ -6,6 +6,7 @@ export interface MaterialSymbolProps extends React.HTMLAttributes<HTMLSpanElemen
   size?: number | string;
   filled?: boolean;
   weight?: 100 | 200 | 300 | 400 | 500 | 600 | 700;
+  strokeWidth?: number | string;
   grade?: -25 | 0 | 200;
   opticalSize?: 20 | 24 | 40 | 48;
   className?: string;
@@ -17,14 +18,25 @@ export function MaterialSymbol({
   size,
   filled = false,
   weight,
+  strokeWidth,
   grade = 0,
   opticalSize,
   style,
   ...props
 }: MaterialSymbolProps) {
+  let computedWeight = weight;
+  if (!computedWeight && strokeWidth !== undefined) {
+    const sw = typeof strokeWidth === "number" ? strokeWidth : parseFloat(strokeWidth);
+    if (sw <= 1.25) computedWeight = 200;
+    else if (sw <= 1.75) computedWeight = 300;
+    else if (sw <= 2.25) computedWeight = 400;
+    else if (sw <= 2.75) computedWeight = 500;
+    else computedWeight = 600;
+  }
+
   const fontVariationSettings = [
     `'FILL' ${filled ? 1 : 0}`,
-    `'wght' ${weight ?? 400}`,
+    `'wght' ${computedWeight ?? 400}`,
     `'GRAD' ${grade}`,
     `'opsz' ${opticalSize ?? (typeof size === "number" ? Math.min(Math.max(size, 20), 48) : 24)}`,
   ].join(", ");
