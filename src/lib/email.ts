@@ -1,9 +1,16 @@
 import "server-only";
 import { logger } from "@/lib/logger";
 
-const brevoApiKey = process.env.BREVO_API_KEY;
-const SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || process.env.FROM_EMAIL || "noreply@campuscart.com";
-const SENDER_NAME = "Campus Cart";
+function getEmailConfig() {
+  const apiKey = process.env.BREVO_API_KEY?.trim();
+  const senderEmail =
+    process.env.BREVO_SENDER_EMAIL?.trim() ||
+    process.env.FROM_EMAIL?.trim() ||
+    "noreply@campuscart.com";
+  const senderName = process.env.BREVO_SENDER_NAME?.trim() || "Campus Cart";
+
+  return { apiKey, senderEmail, senderName };
+}
 
 /**
  * Sends a 6-digit email verification OTP to the user via Brevo REST API
@@ -12,6 +19,8 @@ export async function sendVerificationOtpEmail(
   email: string,
   code: string
 ): Promise<{ success: boolean; error?: string }> {
+  const { apiKey, senderEmail, senderName } = getEmailConfig();
+
   // Redact OTP code in server logs (e.g. ***42) to prevent credential exposure
   const maskedCode = "***" + code.slice(-2);
   logger.info("EMAIL_OTP", `Sending OTP verification code to ${email}`, {
@@ -19,32 +28,39 @@ export async function sendVerificationOtpEmail(
     code: maskedCode,
   });
 
-  if (!brevoApiKey) {
+  // Always log OTP to server terminal console in development/test so local testing is never blocked
+  if (process.env.NODE_ENV !== "production") {
+    console.log(
+      `\n========================================\n[DEV/LOCAL] CampusCart OTP for ${email}: ${code}\n========================================\n`
+    );
+  }
+
+  if (!apiKey) {
     if (process.env.NODE_ENV !== "production") {
-      console.log(
-        `\n[DEV ONLY] Verification OTP for ${email}: ${code}\n`
-      );
-    } else {
-      logger.warn(
-        "BREVO",
-        "BREVO_API_KEY is not configured in production. Email dispatch skipped."
-      );
+      return { success: true };
     }
-    return { success: true };
+    logger.warn(
+      "BREVO",
+      "BREVO_API_KEY is not configured in production. Email dispatch skipped."
+    );
+    return {
+      success: false,
+      error: "Email service is not configured (missing BREVO_API_KEY).",
+    };
   }
 
   try {
     const response = await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
       headers: {
-        "accept": "application/json",
-        "api-key": brevoApiKey,
+        accept: "application/json",
+        "api-key": apiKey,
         "content-type": "application/json",
       },
       body: JSON.stringify({
         sender: {
-          name: SENDER_NAME,
-          email: SENDER_EMAIL,
+          name: senderName,
+          email: senderEmail,
         },
         to: [
           {
@@ -70,13 +86,39 @@ export async function sendVerificationOtpEmail(
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: response.statusText }));
       logger.error("BREVO_API", "Failed to send email via Brevo REST API", errorData);
-      return { success: false, error: errorData.message || "Failed to send email via Brevo" };
+
+      let userFriendlyError = errorData.message || "Failed to send verification email.";
+      if (
+        typeof userFriendlyError === "string" &&
+        (userFriendlyError.includes("unrecognised IP") || userFriendlyError.includes("authorised_ips"))
+      ) {
+        userFriendlyError =
+          "Brevo email service blocked this server's IP address. Please authorize the IP or disable IP restrictions in your Brevo Security settings (https://app.brevo.com/security/authorised_ips).";
+      }
+
+      // In local development, don't fail registration if console log OTP is available
+      if (process.env.NODE_ENV !== "production") {
+        console.warn(
+          `[BREVO WARNING] Email API returned error (${userFriendlyError}), but OTP was logged above for local development.`
+        );
+        return { success: true };
+      }
+
+      return { success: false, error: userFriendlyError };
     }
 
     logger.info("BREVO", `Verification email successfully delivered to ${email}`);
     return { success: true };
   } catch (err: unknown) {
     logger.error("BREVO_EX", "Exception during email dispatch", err);
+
+    if (process.env.NODE_ENV !== "production") {
+      console.warn(
+        `[BREVO EXCEPTION] Email dispatch failed, but OTP was logged above for local development.`
+      );
+      return { success: true };
+    }
+
     return { success: false, error: err instanceof Error ? err.message : "Failed to send email" };
   }
 }
@@ -88,34 +130,38 @@ export async function sendPasswordResetEmail(
   email: string,
   resetUrl: string
 ): Promise<{ success: boolean; error?: string }> {
+  const { apiKey, senderEmail, senderName } = getEmailConfig();
   logger.info("EMAIL_RESET", `Sending password reset email to ${email}`, { email });
 
-  if (!brevoApiKey) {
+  if (process.env.NODE_ENV !== "production") {
+    console.log(
+      `\n========================================\n[DEV/LOCAL] Password Reset URL for ${email}: ${resetUrl}\n========================================\n`
+    );
+  }
+
+  if (!apiKey) {
     if (process.env.NODE_ENV !== "production") {
-      console.log(
-        `\n[DEV ONLY] Password Reset URL for ${email}: ${resetUrl}\n`
-      );
-    } else {
-      logger.warn(
-        "BREVO",
-        "BREVO_API_KEY is not configured in production. Password reset email skipped."
-      );
+      return { success: true };
     }
-    return { success: true };
+    logger.warn(
+      "BREVO",
+      "BREVO_API_KEY is not configured in production. Password reset email skipped."
+    );
+    return { success: false, error: "Email service is not configured (missing BREVO_API_KEY)." };
   }
 
   try {
     const response = await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
       headers: {
-        "accept": "application/json",
-        "api-key": brevoApiKey,
+        accept: "application/json",
+        "api-key": apiKey,
         "content-type": "application/json",
       },
       body: JSON.stringify({
         sender: {
-          name: SENDER_NAME,
-          email: SENDER_EMAIL,
+          name: senderName,
+          email: senderEmail,
         },
         to: [
           {
@@ -143,13 +189,32 @@ export async function sendPasswordResetEmail(
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ message: response.statusText }));
       logger.error("BREVO_RESET", "Brevo Password Reset Error", errorData);
-      return { success: false, error: errorData.message || "Failed to send password reset email via Brevo" };
+
+      let userFriendlyError = errorData.message || "Failed to send password reset email.";
+      if (
+        typeof userFriendlyError === "string" &&
+        (userFriendlyError.includes("unrecognised IP") || userFriendlyError.includes("authorised_ips"))
+      ) {
+        userFriendlyError =
+          "Brevo email service blocked this server's IP address. Please authorize the IP or disable IP restrictions in your Brevo Security settings (https://app.brevo.com/security/authorised_ips).";
+      }
+
+      if (process.env.NODE_ENV !== "production") {
+        return { success: true };
+      }
+
+      return { success: false, error: userFriendlyError };
     }
 
     logger.info("BREVO", `Password reset email successfully delivered to ${email}`);
     return { success: true };
   } catch (err: unknown) {
     logger.error("BREVO_RESET_EX", "Password reset email sending exception", err);
+
+    if (process.env.NODE_ENV !== "production") {
+      return { success: true };
+    }
+
     return { success: false, error: err instanceof Error ? err.message : "Failed to send password reset email" };
   }
 }

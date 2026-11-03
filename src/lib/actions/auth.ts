@@ -87,7 +87,13 @@ export async function credentialsSignInAction(
       expiresAt,
     });
 
-    await sendVerificationOtpEmail(cleanEmail, otpCode);
+    const emailResult = await sendVerificationOtpEmail(cleanEmail, otpCode);
+    if (!emailResult.success) {
+      return {
+        success: false,
+        error: `Could not send verification email: ${emailResult.error}`,
+      };
+    }
 
     return {
       success: false,
@@ -165,7 +171,13 @@ export async function signUpAction(
         expiresAt,
       });
 
-      await sendVerificationOtpEmail(cleanEmail, otpCode);
+      const emailResult = await sendVerificationOtpEmail(cleanEmail, otpCode);
+      if (!emailResult.success) {
+        return {
+          success: false,
+          error: `Could not send verification email: ${emailResult.error}`,
+        };
+      }
 
       return {
         success: true,
@@ -226,8 +238,14 @@ export async function signUpAction(
     expiresAt,
   });
 
-  // Send verification email via Resend
-  await sendVerificationOtpEmail(cleanEmail, otpCode);
+  // Send verification email via Brevo
+  const emailResult = await sendVerificationOtpEmail(cleanEmail, otpCode);
+  if (!emailResult.success) {
+    return {
+      success: false,
+      error: `Registration completed, but could not send verification email: ${emailResult.error}`,
+    };
+  }
 
   return {
     success: true,
@@ -346,7 +364,13 @@ export async function resendOtpAction(
     expiresAt,
   });
 
-  await sendVerificationOtpEmail(cleanEmail, otpCode);
+  const emailResult = await sendVerificationOtpEmail(cleanEmail, otpCode);
+  if (!emailResult.success) {
+    return {
+      success: false,
+      error: `Could not send verification email: ${emailResult.error}`,
+    };
+  }
 
   return { success: true, message: "New verification code sent to your email." };
 }
