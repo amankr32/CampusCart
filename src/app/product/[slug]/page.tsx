@@ -63,12 +63,6 @@ export default async function ProductPage({ params }: Props) {
       : Promise.resolve(false),
   ]);
 
-  // Approximate retail benchmark for discount savings comparison
-  const retailReferencePrice = Math.round(product.priceCents * 1.55);
-  const discountPercent = Math.round(
-    ((retailReferencePrice - product.priceCents) / retailReferencePrice) * 100
-  );
-
   return (
     <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       {/* Top Back Navigation Breadcrumb */}
@@ -225,24 +219,15 @@ export default async function ProductPage({ params }: Props) {
               )}
             </div>
 
-            {/* Refined Price Hierarchy */}
-            <div className="flex items-baseline gap-3 pt-1 border-t border-[var(--border-subtle)]/60">
+            {/* Clean Price & In-Person Campus Note */}
+            <div className="flex items-baseline justify-between pt-1 border-t border-[var(--border-subtle)]/60">
               <span className="font-display font-extrabold text-3xl sm:text-4xl text-[var(--brand-primary)] tracking-tight">
                 {formatPrice(product.priceCents)}
               </span>
 
-              {discountPercent > 10 && (
-                <span className="text-sm text-[var(--text-muted)] line-through">
-                  {formatPrice(retailReferencePrice)}
-                </span>
-              )}
-
-              {discountPercent > 10 && (
-                <span className="inline-flex items-center gap-0.5 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                  <Sparkles className="w-3 h-3" />
-                  {discountPercent}% OFF
-                </span>
-              )}
+              <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--text-muted)] bg-[var(--input-bg)] px-2.5 py-1 rounded-full border border-[var(--border-subtle)]">
+                Pay in person on campus
+              </span>
             </div>
 
             {/* Condition & Pickup Location Pills */}

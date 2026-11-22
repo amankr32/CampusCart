@@ -9,17 +9,17 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white shadow-sm shadow-indigo-500/20",
+          "bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs font-semibold",
         elevated:
-          "border border-[var(--border-subtle)] bg-[var(--card-bg)] text-[var(--text-primary)] shadow-xs hover:bg-[var(--border-subtle)]/40",
+          "border border-[var(--border-subtle)] bg-[var(--card-bg)] text-[var(--text-primary)] shadow-xs hover:bg-[var(--border-subtle)]/40 font-semibold",
         outline:
-          "border border-[var(--border-subtle)] bg-[var(--card-bg)] text-[var(--text-primary)] hover:bg-[var(--border-subtle)]/40",
+          "border border-[var(--border-subtle)] bg-[var(--card-bg)] text-[var(--text-primary)] hover:bg-[var(--border-subtle)]/40 font-medium",
         destructive:
-          "bg-rose-600 text-white hover:bg-rose-700 shadow-sm shadow-rose-500/20",
+          "bg-rose-600 text-white hover:bg-rose-700 shadow-xs font-semibold",
         brand:
-          "bg-[var(--brand-primary)] text-white hover:bg-[var(--brand-primary)]/90",
+          "bg-indigo-600 text-white hover:bg-indigo-700 shadow-xs font-semibold",
         ghost: "hover:bg-[var(--border-subtle)]/40 text-[var(--text-primary)]",
-        link: "underline-offset-4 hover:underline text-[var(--brand-primary)]",
+        link: "underline-offset-4 hover:underline text-indigo-600",
       },
       size: {
         default: "h-10 px-4 py-2",

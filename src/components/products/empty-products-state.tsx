@@ -90,7 +90,7 @@ export function EmptyProductsState({
         )}
 
         <Link href="/sell">
-          <Button className="rounded-2xl text-xs font-bold px-5 h-11 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white shadow-md shadow-indigo-500/20 flex items-center gap-2 cursor-pointer transition-all active:scale-95">
+          <Button className="rounded-2xl text-xs font-bold px-5 h-11 bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs flex items-center gap-2 cursor-pointer transition-all active:scale-95">
             <PlusCircle className="h-4 w-4" />
             Post a Listing
           </Button>

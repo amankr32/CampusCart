@@ -757,6 +757,22 @@ export function ChatWindow({
 
       {/* Composer */}
       <div className="border-t border-[var(--border-subtle)] p-3.5 shrink-0 bg-[var(--card-bg)]">
+        {/* Campus Quick Reply Chips for Students */}
+        {role === "buyer" && messages.length <= 1 && !draft && (
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-2.5 scrollbar-none">
+            {["Is this still available?", "Can we meet at the Library?", "Can we meet at the Canteen?", "Is the price negotiable?"].map((chip) => (
+              <button
+                key={chip}
+                type="button"
+                onClick={() => setDraft(chip)}
+                className="shrink-0 text-[11px] font-medium px-2.5 py-1 rounded-full bg-[var(--input-bg)] border border-[var(--border-subtle)] hover:border-indigo-500/50 hover:text-indigo-600 text-[var(--text-primary)] transition-colors cursor-pointer shadow-2xs"
+              >
+                {chip}
+              </button>
+            ))}
+          </div>
+        )}
+
         {sendError && (
           <div className="mb-2 p-2.5 text-xs bg-red-500/10 text-red-500 rounded-xl flex items-center justify-between border border-red-500/20">
             <div className="flex items-center gap-2">
