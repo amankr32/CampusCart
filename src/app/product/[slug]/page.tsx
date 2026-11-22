@@ -86,7 +86,7 @@ export default async function ProductPage({ params }: Props) {
           />
 
           {/* Description Section */}
-          <div className="bg-[var(--card-bg)] p-6 sm:p-8 rounded-3xl border border-[var(--border-subtle)] shadow-xs space-y-4">
+          <div className="bg-[var(--card-bg)] p-6 sm:p-8 rounded-2xl border border-[var(--border-subtle)] shadow-xs space-y-4">
             <h2 className="font-display font-bold text-lg text-[var(--text-primary)] flex items-center gap-2">
               <span>Item Description & Details</span>
             </h2>
@@ -126,7 +126,7 @@ export default async function ProductPage({ params }: Props) {
 
           {/* Reviews Section */}
           <div
-            className="bg-[var(--card-bg)] p-6 sm:p-8 rounded-3xl border border-[var(--border-subtle)] shadow-xs space-y-6"
+            className="bg-[var(--card-bg)] p-6 sm:p-8 rounded-2xl border border-[var(--border-subtle)] shadow-xs space-y-6"
             id="reviews"
           >
             <div className="flex items-center justify-between">
@@ -186,7 +186,7 @@ export default async function ProductPage({ params }: Props) {
         {/* Right Column: Sticky Buyer Action Rail */}
         <div className="lg:sticky lg:top-24 lg:self-start space-y-5">
           {/* Main Purchase & CTA Card */}
-          <div className="flex flex-col gap-5 bg-[var(--card-bg)] p-6 sm:p-7 rounded-3xl border border-[var(--border-subtle)] shadow-sm">
+          <div className="flex flex-col gap-5 bg-[var(--card-bg)] p-6 sm:p-7 rounded-2xl border border-[var(--border-subtle)] shadow-sm">
             {/* Category Breadcrumb */}
             {product.category && (
               <Link

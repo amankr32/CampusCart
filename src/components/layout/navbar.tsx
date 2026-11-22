@@ -354,6 +354,31 @@ export function Navbar() {
           </div>
         </div>
 
+        {/* 3. FLIPKART-STYLE QUICK CAMPUS CATEGORY BAR */}
+        <div className="hidden sm:flex items-center gap-6 overflow-x-auto py-2 text-xs font-medium text-[var(--text-muted)] border-t border-[var(--border-subtle)]/50 no-scrollbar">
+          <Link href="/browse" className="shrink-0 hover:text-indigo-600 font-semibold text-[var(--text-primary)]">
+            All Items
+          </Link>
+          <Link href="/browse?category=books" className="shrink-0 hover:text-indigo-600 transition-colors">
+            📚 Textbooks &amp; Notes
+          </Link>
+          <Link href="/browse?category=electronics" className="shrink-0 hover:text-indigo-600 transition-colors">
+            ⚡ Calculators (fx-991) &amp; Tech
+          </Link>
+          <Link href="/browse?category=stationery" className="shrink-0 hover:text-indigo-600 transition-colors">
+            📐 Drafters &amp; Tools
+          </Link>
+          <Link href="/browse?category=transport" className="shrink-0 hover:text-indigo-600 transition-colors">
+            🚲 Bicycles
+          </Link>
+          <Link href="/browse?category=hostel" className="shrink-0 hover:text-indigo-600 transition-colors">
+            🛏️ Hostel Essentials
+          </Link>
+          <Link href="/browse?category=sports" className="shrink-0 hover:text-indigo-600 transition-colors">
+            🏸 Sports &amp; Fitness
+          </Link>
+        </div>
+
         {/* 4. MOBILE NAVIGATION DRAWER */}
         {isMenuOpen && (
           <div className="md:hidden border-t border-[var(--border-subtle)] py-4 space-y-4">

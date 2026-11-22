@@ -79,13 +79,14 @@
 }
 
 /* ---------------------------------------------------------------------------
- * 2. PRO OBSIDIAN DARK THEME (Vercel / Slate Pro Dark)
+ * 2. SLATE PRO DARK THEME
  * --------------------------------------------------------------------------- */
-[data-theme="dark"] {
-  --background: #090d16;
+[data-theme="dark"],
+.dark {
+  --background: #0f172a;
   --foreground: #f8fafc;
-  --card-bg: #111827;
-  --border-subtle: #1f293d;
+  --card-bg: #1e293b;
+  --border-subtle: #334155;
 
   --brand-primary: #6366f1;
   --brand-primary-hover: #818cf8;
@@ -94,10 +95,10 @@
 
   --text-primary: #f8fafc;
   --text-muted: #94a3b8;
-  --input-bg: #1b2434;
+  --input-bg: #0f172a;
 
-  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
-  --shadow-card-hover: 0 10px 25px -5px rgba(99, 102, 241, 0.25);
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+  --shadow-card-hover: 0 4px 12px -2px rgba(0, 0, 0, 0.4);
 }
 
 /* ---------------------------------------------------------------------------
@@ -194,100 +195,4 @@ h6 {
   );
 }
 
-/* ---------------------------------------------------------------------------
- * DYNAMIC DARK & DRACULA CLASS OVERRIDES FOR TAILWIND UTILITIES
- * --------------------------------------------------------------------------- */
 
-/* DARK MODE CLASS OVERRIDES */
-[data-theme="dark"] .bg-white {
-  background-color: #111827 !important;
-}
-
-[data-theme="dark"] .bg-slate-50,
-[data-theme="dark"] .bg-slate-100,
-[data-theme="dark"] .bg-slate-100\/80,
-[data-theme="dark"] .bg-slate-100\/90 {
-  background-color: #1b2434 !important;
-}
-
-[data-theme="dark"] .text-slate-900,
-[data-theme="dark"] .text-slate-800,
-[data-theme="dark"] .text-slate-700 {
-  color: #f8fafc !important;
-}
-
-[data-theme="dark"] .text-slate-600,
-[data-theme="dark"] .text-slate-500 {
-  color: #94a3b8 !important;
-}
-
-[data-theme="dark"] .border-slate-200,
-[data-theme="dark"] .border-slate-100,
-[data-theme="dark"] .border-slate-200\/80 {
-  border-color: #1f293d !important;
-}
-
-[data-theme="dark"] header {
-  background-color: rgba(17, 24, 39, 0.95) !important;
-  border-bottom-color: #1f293d !important;
-}
-
-[data-theme="dark"] footer {
-  background-color: #090d16 !important;
-  border-top-color: #1f293d !important;
-}
-
-[data-theme="dark"] input,
-[data-theme="dark"] textarea,
-[data-theme="dark"] select {
-  background-color: #1b2434 !important;
-  color: #f8fafc !important;
-  border-color: #2e3b52 !important;
-}
-
-/* DRACULA MODE CLASS OVERRIDES */
-[data-theme="dracula"] .bg-white {
-  background-color: #343746 !important;
-}
-
-[data-theme="dracula"] .bg-slate-50,
-[data-theme="dracula"] .bg-slate-100,
-[data-theme="dracula"] .bg-slate-100\/80,
-[data-theme="dracula"] .bg-slate-100\/90 {
-  background-color: #21222c !important;
-}
-
-[data-theme="dracula"] .text-slate-900,
-[data-theme="dracula"] .text-slate-800,
-[data-theme="dracula"] .text-slate-700 {
-  color: #f8f8f2 !important;
-}
-
-[data-theme="dracula"] .text-slate-600,
-[data-theme="dracula"] .text-slate-500 {
-  color: #a6accd !important;
-}
-
-[data-theme="dracula"] .border-slate-200,
-[data-theme="dracula"] .border-slate-100,
-[data-theme="dracula"] .border-slate-200\/80 {
-  border-color: #44475a !important;
-}
-
-[data-theme="dracula"] header {
-  background-color: rgba(52, 55, 70, 0.95) !important;
-  border-bottom-color: #44475a !important;
-}
-
-[data-theme="dracula"] footer {
-  background-color: #282a36 !important;
-  border-top-color: #44475a !important;
-}
-
-[data-theme="dracula"] input,
-[data-theme="dracula"] textarea,
-[data-theme="dracula"] select {
-  background-color: #21222c !important;
-  color: #f8f8f2 !important;
-  border-color: #6272a4 !important;
-}

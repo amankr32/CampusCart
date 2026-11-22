@@ -64,7 +64,7 @@ export function ProductCard({
     return (
       <Link
         href={`/product/${product.slug}`}
-        className="group flex gap-4 rounded-2xl border border-[var(--border-subtle)] bg-[var(--card-bg)] overflow-hidden shadow-xs hover:shadow-xl hover:border-[var(--brand-primary)]/50 transition-all duration-200 hover:-translate-y-0.5 p-3.5 relative"
+        className="group flex gap-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs hover:shadow-md hover:border-indigo-500/50 transition-all duration-200 p-3.5 relative"
       >
         {/* Cover Image Container */}
         <div className="relative h-32 w-32 shrink-0 rounded-xl overflow-hidden bg-[var(--border-subtle)]/30 border border-[var(--border-subtle)]">
@@ -159,10 +159,10 @@ export function ProductCard({
   return (
     <Link
       href={`/product/${product.slug}`}
-      className="group flex flex-col rounded-3xl border border-[var(--border-subtle)] bg-[var(--card-bg)] overflow-hidden shadow-xs hover:shadow-xl hover:border-[var(--brand-primary)]/50 transition-all duration-200 hover:-translate-y-1 relative"
+      className="group flex flex-col rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs hover:shadow-md hover:border-indigo-500/50 transition-all duration-200 hover:-translate-y-0.5 relative"
     >
       {/* Product Image Container */}
-      <div className="relative aspect-square bg-[var(--border-subtle)]/25 overflow-hidden">
+      <div className="relative aspect-square bg-slate-100 dark:bg-slate-800 overflow-hidden">
         {coverImage ? (
           <Image
             src={coverImage}

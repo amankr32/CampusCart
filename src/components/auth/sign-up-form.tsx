@@ -69,7 +69,7 @@ export function SignUpForm() {
             {...register("name")}
             type="text"
             placeholder="Aman Kumar"
-            className="pl-10 h-11 rounded-2xl border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)]"
+            className="pl-10 h-11 rounded-xl border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
           />
           <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
         </div>
@@ -86,8 +86,8 @@ export function SignUpForm() {
           <Input
             {...register("email")}
             type="email"
-            placeholder="student@example.com"
-            className="pl-10 h-11 rounded-2xl border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)]"
+            placeholder="student@ptu.ac.in"
+            className="pl-10 h-11 rounded-xl border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
           />
           <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
         </div>
@@ -105,7 +105,7 @@ export function SignUpForm() {
             {...register("password")}
             type={showPassword ? "text" : "password"}
             placeholder="At least 8 characters"
-            className="pl-10 pr-10 h-11 rounded-2xl border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)]"
+            className="pl-10 pr-10 h-11 rounded-xl border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
           />
           <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
           <button
@@ -136,7 +136,7 @@ export function SignUpForm() {
             {...register("confirmPassword")}
             type={showConfirmPassword ? "text" : "password"}
             placeholder="Re-enter your password"
-            className="pl-10 pr-10 h-11 rounded-2xl border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)]"
+            className="pl-10 pr-10 h-11 rounded-xl border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
           />
           <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />
           <button
@@ -161,7 +161,7 @@ export function SignUpForm() {
       <Button
         type="submit"
         disabled={isPending}
-        className="w-full h-11 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-semibold text-sm shadow-md shadow-indigo-500/20 transition-all mt-2"
+        className="w-full h-11.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition-colors shadow-xs mt-2 cursor-pointer"
       >
         {isPending ? (
           <>

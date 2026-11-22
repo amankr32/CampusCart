@@ -59,7 +59,7 @@ export default function SignUpPage() {
           </p>
         </div>
 
-        <div className="border border-[var(--border-subtle)] rounded-3xl bg-[var(--card-bg)] shadow-xl p-6 sm:p-8">
+        <div className="border border-slate-200 dark:border-slate-800 rounded-2xl bg-white dark:bg-slate-900 shadow-sm p-6 sm:p-8">
           <h2 className="font-display font-semibold text-xl mb-1 text-[var(--text-primary)]">
             Create your account
           </h2>
