@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ImageOff, Star } from "lucide-react";
+import { ImageOff, Star } from "@/components/ui/material-symbol";
 
 import { auth } from "@/auth";
 import { getTenantByOwnerId } from "@/db/queries/tenants";

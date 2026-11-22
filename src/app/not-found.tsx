@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PackageSearch } from "lucide-react";
+import { PackageSearch } from "@/components/ui/material-symbol";
 
 import { Button } from "@/components/ui/button";
 

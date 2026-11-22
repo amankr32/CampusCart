@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Store } from "lucide-react";
+import { Store } from "@/components/ui/material-symbol";
 
 import { getTenantBySlug } from "@/db/queries/tenants";
 import { getProducts } from "@/db/queries/products";

@@ -1,4 +1,4 @@
-import { ShieldCheck, MessageCircle, BadgePercent } from "lucide-react";
+import { ShieldCheck, MessageCircle, BadgePercent } from "@/components/ui/material-symbol";
 
 import { SignInForm } from "@/components/auth/sign-in-form";
 

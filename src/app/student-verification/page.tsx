@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { upload } from "@vercel/blob/client";
-import { ShieldCheck, ShieldAlert, Upload, Loader2, CheckCircle2, Copy, AlertTriangle } from "lucide-react";
+import { ShieldCheck, ShieldAlert, Upload, Loader2, CheckCircle2, Copy, AlertTriangle } from "@/components/ui/material-symbol";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

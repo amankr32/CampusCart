@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ShieldCheck, Tag, Lock, MessageSquare } from "lucide-react";
+import { ArrowLeft, ShieldCheck, Tag, Lock, MessageSquare } from "@/components/ui/material-symbol";
 
 import { auth } from "@/auth";
 import { getTenantByOwnerId } from "@/db/queries/tenants";

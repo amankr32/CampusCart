@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Plus } from "lucide-react";
+import { Plus } from "@/components/ui/material-symbol";
 import { eq, desc } from "drizzle-orm";
 
 import { auth } from "@/auth";

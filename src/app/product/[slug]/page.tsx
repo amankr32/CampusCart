@@ -8,7 +8,7 @@ import {
   Calendar,
   GraduationCap,
   Sparkles,
-} from "lucide-react";
+} from "@/components/ui/material-symbol";
 
 import {
   getProductBySlug,

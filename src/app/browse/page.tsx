@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ShieldCheck, MapPin, IndianRupee, MessageCircle } from "lucide-react";
+import { ShieldCheck, MapPin, IndianRupee, MessageCircle } from "@/components/ui/material-symbol";
 
 import { getProducts, type ProductSort } from "@/db/queries/products";
 import { SearchFilters } from "@/components/products/search-filters";

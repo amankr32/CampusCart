@@ -11,7 +11,7 @@ import {
   ImageOff,
   Star,
   Tag,
-} from "lucide-react";
+} from "@/components/ui/material-symbol";
 
 import { auth } from "@/auth";
 import { db } from "@/db";

@@ -1,4 +1,4 @@
-import { MessageSquare } from "lucide-react";
+import { MessageSquare } from "@/components/ui/material-symbol";
 
 export default function MessagesIndexPage() {
   return (

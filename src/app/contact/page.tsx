@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Mail } from "lucide-react";
+import { Mail } from "@/components/ui/material-symbol";
 
 import { StaticPage } from "@/components/layout/static-page";
 

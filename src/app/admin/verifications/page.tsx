@@ -4,7 +4,7 @@ import { studentVerifications, users } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { AdminVerificationList } from "@/components/admin/admin-verification-list";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "@/components/ui/material-symbol";
 
 export default async function AdminVerificationsPage() {
   const session = await auth();

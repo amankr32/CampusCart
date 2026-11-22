@@ -1,4 +1,4 @@
-import { ShieldCheck, Users, BadgePercent } from "lucide-react";
+import { ShieldCheck, Users, BadgePercent } from "@/components/ui/material-symbol";
 
 import { SignUpForm } from "@/components/auth/sign-up-form";
 

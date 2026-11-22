@@ -1,4 +1,4 @@
-import { UserPlus, ListPlus, MessagesSquare, Handshake, ShieldCheck } from "lucide-react";
+import { UserPlus, ListPlus, MessagesSquare, Handshake, ShieldCheck } from "@/components/ui/material-symbol";
 
 const steps = [
   {

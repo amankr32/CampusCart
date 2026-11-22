@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { MailCheck, Loader2, ArrowLeft, RefreshCw, CheckCircle } from "lucide-react";
+import { MailCheck, Loader2, ArrowLeft, RefreshCw, CheckCircle } from "@/components/ui/material-symbol";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

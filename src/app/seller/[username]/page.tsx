@@ -10,7 +10,7 @@ import {
   Package,
   MessageSquare,
   Tag,
-} from "lucide-react";
+} from "@/components/ui/material-symbol";
 import { Button } from "@/components/ui/button";
 import { getTrustScoreBadge } from "@/lib/trust-score-client";
 

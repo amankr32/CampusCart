@@ -173,6 +173,7 @@ export const PenTool = (props: IconProps) => <MaterialSymbol name="draw" {...pro
 export const Dumbbell = (props: IconProps) => <MaterialSymbol name="fitness_center" {...props} />;
 export const Wallet = (props: IconProps) => <MaterialSymbol name="account_balance_wallet" {...props} />;
 export const Award = (props: IconProps) => <MaterialSymbol name="workspace_premium" {...props} />;
+export const GraduationCap = (props: IconProps) => <MaterialSymbol name="school" {...props} />;
 
 // Named Icon* aliases for semantic clarity
 export const IconSearch = Search;
@@ -186,6 +187,7 @@ export const IconSparkles = Sparkles;
 export const IconStar = Star;
 export const IconClock = Clock;
 export const IconBook = BookOpen;
+export const IconGraduationCap = GraduationCap;
 export const IconStore = Store;
 export const IconImageOff = ImageOff;
 export const IconUpload = Upload;

@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle } from "@/components/ui/material-symbol";
 
 import { Button } from "@/components/ui/button";
 import { logger } from "@/lib/logger";
