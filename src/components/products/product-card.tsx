@@ -57,10 +57,6 @@ export function ProductCard({
   const conditionInfo = getConditionPill(product.condition);
   const pickupLocation = product.hostel ? `📍 ${product.hostel}` : "📍 Campus Pickup";
 
-  // Calculate comparative original price reference (roughly 60% savings on campus items)
-  const estimatedOriginalCents = Math.round(product.priceCents * 1.7);
-  const estimatedDiscountPercent = 41; // ~40% off retail
-
   // -------------------------------------------------------------------------
   // LIST VIEW
   // -------------------------------------------------------------------------
@@ -143,20 +139,11 @@ export function ProductCard({
 
           <StarRating rating={product.averageRating} count={product.reviewCount} />
 
-          {/* Price Hierarchy with Strike-through & Discount */}
-          <div className="flex items-baseline justify-between mt-1 pt-1.5 border-t border-[var(--border-subtle)]">
-            <div className="flex items-baseline gap-2">
-              <span className="font-display font-extrabold text-[var(--brand-primary)] text-lg sm:text-xl tracking-tight">
-                {formatPrice(product.priceCents)}
-              </span>
-              <span className="text-xs font-medium text-[var(--text-muted)] line-through">
-                {formatPrice(estimatedOriginalCents)}
-              </span>
-              <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1.5 py-0.2 rounded">
-                ~{estimatedDiscountPercent}% off
-              </span>
-            </div>
-
+          {/* Price & Timestamp */}
+          <div className="flex items-center justify-between mt-1 pt-1.5 border-t border-[var(--border-subtle)]">
+            <span className="font-display font-extrabold text-[var(--brand-primary)] text-lg sm:text-xl tracking-tight">
+              {formatPrice(product.priceCents)}
+            </span>
             <span className="text-[11px] font-medium text-[var(--text-muted)]">
               {formatRelativeTime(product.createdAt)}
             </span>
@@ -247,19 +234,13 @@ export function ProductCard({
           <StarRating rating={product.averageRating} count={product.reviewCount} />
         </div>
 
-        {/* Refined Price Hierarchy */}
-        <div className="flex items-baseline justify-between mt-2 pt-2 border-t border-[var(--border-subtle)]">
-          <div className="flex items-baseline gap-1.5">
-            <span className="font-display font-extrabold text-[var(--brand-primary)] text-lg sm:text-xl tracking-tight">
-              {formatPrice(product.priceCents)}
-            </span>
-            <span className="text-xs text-[var(--text-muted)] line-through">
-              {formatPrice(estimatedOriginalCents)}
-            </span>
-          </div>
-
-          <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded">
-            ~{estimatedDiscountPercent}% off
+        {/* Clean Price & Relative Timestamp */}
+        <div className="flex items-center justify-between mt-2 pt-2 border-t border-[var(--border-subtle)]">
+          <span className="font-display font-extrabold text-[var(--brand-primary)] text-lg sm:text-xl tracking-tight">
+            {formatPrice(product.priceCents)}
+          </span>
+          <span className="text-[11px] font-medium text-[var(--text-muted)]">
+            {formatRelativeTime(product.createdAt)}
           </span>
         </div>
       </div>

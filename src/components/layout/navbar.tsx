@@ -142,14 +142,14 @@ export function Navbar() {
               Browse
             </Link>
 
-            {/* + Sell Item (Elevated Primary CTA Button) */}
+            {/* + Sell Item Button */}
             <Link href="/sell" prefetch={true} className="mx-1">
               <Button
                 size="sm"
-                className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow-md shadow-indigo-500/25 flex items-center gap-1.5 transition-all hover:shadow-lg hover:shadow-indigo-500/30 active:scale-95"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs px-4 py-2 rounded-xl shadow-xs flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
               >
-                <Plus className="h-4 w-4 stroke-[2.5]" />
-                Sell Item
+                <Plus className="h-4 w-4" />
+                Sell an Item
               </Button>
             </Link>
 
@@ -391,7 +391,7 @@ export function Navbar() {
                   </Button>
                 </Link>
                 <Link href="/sign-up">
-                  <Button size="sm" className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow-md shadow-indigo-500/20">
+                  <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs px-4 py-2 rounded-xl shadow-xs transition-all">
                     Join CampusCart
                   </Button>
                 </Link>

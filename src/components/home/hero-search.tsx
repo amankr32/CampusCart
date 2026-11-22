@@ -33,11 +33,11 @@ export function HeroSearch() {
   };
 
   return (
-    <div className="w-full space-y-3.5">
-      {/* Elevated Search Bar */}
+    <div className="w-full space-y-3">
+      {/* Clean Human-Friendly Search Bar */}
       <form
         onSubmit={handleSubmit}
-        className="group relative flex items-center w-full rounded-2xl bg-[var(--card-bg)] border-2 border-[var(--border-subtle)] focus-within:border-[var(--brand-primary)] shadow-lg shadow-indigo-500/5 focus-within:shadow-xl focus-within:shadow-indigo-500/10 transition-all duration-200 p-1.5"
+        className="group relative flex items-center w-full rounded-2xl bg-[var(--card-bg)] border-2 border-[var(--border-subtle)] focus-within:border-[var(--brand-primary)] shadow-sm hover:shadow-md transition-all duration-200 p-1.5"
       >
         <div className="flex items-center justify-center pl-3.5 pr-2 text-[var(--text-muted)] group-focus-within:text-[var(--brand-primary)] transition-colors">
           <Search className="h-5 w-5" />
@@ -48,7 +48,7 @@ export function HeroSearch() {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search textbooks, calculators (fx-991), drafters, cycles..."
+          placeholder="Search books, drafters, calculators (fx-991), cycles..."
           className="flex-1 bg-transparent px-2 py-2.5 text-sm sm:text-base text-[var(--text-primary)] placeholder:text-[var(--text-muted)]/70 focus:outline-hidden"
         />
 
@@ -77,18 +77,17 @@ export function HeroSearch() {
         {/* Search Submit CTA */}
         <button
           type="submit"
-          className="inline-flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2.5 rounded-xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] text-white text-sm font-semibold shadow-md shadow-indigo-500/20 active:scale-95 transition-all shrink-0 cursor-pointer"
+          className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-sm active:scale-95 transition-all shrink-0 cursor-pointer"
         >
           <span>Search</span>
           <ArrowRight className="h-4 w-4" />
         </button>
       </form>
 
-      {/* Trending Search Pills */}
+      {/* Popular Campus Search Pills */}
       <div className="flex items-center gap-2 flex-wrap pt-0.5">
-        <span className="inline-flex items-center gap-1 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider shrink-0">
-          <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-          Trending:
+        <span className="text-xs font-medium text-[var(--text-muted)] shrink-0">
+          Popular:
         </span>
         <div className="flex items-center gap-1.5 flex-wrap">
           {TRENDING_TAGS.map((tag) => (
@@ -96,7 +95,7 @@ export function HeroSearch() {
               key={tag.label}
               type="button"
               onClick={() => handleTagClick(tag.query)}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[var(--card-bg)] border border-[var(--border-subtle)] hover:border-[var(--brand-primary)]/50 text-[var(--text-primary)] hover:text-[var(--brand-primary)] hover:bg-[var(--brand-primary-light)]/40 transition-all cursor-pointer shadow-2xs active:scale-95"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[var(--card-bg)] border border-[var(--border-subtle)] hover:border-[var(--brand-primary)]/50 text-[var(--text-primary)] hover:text-[var(--brand-primary)] hover:bg-[var(--brand-primary-light)]/40 transition-all cursor-pointer shadow-2xs active:scale-95"
             >
               <span>{tag.icon}</span>
               <span>{tag.label}</span>

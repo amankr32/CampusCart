@@ -17,7 +17,7 @@ export async function CategoryPills({
         className={cn(
           "text-xs font-bold px-4 py-2 rounded-xl border transition-all",
           !activeCategorySlug
-            ? "bg-gradient-to-r from-indigo-600 to-violet-600 border-transparent text-white shadow-xs"
+            ? "bg-indigo-600 border-transparent text-white shadow-xs"
             : "bg-[var(--card-bg)] border-[var(--border-subtle)] text-[var(--text-primary)] hover:border-[var(--brand-primary)]/50 hover:text-[var(--brand-primary)]"
         )}
       >
@@ -30,7 +30,7 @@ export async function CategoryPills({
           className={cn(
             "text-xs font-bold px-4 py-2 rounded-xl border transition-all",
             activeCategorySlug === category.slug
-              ? "bg-gradient-to-r from-indigo-600 to-violet-600 border-transparent text-white shadow-xs"
+              ? "bg-indigo-600 border-transparent text-white shadow-xs"
               : "bg-[var(--card-bg)] border-[var(--border-subtle)] text-[var(--text-primary)] hover:border-[var(--brand-primary)]/50 hover:text-[var(--brand-primary)]"
           )}
         >

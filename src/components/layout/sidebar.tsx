@@ -74,7 +74,7 @@ export function Sidebar() {
               href={href}
               className={`flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-2xl transition-all font-medium text-sm ${
                 isActive
-                  ? "bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-semibold shadow-md shadow-indigo-500/20"
+                  ? "bg-indigo-600 text-white font-semibold shadow-xs"
                   : "text-[var(--text-primary)] hover:bg-[var(--border-subtle)]/40 hover:text-[var(--brand-primary)]"
               }`}
             >
