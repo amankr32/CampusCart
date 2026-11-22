@@ -235,7 +235,7 @@ export function ProductForm({
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full sm:w-auto bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold rounded-xl px-6 py-2.5 text-xs shadow-xs"
+            className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl px-6 py-2.5 text-sm shadow-xs transition-colors cursor-pointer"
           >
             {isSubmitting
               ? "Saving..."

@@ -33,7 +33,7 @@ export default async function SellPage() {
               One quick step before you list your first item on CampusCart.
             </p>
           </div>
-          <div className="border border-[var(--border-subtle)] rounded-3xl bg-[var(--card-bg)] shadow-xl p-6 sm:p-8">
+          <div className="border border-[var(--border-subtle)] rounded-2xl bg-[var(--card-bg)] shadow-xl p-6 sm:p-8">
             <CreateStoreForm />
           </div>
         </div>
@@ -52,7 +52,7 @@ export default async function SellPage() {
         <ArrowLeft className="w-4 h-4" /> Back to Dashboard
       </Link>
 
-      <div className="bg-[var(--card-bg)] p-6 sm:p-8 rounded-3xl border border-[var(--border-subtle)] shadow-xs">
+      <div className="bg-[var(--card-bg)] p-6 sm:p-8 rounded-2xl border border-[var(--border-subtle)] shadow-xs">
         <h1 className="font-display font-extrabold text-2xl sm:text-3xl text-[var(--text-primary)] tracking-tight">
           List a New Item
         </h1>
@@ -62,11 +62,11 @@ export default async function SellPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 items-start">
-        <div className="bg-[var(--card-bg)] p-6 sm:p-8 rounded-3xl border border-[var(--border-subtle)] shadow-xs">
+        <div className="bg-[var(--card-bg)] p-6 sm:p-8 rounded-2xl border border-[var(--border-subtle)] shadow-xs">
           <ProductForm categories={categories} />
         </div>
 
-        <aside className="rounded-3xl border border-[var(--border-subtle)] bg-[var(--card-bg)] p-6 flex flex-col gap-5 shadow-xs">
+        <aside className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--card-bg)] p-6 flex flex-col gap-5 shadow-xs">
           <h2 className="font-bold font-display text-[var(--text-primary)] text-base">Selling on CampusCart</h2>
 
           <div className="flex flex-col gap-4 text-xs">

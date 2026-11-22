@@ -152,24 +152,24 @@ export default function StudentVerificationPage() {
           <div className="pt-2">
             <Button
               onClick={() => router.push("/sell")}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl px-6 h-11 shadow-md shadow-emerald-200"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-6 h-11 shadow-xs font-medium"
             >
               Post Unlimited Listings
             </Button>
           </div>
         </div>
       ) : studentStatus === "pending" ? (
-        <div className="p-8 rounded-3xl bg-amber-50 border border-amber-200 text-center space-y-4 shadow-sm">
-          <div className="mx-auto w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
-            <ShieldAlert className="w-10 h-10" />
+        <div className="p-8 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 text-center space-y-4 shadow-2xs">
+          <div className="mx-auto w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-amber-600">
+            <ShieldAlert className="w-8 h-8" />
           </div>
-          <h2 className="text-2xl font-bold text-amber-950 font-display">Verification Under Review</h2>
-          <p className="text-sm text-amber-800 max-w-md mx-auto">
-            Your verification request with your PTU portal screenshot is currently being reviewed by our admin desk. This usually takes 1-12 hours.
+          <h2 className="text-xl sm:text-2xl font-bold text-amber-950 dark:text-amber-200 font-display">Verification Under Review</h2>
+          <p className="text-sm text-amber-800 dark:text-amber-300 max-w-md mx-auto">
+            Your verification request with your PTU portal screenshot is currently being reviewed by our campus admin desk. This usually takes 1-12 hours.
           </p>
         </div>
       ) : (
-        <div className="bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] shadow-xl p-6 sm:p-10 space-y-8">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-10 space-y-8">
           {studentStatus === "rejected" && (
             <div className="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 text-sm space-y-1">
               <div className="flex items-center gap-2 font-semibold text-rose-500">
@@ -193,32 +193,32 @@ export default function StudentVerificationPage() {
           )}
 
           {/* Anti-Fraud Code Banner */}
-          <div className="p-6 rounded-2xl bg-gradient-to-br from-indigo-900 to-slate-900 text-white space-y-3 shadow-md">
+          <div className="p-5 rounded-xl bg-slate-900 text-white border border-slate-800 space-y-2.5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-indigo-300">
+              <span className="text-xs font-semibold uppercase tracking-wider text-indigo-400">
                 Anti-Fraud Safety Code
               </span>
               <button
                 type="button"
                 onClick={handleCopyCode}
-                className="text-xs font-medium text-indigo-300 hover:text-white inline-flex items-center gap-1 bg-white/10 px-2.5 py-1 rounded-lg transition-colors"
+                className="text-xs font-medium text-slate-300 hover:text-white inline-flex items-center gap-1 bg-white/10 px-2.5 py-1 rounded-lg transition-colors cursor-pointer"
               >
                 <Copy className="w-3 h-3" /> {copied ? "Copied!" : "Copy Code"}
               </button>
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-3xl sm:text-4xl font-extrabold tracking-widest font-mono text-indigo-400">
+              <span className="text-2xl sm:text-3xl font-extrabold tracking-widest font-mono text-indigo-400">
                 {antiFraudCode}
               </span>
             </div>
             <p className="text-xs text-slate-300 leading-relaxed">
-              <strong className="text-white">Required:</strong> To prevent fake screenshots, your uploaded proof image MUST clearly show this verification code written on a paper or displayed next to your PTU Portal profile!
+              <strong className="text-white">Required:</strong> To verify your student ID, your uploaded proof screenshot must show your university portal with this verification code displayed or written on a note next to it.
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 1. PTU Roll Number / University ID
               </label>
               <Input
@@ -226,44 +226,44 @@ export default function StudentVerificationPage() {
                 value={ptuRollNo}
                 onChange={(e) => setPtuRollNo(e.target.value)}
                 placeholder="e.g. 21012345 or PTU/BC/2022/104"
-                className="h-12 rounded-2xl border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] text-base"
+                className="h-11 rounded-xl border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)] mb-2">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 2. PTU Portal Proof Image (With Code {antiFraudCode})
               </label>
-              <div className="border-2 border-dashed border-[var(--border-subtle)] rounded-3xl p-6 text-center hover:border-indigo-400 transition-colors bg-[var(--input-bg)]/30">
+              <div className="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-6 text-center hover:border-indigo-500 transition-colors bg-slate-50/50 dark:bg-slate-800/40">
                 {screenshotUrl ? (
                   <div className="space-y-3">
                     <img
                       src={screenshotUrl}
                       alt="PTU Portal Proof"
-                      className="max-h-56 mx-auto rounded-2xl object-cover border border-[var(--border-subtle)] shadow-sm"
+                      className="max-h-56 mx-auto rounded-xl object-cover border border-slate-200 dark:border-slate-700 shadow-2xs"
                     />
                     <button
                       type="button"
                       onClick={() => setScreenshotUrl("")}
-                      className="text-xs font-semibold text-rose-500 hover:underline"
+                      className="text-xs font-semibold text-rose-500 hover:underline cursor-pointer"
                     >
                       Remove & Upload Different Photo
                     </button>
                   </div>
                 ) : (
                   <label className="cursor-pointer flex flex-col items-center gap-2">
-                    <div className="w-12 h-12 rounded-2xl bg-[var(--brand-primary-light)] text-[var(--brand-primary)] flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                       {isUploading ? (
-                        <Loader2 className="w-6 h-6 animate-spin" />
+                        <Loader2 className="w-5 h-5 animate-spin" />
                       ) : (
-                        <Upload className="w-6 h-6" />
+                        <Upload className="w-5 h-5" />
                       )}
                     </div>
-                    <span className="text-sm font-semibold text-[var(--text-primary)]">
+                    <span className="text-sm font-semibold text-slate-900 dark:text-white">
                       {isUploading ? "Uploading Screenshot..." : "Click to Upload PTU Portal Photo"}
                     </span>
-                    <span className="text-xs text-[var(--text-muted)]">
+                    <span className="text-xs text-slate-500">
                       PNG, JPG, or WEBP (Max 5MB) showing portal profile + code {antiFraudCode}
                     </span>
                     <input
@@ -281,11 +281,11 @@ export default function StudentVerificationPage() {
             <Button
               type="submit"
               disabled={isSubmitting || !screenshotUrl || !ptuRollNo}
-              className="w-full h-12 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-base shadow-md shadow-indigo-100"
+              className="w-full h-11.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition-colors cursor-pointer shadow-xs disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   Submitting Request...
                 </>
               ) : (

@@ -179,7 +179,7 @@ export function UserProfileClient({
   return (
     <div className="space-y-8">
       {/* Profile Header Banner */}
-      <div className="bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] p-6 sm:p-8 shadow-xs space-y-6">
+      <div className="bg-[var(--card-bg)] rounded-2xl border border-[var(--border-subtle)] p-6 sm:p-8 shadow-xs space-y-6">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
           {/* Avatar Upload Container */}
           <div className="relative group shrink-0">
@@ -369,7 +369,7 @@ export function UserProfileClient({
       )}
 
       {/* Security & Change Password */}
-      <div className="bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] p-6 sm:p-8 shadow-xs space-y-4">
+      <div className="bg-[var(--card-bg)] rounded-2xl border border-[var(--border-subtle)] p-6 sm:p-8 shadow-xs space-y-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-[var(--brand-primary-light)] text-[var(--brand-primary)] flex items-center justify-center">
             <Lock className="w-5 h-5" />

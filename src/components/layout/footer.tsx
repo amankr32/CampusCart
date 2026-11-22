@@ -44,7 +44,7 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2.5 mb-3 group">
-              <span className="flex items-center justify-center h-9 w-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white shadow-sm group-hover:from-indigo-700 group-hover:to-indigo-600 transition-all">
+              <span className="flex items-center justify-center h-9 w-9 rounded-xl bg-indigo-600 text-white shadow-xs group-hover:bg-indigo-700 transition-colors">
                 <ShoppingBag className="h-4.5 w-4.5" strokeWidth={2} />
               </span>
               <div className="flex flex-col leading-tight">

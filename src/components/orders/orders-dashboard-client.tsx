@@ -84,7 +84,7 @@ export function OrdersDashboardClient({
   return (
     <div className="w-full space-y-8">
       {/* Page Header */}
-      <div className="bg-[var(--card-bg)] p-6 sm:p-8 rounded-3xl border border-[var(--border-subtle)] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-[var(--card-bg)] p-6 sm:p-8 rounded-2xl border border-[var(--border-subtle)] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold font-display tracking-tight text-[var(--text-primary)]">
             Orders & Sales
@@ -95,7 +95,7 @@ export function OrdersDashboardClient({
         </div>
 
         {/* Purchases / Sales Mode Toggle */}
-        <div className="inline-flex p-1 rounded-2xl bg-[var(--input-bg)] border border-[var(--border-subtle)] shrink-0">
+        <div className="inline-flex p-1 rounded-xl bg-[var(--input-bg)] border border-[var(--border-subtle)] shrink-0">
           <button
             type="button"
             onClick={() => {
@@ -193,9 +193,9 @@ export function OrdersDashboardClient({
 
       {/* Orders Grid List */}
       {filteredOrders.length === 0 ? (
-        <div className="text-center py-16 bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] p-8 space-y-4 shadow-xs max-w-md mx-auto">
-          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-3xl bg-[var(--brand-primary-light)] border border-[var(--brand-primary)]/20 text-[var(--brand-primary)] shadow-sm">
-            <Package className="w-8 h-8" />
+        <div className="text-center py-16 bg-[var(--card-bg)] rounded-2xl border border-[var(--border-subtle)] p-8 space-y-4 shadow-xs max-w-md mx-auto">
+          <div className="mx-auto flex items-center justify-center h-14 w-14 rounded-2xl bg-[var(--brand-primary-light)] border border-[var(--brand-primary)]/20 text-[var(--brand-primary)] shadow-xs">
+            <Package className="w-7 h-7" />
           </div>
           <div className="space-y-1.5">
             <h3 className="font-bold text-[var(--text-primary)] font-display text-lg">
@@ -218,13 +218,13 @@ export function OrdersDashboardClient({
               <Button
                 variant="outline"
                 onClick={() => setSearch("")}
-                className="rounded-2xl text-xs font-bold px-4 h-10 border-[var(--border-subtle)] cursor-pointer"
+                className="rounded-xl text-xs font-semibold px-4 h-10 border-[var(--border-subtle)] cursor-pointer"
               >
                 Clear Search
               </Button>
             )}
             <Link href="/browse">
-              <Button className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white rounded-2xl text-xs font-bold px-5 h-10 shadow-md shadow-indigo-500/20 cursor-pointer">
+              <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold px-5 h-10 shadow-xs cursor-pointer">
                 Browse Marketplace →
               </Button>
             </Link>
@@ -239,7 +239,7 @@ export function OrdersDashboardClient({
             return (
               <div
                 key={order.id}
-                className="bg-[var(--card-bg)] p-5 rounded-3xl border border-[var(--border-subtle)] shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between gap-4"
+                className="bg-[var(--card-bg)] p-5 rounded-2xl border border-[var(--border-subtle)] shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between gap-4"
               >
                 <div className="flex items-start gap-4">
                   <div className="relative h-20 w-20 rounded-2xl bg-[var(--input-bg)] border border-[var(--border-subtle)] overflow-hidden shrink-0">
