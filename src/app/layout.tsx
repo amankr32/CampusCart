@@ -46,6 +46,14 @@ export const metadata: Metadata = {
     description:
       "Buy, sell, and swap textbooks, hostel essentials, cycles, and gadgets with fellow IK Gujral Punjab Technical University students.",
   },
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    apple: "/icon.svg",
+    shortcut: "/icon.svg",
+  },
 };
 
 export default async function RootLayout({

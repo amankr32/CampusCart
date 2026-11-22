@@ -73,7 +73,10 @@ export const ChevronDown = (props: IconProps) => <MaterialSymbol name="expand_mo
 export const ChevronUp = (props: IconProps) => <MaterialSymbol name="expand_less" {...props} />;
 export const ChevronLeft = (props: IconProps) => <MaterialSymbol name="chevron_left" {...props} />;
 export const ChevronRight = (props: IconProps) => <MaterialSymbol name="chevron_right" {...props} />;
-export const Compass = (props: IconProps) => <MaterialSymbol name="explore" {...props} />;
+export const Compass = (props: IconProps) => <MaterialSymbol name="travel_explore" {...props} />;
+export const TravelExplore = (props: IconProps) => <MaterialSymbol name="travel_explore" {...props} />;
+export const Category = (props: IconProps) => <MaterialSymbol name="category" {...props} />;
+export const ShoppingCart = (props: IconProps) => <MaterialSymbol name="shopping_cart" {...props} />;
 export const LogOut = (props: IconProps) => <MaterialSymbol name="logout" {...props} />;
 export const Menu = (props: IconProps) => <MaterialSymbol name="menu" {...props} />;
 export const MessageSquare = (props: IconProps) => <MaterialSymbol name="chat_bubble" {...props} />;
@@ -90,6 +93,10 @@ export const ShieldAlert = (props: IconProps) => <MaterialSymbol name="gpp_bad" 
 export const ShieldCheck = (props: IconProps) => <MaterialSymbol name="verified_user" {...props} />;
 export const ShoppingBag = (props: IconProps) => <MaterialSymbol name="shopping_bag" {...props} />;
 export const Package = (props: IconProps) => <MaterialSymbol name="inventory_2" {...props} />;
+export const Package2 = (props: IconProps) => <MaterialSymbol name="package_2" {...props} />;
+export const LocalShipping = (props: IconProps) => <MaterialSymbol name="local_shipping" {...props} />;
+export const OrdersIcon = (props: IconProps) => <MaterialSymbol name="inventory_2" {...props} />;
+export const BrowseIcon = (props: IconProps) => <MaterialSymbol name="travel_explore" {...props} />;
 export const History = (props: IconProps) => <MaterialSymbol name="history" {...props} />;
 export const Store = (props: IconProps) => <MaterialSymbol name="storefront" {...props} />;
 export const User = (props: IconProps) => <MaterialSymbol name="person" {...props} />;

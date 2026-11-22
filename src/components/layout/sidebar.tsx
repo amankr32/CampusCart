@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import {
   LayoutDashboard,
-  Search,
+  TravelExplore,
   PlusCircle,
   Package,
   MessageCircle,
@@ -41,7 +41,7 @@ export function Sidebar() {
 
   const navItems = [
     { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { label: "Browse Items", href: "/browse", icon: Search },
+    { label: "Browse Items", href: "/browse", icon: TravelExplore },
     { label: "Sell an Item", href: "/sell", icon: PlusCircle },
     { label: "My Listings", href: "/dashboard/my-listings", icon: ListOrdered },
     { label: "My Profile", href: "/profile", icon: User },

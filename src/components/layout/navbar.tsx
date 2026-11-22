@@ -13,6 +13,7 @@ import {
   MessageSquare,
   Plus,
   Receipt,
+  Package,
   Search,
   Settings,
   ShieldAlert,
@@ -197,7 +198,7 @@ export function Navbar() {
                       : "text-[var(--text-primary)] hover:text-[var(--brand-primary)] hover:bg-[var(--border-subtle)]/40"
                   }`}
                 >
-                  <Receipt className="h-4 w-4" strokeWidth={2} />
+                  <Package className="h-4 w-4" strokeWidth={2} />
                   Orders
                 </Link>
               </>
@@ -475,7 +476,7 @@ export function Navbar() {
                     onClick={() => setIsMenuOpen(false)}
                     className="flex items-center gap-2.5 text-xs font-semibold py-2.5 px-3 rounded-xl hover:bg-[var(--border-subtle)]/40 transition-colors text-[var(--text-primary)]"
                   >
-                    <Receipt className="h-4 w-4 text-[var(--text-muted)]" strokeWidth={2} />
+                    <Package className="h-4 w-4 text-[var(--text-muted)]" strokeWidth={2} />
                     Orders
                   </Link>
 
