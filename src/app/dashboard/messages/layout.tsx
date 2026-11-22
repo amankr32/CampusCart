@@ -17,12 +17,12 @@ export default async function MessagesLayout({
 
   return (
     <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12 py-6">
-      <div className="bg-[var(--card-bg)] border border-[var(--border-subtle)] rounded-3xl shadow-xs overflow-hidden flex h-[calc(100vh-9rem)] min-h-[500px] w-full">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden flex h-[calc(100vh-9rem)] min-h-[520px] w-full">
         <ConversationSidebar
           initialConversations={conversations}
           currentUserId={session.user.id}
         />
-        <div className="flex-1 min-w-0 flex flex-col h-full bg-[var(--card-bg)]">{children}</div>
+        <div className="flex-1 min-w-0 flex flex-col h-full bg-white dark:bg-slate-900">{children}</div>
       </div>
     </div>
   );

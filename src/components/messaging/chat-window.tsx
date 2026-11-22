@@ -452,67 +452,67 @@ export function ChatWindow({
         : "Available";
 
   return (
-    <div className="flex flex-col h-full bg-[var(--card-bg)]">
+    <div className="flex flex-col h-full bg-white dark:bg-slate-900">
       {/* Header */}
-      <div className="flex items-center gap-3 p-4 border-b border-[var(--border-subtle)] shrink-0 bg-[var(--card-bg)]">
-        <Link
-          href="/dashboard/messages"
-          className="md:hidden flex items-center justify-center h-8 w-8 rounded-xl hover:bg-[var(--input-bg)] text-[var(--text-primary)]"
-          aria-label="Back to conversations"
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </Link>
+      <div className="flex items-center justify-between gap-3 p-3.5 sm:p-4 border-b border-slate-200 dark:border-slate-800 shrink-0 bg-white dark:bg-slate-900">
+        <div className="flex items-center gap-3 min-w-0">
+          <Link
+            href="/dashboard/messages"
+            className="md:hidden flex items-center justify-center h-8 w-8 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors"
+            aria-label="Back to conversations"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
 
-        <div className="relative h-11 w-11 shrink-0 rounded-xl border border-[var(--border-subtle)] bg-[var(--input-bg)] overflow-hidden">
-          {product.image ? (
-            <Image src={product.image} alt="" fill className="object-cover" />
-          ) : (
-            <div className="flex items-center justify-center h-full text-[var(--text-muted)]/40">
-              <ImageOff className="h-4 w-4" />
+          {/* Student Avatar */}
+          <div className="relative shrink-0">
+            <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-indigo-600 text-white font-bold text-sm sm:text-base flex items-center justify-center shadow-xs">
+              {otherUser.name.slice(0, 1).toUpperCase()}
             </div>
-          )}
+            {presence.isOnline && (
+              <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900" />
+            )}
+          </div>
+
+          <div className="min-w-0">
+            <p className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">
+              {otherUser.name}
+            </p>
+            <p className="text-[11px] text-slate-500">
+              {presence.isTyping ? (
+                <span className="italic text-indigo-600 font-semibold">typing...</span>
+              ) : presence.isOnline ? (
+                <span className="text-emerald-600 font-semibold">Active now</span>
+              ) : (
+                formatLastSeen(presence.lastActiveAt)
+              )}
+            </p>
+          </div>
         </div>
 
-        <div className="flex-1 min-w-0">
-          <Link
-            href={`/product/${product.slug}`}
-            className="text-xs sm:text-sm font-extrabold text-[var(--text-primary)] truncate hover:underline block"
-          >
-            {product.name}
-          </Link>
-          <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
-            <span className="font-bold text-[var(--brand-primary)]">{formatPrice(product.priceCents)}</span>
-            <span>·</span>
-            <span className="flex items-center gap-1 font-medium">
-              <Store className="h-3 w-3" />
-              {otherUser.name}
+        {/* Compact Product Pill (Right) */}
+        <Link
+          href={`/product/${product.slug}`}
+          className="flex items-center gap-2.5 p-1.5 sm:px-3 sm:py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 hover:border-indigo-500/40 transition-colors max-w-[180px] sm:max-w-xs shrink-0 group"
+        >
+          <div className="relative h-8 w-8 rounded-lg overflow-hidden bg-slate-200 dark:bg-slate-700 shrink-0">
+            {product.image ? (
+              <Image src={product.image} alt="" fill className="object-cover" />
+            ) : (
+              <div className="flex items-center justify-center h-full text-slate-400">
+                <ImageOff className="h-3 w-3" />
+              </div>
+            )}
+          </div>
+          <div className="hidden sm:flex flex-col min-w-0 text-left">
+            <span className="text-xs font-semibold text-slate-900 dark:text-white truncate group-hover:text-indigo-600 transition-colors">
+              {product.name}
             </span>
-            <span>·</span>
-            <span
-              className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                product.status === "available"
-                  ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
-                  : product.status === "reserved"
-                    ? "bg-amber-500/10 text-amber-500 border border-amber-500/20"
-                    : "bg-[var(--input-bg)] text-[var(--text-muted)] border border-[var(--border-subtle)]"
-              }`}
-            >
-              {productStatusLabel}
+            <span className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400">
+              {formatPrice(product.priceCents)}
             </span>
           </div>
-          <p className="text-[11px] text-[var(--text-muted)] mt-0.5">
-            {presence.isTyping ? (
-              <span className="italic text-indigo-600 font-semibold">{otherUser.name} is typing...</span>
-            ) : presence.isOnline ? (
-              <span className="flex items-center gap-1 text-emerald-600 font-semibold">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                Online
-              </span>
-            ) : (
-              formatLastSeen(presence.lastActiveAt)
-            )}
-          </p>
-        </div>
+        </Link>
       </div>
 
       {/* Order status / action bar */}
@@ -671,28 +671,26 @@ export function ChatWindow({
       </div>
 
       {/* Messages */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 sm:p-5 flex flex-col gap-3.5 bg-slate-50/70 dark:bg-slate-950/60">
         {messages.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center p-6 space-y-4 max-w-sm mx-auto my-auto">
-            <div className="relative">
-              <div className="h-16 w-16 rounded-3xl bg-[var(--brand-primary-light)] border border-[var(--brand-primary)]/20 text-[var(--brand-primary)] flex items-center justify-center shadow-md shadow-indigo-500/10">
-                <MessageSquare className="h-8 w-8" />
-              </div>
+            <div className="h-14 w-14 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold text-xl flex items-center justify-center shadow-xs">
+              {otherUser.name.slice(0, 1).toUpperCase()}
             </div>
             <div>
-              <h4 className="font-display font-bold text-base text-[var(--text-primary)]">
-                Start conversation with {otherUser.name}
+              <h4 className="font-display font-bold text-base text-slate-900 dark:text-white">
+                Chatting with {otherUser.name}
               </h4>
-              <p className="text-xs text-[var(--text-muted)] mt-1 leading-relaxed">
-                Campus handoffs happen in public spots (Library, Hostel Gate, or Cafeteria). Always inspect the item before paying!
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                Coordinate handoffs at safe public campus spots like the <strong>Central Library</strong> or <strong>Canteen</strong>.
               </p>
             </div>
             <div className="w-full space-y-2 pt-2">
-              <p className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-wider">
-                Tap a conversation starter:
+              <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                Tap to send a quick message:
               </p>
               {[
-                "👋 Hey! Is this item still available?",
+                "👋 Hi! Is this item still available?",
                 "📍 Where on campus can we meet for pickup?",
                 "💰 Would you accept a slight student discount?",
               ].map((starter) => (
@@ -700,7 +698,7 @@ export function ChatWindow({
                   key={starter}
                   type="button"
                   onClick={() => setDraft(starter)}
-                  className="w-full text-left text-xs font-medium px-3.5 py-2.5 rounded-2xl bg-[var(--input-bg)] hover:bg-[var(--brand-primary-light)] border border-[var(--border-subtle)] hover:border-[var(--brand-primary)]/40 text-[var(--text-primary)] transition-all cursor-pointer shadow-2xs"
+                  className="w-full text-left text-xs font-medium px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-indigo-50/60 dark:hover:bg-indigo-950/40 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 text-slate-800 dark:text-slate-200 transition-all cursor-pointer shadow-2xs"
                 >
                   {starter}
                 </button>
@@ -711,8 +709,8 @@ export function ChatWindow({
           messages.map((m) => {
             if (m.type === "system") {
               return (
-                <div key={m.id} className="flex justify-center my-1">
-                  <p className="text-xs font-semibold text-[var(--text-muted)] bg-[var(--input-bg)] rounded-full px-4 py-1 text-center max-w-[85%] border border-[var(--border-subtle)]">
+                <div key={m.id} className="flex justify-center my-1.5">
+                  <p className="text-[11px] font-medium text-slate-500 bg-slate-200/70 dark:bg-slate-800 rounded-full px-3.5 py-1 text-center max-w-[85%]">
                     {m.message}
                   </p>
                 </div>
@@ -723,30 +721,34 @@ export function ChatWindow({
             return (
               <div
                 key={m.id}
-                className={`flex flex-col max-w-[75%] ${isMine ? "self-end items-end" : "self-start items-start"}`}
+                className={`flex flex-col max-w-[80%] sm:max-w-[70%] ${
+                  isMine ? "self-end items-end" : "self-start items-start"
+                }`}
               >
                 <div
-                  className={`rounded-2xl px-4 py-2.5 shadow-xs ${
+                  className={`px-4 py-2.5 shadow-2xs ${
                     isMine
-                      ? "bg-gradient-to-r from-indigo-600 to-violet-600 text-white"
-                      : "bg-[var(--card-bg)] text-[var(--text-primary)] border border-[var(--border-subtle)]"
+                      ? "bg-indigo-600 text-white rounded-2xl rounded-br-xs"
+                      : "bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 rounded-2xl rounded-bl-xs"
                   }`}
                 >
                   {m.image && (
-                    <div className="relative w-48 aspect-square rounded-xl overflow-hidden mb-1.5 border border-white/20">
+                    <div className="relative w-48 sm:w-56 aspect-square rounded-xl overflow-hidden mb-2 border border-black/10 dark:border-white/10">
                       <Image src={m.image} alt="Attachment" fill className="object-cover" />
                     </div>
                   )}
                   {m.message && (
-                    <p className="text-xs sm:text-sm whitespace-pre-line break-words leading-relaxed font-medium">
+                    <p className="text-xs sm:text-sm whitespace-pre-line break-words leading-relaxed font-normal">
                       {m.message}
                     </p>
                   )}
                 </div>
-                <span className="text-[10px] text-[var(--text-muted)] mt-1 px-1 font-medium">
+                <span className="text-[10px] text-slate-400 mt-1 px-1 font-medium">
                   {formatTime(m.createdAt)}
                   {isMine && m.id === lastOwnMessage?.id && (
-                    <> · {m.isRead ? "Read" : "Sent"}</>
+                    <span className="ml-1 text-indigo-500 font-semibold">
+                      {m.isRead ? "✓✓ Read" : "✓ Sent"}
+                    </span>
                   )}
                 </span>
               </div>
@@ -756,7 +758,7 @@ export function ChatWindow({
       </div>
 
       {/* Composer */}
-      <div className="border-t border-[var(--border-subtle)] p-3.5 shrink-0 bg-[var(--card-bg)]">
+      <div className="border-t border-slate-200 dark:border-slate-800 p-3 sm:p-4 shrink-0 bg-white dark:bg-slate-900">
         {/* Campus Quick Reply Chips for Students */}
         {role === "buyer" && messages.length <= 1 && !draft && (
           <div className="flex items-center gap-1.5 overflow-x-auto pb-2.5 scrollbar-none">
@@ -821,7 +823,7 @@ export function ChatWindow({
           <button
             type="button"
             onClick={() => setShowEmoji((v) => !v)}
-            className="flex items-center justify-center h-10 w-10 rounded-xl hover:bg-[var(--input-bg)] shrink-0 text-[var(--text-muted)]"
+            className="flex items-center justify-center h-10 w-10 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0 text-slate-500 transition-colors cursor-pointer"
             aria-label="Emoji"
           >
             <Smile className="h-5 w-5" />
@@ -831,7 +833,7 @@ export function ChatWindow({
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading}
-            className="flex items-center justify-center h-10 w-10 rounded-xl hover:bg-[var(--input-bg)] shrink-0 text-[var(--text-muted)] disabled:opacity-50"
+            className="flex items-center justify-center h-10 w-10 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0 text-slate-500 transition-colors disabled:opacity-50 cursor-pointer"
             aria-label="Attach image"
           >
             {isUploading ? (
@@ -857,17 +859,17 @@ export function ChatWindow({
                 handleSend();
               }
             }}
-            placeholder="Message about price, condition, or pickup..."
+            placeholder="Type a message... (Press Enter to send)"
             rows={1}
-            className="flex-1 resize-none rounded-xl border border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] px-3.5 py-2.5 text-xs outline-none focus:ring-2 focus:ring-indigo-500 max-h-32"
+            className="flex-1 resize-none rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white px-3.5 py-2.5 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-indigo-500 max-h-32"
           />
 
           <Button
             size="icon"
-            className="rounded-xl h-10 w-10 bg-indigo-600 hover:bg-indigo-700 text-white shrink-0 shadow-xs"
+            className="rounded-xl h-10 w-10 bg-indigo-600 hover:bg-indigo-700 text-white shrink-0 shadow-xs cursor-pointer transition-colors"
             onClick={handleSend}
             disabled={isSending || (!draft.trim() && !pendingImage)}
-            aria-label="Send"
+            aria-label="Send message"
           >
             <Send className="h-4 w-4" />
           </Button>

@@ -124,24 +124,24 @@ export function ConversationSidebar({
 
   return (
     <div
-      className={`${isIndex ? "flex" : "hidden md:flex"} w-full md:w-80 shrink-0 flex-col border-r border-[var(--border-subtle)] h-full bg-[var(--card-bg)]`}
+      className={`${isIndex ? "flex" : "hidden md:flex"} w-full md:w-80 shrink-0 flex-col border-r border-slate-200 dark:border-slate-800 h-full bg-white dark:bg-slate-900`}
     >
-      <div className="p-4 border-b border-[var(--border-subtle)] space-y-3">
-        <h1 className="font-display font-extrabold text-xl text-[var(--text-primary)]">Messages</h1>
+      <div className="p-4 border-b border-slate-200 dark:border-slate-800 space-y-3">
+        <h1 className="font-display font-extrabold text-xl text-slate-900 dark:text-white">Messages</h1>
         <div className="relative">
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search conversations..."
-            className="h-9 pl-8 text-xs rounded-xl bg-[var(--input-bg)] border border-[var(--border-subtle)] text-[var(--text-primary)]"
+            className="h-9 pl-8 text-xs rounded-xl bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
           />
-          <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
+          <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800/60">
         {filtered.length === 0 ? (
-          <p className="text-xs text-[var(--text-muted)] text-center py-8 px-4">
+          <p className="text-xs text-slate-500 text-center py-8 px-4">
             {conversations.length === 0
               ? "No conversations yet. Message a seller from a product page to get started."
               : "No conversations match your search."}
@@ -157,44 +157,47 @@ export function ConversationSidebar({
                 ? `You: ${lastMessage.message ?? "Sent a photo"}`
                 : (lastMessage.message ?? "Sent a photo")
               : "Say hello!";
+            const studentInitial = (conversation.otherUser?.name || "U").slice(0, 1).toUpperCase();
 
             return (
               <Link
                 key={conversation.id}
                 href={`/dashboard/messages/${conversation.id}`}
-                className={`flex items-center gap-3 p-4 border-b border-[var(--border-subtle)] transition-colors ${
+                className={`flex items-center gap-3 p-3.5 transition-colors ${
                   isActive
-                    ? "bg-[var(--brand-primary-light)]/80 border-l-4 border-l-indigo-600"
-                    : "hover:bg-[var(--input-bg)]/50"
+                    ? "bg-indigo-50/80 dark:bg-indigo-950/40 border-l-4 border-l-indigo-600"
+                    : "hover:bg-slate-50 dark:hover:bg-slate-800/60"
                 }`}
               >
-                <div className="relative h-11 w-11 shrink-0 rounded-xl border border-[var(--border-subtle)] bg-[var(--input-bg)] overflow-hidden">
-                  {cover ? (
-                    <Image src={cover} alt="" fill className="object-cover" />
-                  ) : (
-                    <div className="flex items-center justify-center h-full text-[var(--text-muted)]/40">
-                      <ImageOff className="h-4 w-4" />
+                {/* User Avatar with Product Thumbnail overlay */}
+                <div className="relative shrink-0">
+                  <div className="h-11 w-11 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 font-bold text-sm flex items-center justify-center border border-indigo-200 dark:border-indigo-800">
+                    {studentInitial}
+                  </div>
+                  {cover && (
+                    <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-md border border-white dark:border-slate-900 overflow-hidden shadow-2xs">
+                      <Image src={cover} alt="" fill className="object-cover" />
                     </div>
                   )}
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="text-xs font-bold text-[var(--text-primary)] truncate">
+                  <div className="flex items-center justify-between gap-1.5">
+                    <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
                       {conversation.otherUser?.name ?? "Campus Student"}
                     </p>
-                    <span className="text-[10px] font-semibold text-[var(--text-muted)] shrink-0">
+                    <span className="text-[10px] font-medium text-slate-400 shrink-0">
                       {timeAgo(conversation.updatedAt)}
                     </span>
                   </div>
-                  <p className="text-[11px] font-medium text-[var(--brand-primary)] truncate">
+                  <p className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 truncate">
                     {conversation.product.name} · {formatPrice(conversation.product.priceCents)}
                   </p>
                   <p
                     className={`text-xs truncate mt-0.5 ${
                       unreadCount > 0
-                        ? "font-extrabold text-[var(--text-primary)]"
-                        : "text-[var(--text-muted)]"
+                        ? "font-bold text-slate-900 dark:text-white"
+                        : "text-slate-500"
                     }`}
                   >
                     {lastMessagePreview}
