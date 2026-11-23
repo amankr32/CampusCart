@@ -62,7 +62,7 @@ function ResetPasswordFormContent() {
     <div className="min-h-screen bg-[var(--background)] flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] shadow-xl p-6 sm:p-8 space-y-6">
         <div className="text-center space-y-2">
-          <div className="mx-auto flex items-center justify-center h-14 w-14 rounded-2xl bg-[var(--brand-primary-light)] border border-indigo-500/20 text-[var(--brand-primary)] shadow-xs mb-3">
+          <div className="mx-auto flex items-center justify-center h-14 w-14 rounded-2xl bg-[var(--brand-primary-light)] border border-blue-500/20 text-[var(--brand-primary)] shadow-xs mb-3">
             <Lock className="h-7 w-7" />
           </div>
           <h1 className="text-2xl font-bold font-display text-[var(--text-primary)] tracking-tight">
@@ -83,7 +83,7 @@ function ResetPasswordFormContent() {
             </p>
             <div className="pt-2">
               <Link href="/forgot-password">
-                <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl">
+                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-2xl">
                   Request New Link
                 </Button>
               </Link>
@@ -142,7 +142,7 @@ function ResetPasswordFormContent() {
               <Button
                 type="submit"
                 disabled={isPending}
-                className="w-full h-11 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm shadow-md shadow-indigo-100 transition-all mt-2"
+                className="w-full h-11 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm shadow-md shadow-blue-100 transition-all mt-2"
               >
                 {isPending ? (
                   <>
@@ -165,7 +165,7 @@ export default function ResetPasswordPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
-        <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+        <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
       </div>
     }>
       <ResetPasswordFormContent />

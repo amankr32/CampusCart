@@ -42,7 +42,7 @@ export function SafeHandoffChecklist() {
   ];
 
   return (
-    <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 dark:bg-emerald-950/20 overflow-hidden transition-all">
+    <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 overflow-hidden transition-all">
       {/* Header Accordion Toggle */}
       <button
         type="button"
@@ -50,7 +50,7 @@ export function SafeHandoffChecklist() {
         className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left cursor-pointer hover:bg-emerald-500/10 transition-colors"
       >
         <div className="flex items-center gap-2.5">
-          <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 shrink-0">
+          <span className="flex items-center justify-center w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-600 shrink-0">
             <ShieldCheck className="w-4 h-4" />
           </span>
           <div>

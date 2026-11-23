@@ -9,7 +9,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs font-semibold",
+          "bg-blue-600 hover:bg-blue-700 text-white shadow-xs font-semibold",
         elevated:
           "border border-[var(--border-subtle)] bg-[var(--card-bg)] text-[var(--text-primary)] shadow-xs hover:bg-[var(--border-subtle)]/40 font-semibold",
         outline:
@@ -17,9 +17,9 @@ const buttonVariants = cva(
         destructive:
           "bg-rose-600 text-white hover:bg-rose-700 shadow-xs font-semibold",
         brand:
-          "bg-indigo-600 text-white hover:bg-indigo-700 shadow-xs font-semibold",
+          "bg-blue-600 text-white hover:bg-blue-700 shadow-xs font-semibold",
         ghost: "hover:bg-[var(--border-subtle)]/40 text-[var(--text-primary)]",
-        link: "underline-offset-4 hover:underline text-indigo-600",
+        link: "underline-offset-4 hover:underline text-blue-600",
       },
       size: {
         default: "h-10 px-4 py-2",

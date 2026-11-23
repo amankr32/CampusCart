@@ -71,7 +71,7 @@ export default async function SellPage() {
 
           <div className="flex flex-col gap-4 text-xs">
             <div className="flex items-start gap-3">
-              <div className="w-9 h-9 rounded-2xl bg-indigo-500/10 text-[var(--brand-primary)] flex items-center justify-center shrink-0">
+              <div className="w-9 h-9 rounded-2xl bg-blue-500/10 text-[var(--brand-primary)] flex items-center justify-center shrink-0">
                 <ShieldCheck className="w-4 h-4" />
               </div>
               <div>
@@ -119,7 +119,7 @@ export default async function SellPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl bg-[var(--brand-primary-light)] border border-indigo-500/20 p-4">
+          <div className="rounded-2xl bg-[var(--brand-primary-light)] border border-blue-500/20 p-4">
             <p className="text-xs font-bold text-[var(--brand-primary)]">Listing Guidelines</p>
             <p className="text-xs text-[var(--text-muted)] mt-1 leading-relaxed">
               Unverified students can post up to 2 active listings. Get Student Verified to unlock unlimited listings!

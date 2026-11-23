@@ -161,7 +161,7 @@ export function SignUpForm() {
       <Button
         type="submit"
         disabled={isPending}
-        className="w-full h-11.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition-colors shadow-xs mt-2 cursor-pointer"
+        className="w-full h-11.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm transition-colors shadow-xs mt-2 cursor-pointer"
       >
         {isPending ? (
           <>

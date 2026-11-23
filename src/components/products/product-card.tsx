@@ -3,10 +3,22 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ImageOff, MapPin, ShieldCheck, Heart, Sparkles, BookOpen, Clock } from "@/components/ui/material-symbol";
+import {
+  ImageOff,
+  MapPin,
+  ShieldCheck,
+  Heart,
+  Sparkles,
+  BookOpen,
+  Laptop,
+  Bike,
+  BedDouble,
+  PenTool,
+  Dumbbell,
+  Tag,
+} from "@/components/ui/material-symbol";
 
 import { formatPrice, formatRelativeTime, CONDITION_LABELS } from "@/lib/format";
-import { StarRating } from "@/components/products/star-rating";
 import { toast } from "@/lib/toast";
 import type { ProductListItem } from "@/db/queries/products";
 
@@ -28,12 +40,31 @@ function getConditionPill(condition: string) {
   }
 }
 
+function getCategoryIcon(slug?: string) {
+  switch (slug) {
+    case "books":
+      return { Icon: BookOpen, bg: "bg-rose-50 text-rose-600 border-rose-200" };
+    case "electronics":
+      return { Icon: Laptop, bg: "bg-blue-50 text-blue-600 border-blue-200" };
+    case "transport":
+      return { Icon: Bike, bg: "bg-emerald-50 text-emerald-600 border-emerald-200" };
+    case "hostel":
+      return { Icon: BedDouble, bg: "bg-amber-50 text-amber-600 border-amber-200" };
+    case "stationery":
+      return { Icon: PenTool, bg: "bg-purple-50 text-purple-600 border-purple-200" };
+    default:
+      return { Icon: BookOpen, bg: "bg-blue-50 text-blue-600 border-blue-200" };
+  }
+}
+
 export function ProductCard({
   product,
   view = "grid",
+  isFeatured = false,
 }: {
   product: ProductListItem;
   view?: "grid" | "list";
+  isFeatured?: boolean;
 }) {
   const [isSaved, setIsSaved] = useState(false);
   const coverImage = product.images?.[0];
@@ -55,194 +86,124 @@ export function ProductCard({
   };
 
   const conditionInfo = getConditionPill(product.condition);
-  const pickupLocation = product.hostel ? `📍 ${product.hostel}` : "📍 Campus Pickup";
+  const pickupLocation = product.hostel || "Central Library";
+  const { Icon: CatIcon, bg: catBg } = getCategoryIcon(product.category?.slug);
+  const sellerHandle = `@${product.tenant.storeName.toLowerCase().replace(/[^a-z0-9]/g, "") || "student"}`;
 
-  // -------------------------------------------------------------------------
-  // LIST VIEW
-  // -------------------------------------------------------------------------
-  if (view === "list") {
-    return (
-      <Link
-        href={`/product/${product.slug}`}
-        className="group flex gap-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs hover:shadow-md hover:border-indigo-500/50 transition-all duration-200 p-3.5 relative"
-      >
-        {/* Cover Image Container */}
-        <div className="relative h-32 w-32 shrink-0 rounded-xl overflow-hidden bg-[var(--border-subtle)]/30 border border-[var(--border-subtle)]">
-          {coverImage ? (
-            <Image
-              src={coverImage}
-              alt={product.name}
-              fill
-              sizes="128px"
-              className="object-cover group-hover:scale-105 transition-transform duration-300 ease-out"
-            />
-          ) : (
-            <div className="flex items-center justify-center h-full text-[var(--text-muted)]/50">
-              <ImageOff className="h-7 w-7" />
-            </div>
-          )}
-
-          {/* Glassmorphic Condition / Status Badge */}
-          <div className="absolute top-2 left-2 flex flex-col gap-1 pointer-events-none">
-            {product.status !== "available" ? (
-              <span className="px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-white border border-white/20 text-[10px] font-extrabold uppercase tracking-wider shadow-sm">
-                {product.status === "sold" ? "Sold" : "Reserved"}
-              </span>
-            ) : (
-              <span className="px-2 py-0.5 rounded-full bg-black/50 backdrop-blur-md text-white border border-white/15 text-[10px] font-semibold tracking-wide shadow-sm flex items-center gap-1">
-                <span>{conditionInfo.icon}</span>
-                <span>{conditionInfo.label}</span>
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Content Section */}
-        <div className="flex flex-col justify-center gap-1.5 min-w-0 flex-1 py-1">
-          <div className="flex items-start justify-between gap-2">
-            <p className="font-display font-bold text-[var(--text-primary)] text-sm sm:text-base truncate group-hover:text-[var(--brand-primary)] transition-colors">
-              {product.name}
-            </p>
-
-            {/* Instant Floating Spring Pop Heart Button */}
-            <button
-              type="button"
-              onClick={toggleSave}
-              className={`p-1.5 rounded-full transition-all duration-200 hover:scale-110 active:scale-90 cursor-pointer ${
-                isSaved
-                  ? "text-rose-500 bg-rose-500/10"
-                  : "text-[var(--text-muted)] hover:text-rose-500 hover:bg-[var(--border-subtle)]/40"
-              }`}
-              title={isSaved ? "Saved" : "Save item"}
-            >
-              <Heart
-                className={`w-4 h-4 transition-transform duration-200 ${
-                  isSaved ? "fill-rose-500 scale-110" : ""
-                }`}
-              />
-            </button>
-          </div>
-
-          {/* Seller Store & Campus Location */}
-          <div className="flex items-center gap-2 text-xs flex-wrap">
-            <span className="text-[var(--text-muted)] truncate max-w-[140px] font-medium">
-              {product.tenant.storeName}
-            </span>
-            <span className="text-[var(--text-muted)]">•</span>
-            <span className="inline-flex items-center gap-0.5 text-[11px] font-medium text-[var(--text-muted)]">
-              {pickupLocation}
-            </span>
-            <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-md">
-              <ShieldCheck className="w-3 h-3" /> Verified Student
-            </span>
-          </div>
-
-          <StarRating rating={product.averageRating} count={product.reviewCount} />
-
-          {/* Price & Timestamp */}
-          <div className="flex items-center justify-between mt-1 pt-1.5 border-t border-[var(--border-subtle)]">
-            <span className="font-display font-extrabold text-[var(--brand-primary)] text-lg sm:text-xl tracking-tight">
-              {formatPrice(product.priceCents)}
-            </span>
-            <span className="text-[11px] font-medium text-[var(--text-muted)]">
-              {formatRelativeTime(product.createdAt)}
-            </span>
-          </div>
-        </div>
-      </Link>
-    );
-  }
-
-  // -------------------------------------------------------------------------
-  // GRID VIEW (Default)
-  // -------------------------------------------------------------------------
   return (
     <Link
       href={`/product/${product.slug}`}
-      className="group flex flex-col rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden shadow-xs hover:shadow-md hover:border-indigo-500/50 transition-all duration-200 hover:-translate-y-0.5 relative"
+      className="group relative flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-xs hover:shadow-md hover:border-blue-400 transition-all duration-200 gap-4"
     >
-      {/* Product Image Container */}
-      <div className="relative aspect-square bg-slate-100 dark:bg-slate-800 overflow-hidden">
-        {coverImage ? (
-          <Image
-            src={coverImage}
-            alt={product.name}
-            fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="object-cover group-hover:scale-105 transition-transform duration-300 ease-out"
-          />
-        ) : (
-          <div className="flex items-center justify-center h-full text-[var(--text-muted)]/50">
-            <ImageOff className="h-8 w-8" />
-          </div>
-        )}
+      {/* Figma FEATURED Pill Tag */}
+      {isFeatured && (
+        <div className="absolute -top-3 left-6 px-3 py-0.5 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white text-[9px] font-extrabold uppercase tracking-wider shadow-xs">
+          FEATURED
+        </div>
+      )}
 
-        {/* Floating Glassmorphic Condition & Status Badges */}
-        <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 pointer-events-none">
-          {product.status !== "available" ? (
-            <span className="px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md text-white border border-white/20 text-[10px] font-extrabold uppercase tracking-wider shadow-sm">
-              {product.status === "sold" ? "Sold Out" : "Reserved"}
-            </span>
+      {/* Card Header: Icon/Image + Title + Handle + Verified Pill */}
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start gap-3 min-w-0">
+          {/* Category Icon or Thumbnail */}
+          {coverImage ? (
+            <div className="relative h-11 w-11 shrink-0 rounded-xl overflow-hidden border border-slate-200 bg-slate-100">
+              <Image
+                src={coverImage}
+                alt={product.name}
+                fill
+                sizes="44px"
+                className="object-cover group-hover:scale-105 transition-transform duration-200"
+              />
+            </div>
           ) : (
-            <span className="px-2.5 py-1 rounded-full bg-black/55 backdrop-blur-md text-white border border-white/15 text-[10px] font-semibold tracking-wide shadow-sm flex items-center gap-1">
-              <span>{conditionInfo.icon}</span>
-              <span>{conditionInfo.label}</span>
-            </span>
+            <div className={`flex items-center justify-center h-11 w-11 rounded-xl border shrink-0 ${catBg}`}>
+              <CatIcon className="h-5 w-5" strokeWidth={2} />
+            </div>
           )}
+
+          <div className="min-w-0">
+            <h3 className="font-display font-bold text-slate-900 text-sm sm:text-base truncate group-hover:text-blue-600 transition-colors">
+              {product.name}
+            </h3>
+            <p className="text-xs text-slate-500 truncate mt-0.5">
+              <span>{sellerHandle}</span>
+              <span className="mx-1.5">&bull;</span>
+              <span>{product.category?.name ?? "Campus Gear"}</span>
+            </p>
+          </div>
         </div>
 
-        {/* Floating Spring Pop Heart / Wishlist Button */}
-        <button
-          type="button"
-          onClick={toggleSave}
-          className={`absolute top-2.5 right-2.5 h-8 w-8 rounded-full bg-[var(--card-bg)]/85 dark:bg-black/70 backdrop-blur-md border border-white/20 dark:border-white/10 flex items-center justify-center transition-all duration-200 shadow-sm cursor-pointer active:scale-85 ${
-            isSaved
-              ? "text-rose-500 scale-105"
-              : "text-[var(--text-muted)] hover:text-rose-500 hover:scale-110 sm:opacity-0 sm:group-hover:opacity-100"
-          }`}
-          title={isSaved ? "Saved" : "Save item"}
-        >
-          <Heart
-            className={`w-4 h-4 transition-transform duration-200 ${
-              isSaved ? "fill-rose-500 text-rose-500 scale-110" : ""
-            }`}
-          />
-        </button>
+        {/* Verified Badge / Save Heart */}
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            <span>Verified</span>
+          </span>
 
-        {/* Floating Campus Location Pill on Bottom-Left of Image */}
-        <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-black/50 backdrop-blur-xs text-white text-[10px] font-medium tracking-tight flex items-center gap-1 pointer-events-none">
-          <span>{pickupLocation}</span>
+          <button
+            type="button"
+            onClick={toggleSave}
+            className={`p-1 rounded-full transition-all duration-200 hover:scale-110 active:scale-90 cursor-pointer ${
+              isSaved
+                ? "text-rose-500 bg-rose-50"
+                : "text-slate-300 hover:text-rose-500 hover:bg-slate-50"
+            }`}
+            title={isSaved ? "Saved" : "Save item"}
+          >
+            <Heart
+              className={`w-4 h-4 transition-transform ${
+                isSaved ? "fill-rose-500 scale-110" : ""
+              }`}
+            />
+          </button>
         </div>
       </div>
 
-      {/* Card Content */}
-      <div className="flex flex-col gap-1.5 p-4 flex-1 justify-between">
-        <div className="space-y-1">
-          <p className="font-display font-bold text-[var(--text-primary)] text-sm sm:text-base line-clamp-1 group-hover:text-[var(--brand-primary)] transition-colors">
-            {product.name}
-          </p>
-
-          <div className="flex items-center justify-between text-xs gap-1.5">
-            <span className="text-[var(--text-muted)] truncate max-w-[120px] font-medium">
-              {product.tenant.storeName}
-            </span>
-            <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-md shrink-0">
-              <ShieldCheck className="w-3 h-3" /> Verified
-            </span>
-          </div>
-
-          <StarRating rating={product.averageRating} count={product.reviewCount} />
+      {/* Two Key Metrics (Figma 2-Column Stats: Condition & Location) */}
+      <div className="grid grid-cols-2 gap-2 py-2 border-y border-slate-100">
+        <div className="flex items-center gap-2 text-xs text-slate-600">
+          <span className="text-sm">{conditionInfo.icon}</span>
+          <span className="truncate font-medium">{conditionInfo.label}</span>
         </div>
+        <div className="flex items-center gap-2 text-xs text-slate-600">
+          <MapPin className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+          <span className="truncate font-medium">{pickupLocation}</span>
+        </div>
+      </div>
 
-        {/* Clean Price & Relative Timestamp */}
-        <div className="flex items-center justify-between mt-2 pt-2 border-t border-[var(--border-subtle)]">
-          <span className="font-display font-extrabold text-[var(--brand-primary)] text-lg sm:text-xl tracking-tight">
+      {/* Tags Row */}
+      <div className="flex items-center gap-1.5 flex-wrap">
+        {product.branch && (
+          <span className="px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 border border-purple-200/80 text-[10px] font-semibold">
+            {product.branch}
+          </span>
+        )}
+        <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200/80 text-[10px] font-semibold">
+          IKGPTU Roll Verified
+        </span>
+        <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/80 text-[10px] font-semibold">
+          0% Commission
+        </span>
+      </div>
+
+      {/* Description Snippet (Figma 2-line snippet) */}
+      <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+        {product.description ||
+          "Direct student listing available for physical on-campus inspection and instant handoff."}
+      </p>
+
+      {/* Card Footer: Price on Left, More Details on Right */}
+      <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+        <div>
+          <span className="font-display font-black text-xl text-slate-900 tracking-tight">
             {formatPrice(product.priceCents)}
           </span>
-          <span className="text-[11px] font-medium text-[var(--text-muted)]">
-            {formatRelativeTime(product.createdAt)}
-          </span>
         </div>
+
+        <span className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors">
+          More Details
+        </span>
       </div>
     </Link>
   );

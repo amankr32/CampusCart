@@ -41,7 +41,7 @@ export default function HowItWorksPage() {
             key={title}
             className="relative flex flex-col gap-3 p-6 rounded-2xl border border-[var(--border-subtle)] bg-[var(--card-bg)] shadow-sm hover:shadow-md transition-all"
           >
-            <span className="absolute -top-3 -right-3 flex items-center justify-center h-7 w-7 rounded-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-xs font-bold shadow-xs">
+            <span className="absolute -top-3 -right-3 flex items-center justify-center h-7 w-7 rounded-full bg-blue-600 text-white text-xs font-bold shadow-xs">
               {index + 1}
             </span>
             <span className="flex items-center justify-center h-11 w-11 rounded-xl bg-[var(--brand-primary-light)] text-[var(--brand-primary)]">

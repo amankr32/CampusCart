@@ -93,7 +93,7 @@ export function MessageSellerButton({
         size="lg"
         onClick={handleClick}
         disabled={isLoading || status === "loading"}
-        className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white rounded-2xl font-extrabold text-sm sm:text-base px-8 py-3.5 shadow-lg shadow-indigo-500/25 transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer"
+        className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-sm px-6 py-3 shadow-xs transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer border-0"
       >
         {isLoading ? (
           <>

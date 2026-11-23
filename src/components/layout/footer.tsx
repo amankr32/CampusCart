@@ -1,141 +1,107 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
-import { ShoppingBag, ShieldCheck, MapPin } from "@/components/ui/material-symbol";
+import { toast } from "@/lib/toast";
 
 export function Footer() {
+  const [email, setEmail] = useState("");
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !email.includes("@")) {
+      toast.error("Please enter a valid campus email");
+      return;
+    }
+    toast.success("Subscribed to CampusCart newsletter!", {
+      description: "You'll receive university deals and textbook drops weekly.",
+    });
+    setEmail("");
+  };
+
   return (
-    <footer className="border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 mt-auto transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-12">
+    <footer className="border-t border-slate-200 bg-white mt-auto">
+      <div className="max-w-6xl mx-auto px-6 sm:px-8 py-12 sm:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 pb-12">
           
-          {/* Brand & Campus Identity */}
-          <div className="md:col-span-1 space-y-3">
-            <Link href="/" className="inline-flex items-center gap-2.5 group">
-              <span className="flex items-center justify-center h-9 w-9 rounded-xl bg-indigo-600 text-white shadow-xs group-hover:bg-indigo-700 transition-colors">
-                <ShoppingBag className="h-5 w-5" strokeWidth={2} />
-              </span>
-              <span className="font-display font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">
-                Campus<span className="text-indigo-600">Cart</span>
+          {/* Column 1: Brand & Bio (4 cols) */}
+          <div className="md:col-span-4 space-y-3">
+            <Link href="/" className="inline-block">
+              <span className="font-display font-black text-2xl tracking-tight text-slate-900">
+                campuscart<span className="text-blue-600">.</span>
               </span>
             </Link>
             
-            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              The student-to-student marketplace for IKGPTU. Buy and sell semester books, drafters, calculators, and hostel gear without middleman fees.
+            <p className="text-xs text-slate-500 leading-relaxed max-w-sm">
+              CampusCart is a college marketplace. We are the student marketplace that connects campus students with verified peers for safe, 0% brokerage essentials.
+            </p>
+          </div>
+
+          {/* Column 2: Company Links (4 cols) */}
+          <div className="md:col-span-3 space-y-3">
+            <h3 className="text-sm font-bold text-slate-900">
+              Company
+            </h3>
+            <ul className="space-y-2.5 text-xs">
+              <li>
+                <Link href="/about" className="text-slate-600 hover:text-blue-600 transition-colors">
+                  About us
+                </Link>
+              </li>
+              <li className="flex items-center gap-2">
+                <Link href="/contact" className="text-slate-600 hover:text-blue-600 transition-colors">
+                  Careers
+                </Link>
+                <span className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-100">
+                  We&apos;re hiring!
+                </span>
+              </li>
+              <li>
+                <Link href="/contact" className="text-slate-600 hover:text-blue-600 transition-colors">
+                  Contact us
+                </Link>
+              </li>
+              <li>
+                <Link href="/guidelines" className="text-slate-600 hover:text-blue-600 transition-colors">
+                  Privacy policy
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 3: Newsletter (5 cols) */}
+          <div className="md:col-span-5 space-y-3">
+            <h3 className="text-sm font-bold text-slate-900">
+              Subscribe to our newsletter
+            </h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              The latest items, university drops, and student deals, sent to your inbox weekly.
             </p>
 
-            <div className="flex items-center gap-1.5 text-xs text-slate-500 pt-1">
-              <MapPin className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
-              <span>IKGPTU Main Campus, Kapurthala</span>
-            </div>
-          </div>
-
-          {/* Quick Links Column 1: Marketplace */}
-          <div className="space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
-              Marketplace
-            </h3>
-            <ul className="space-y-2 text-xs">
-              <li>
-                <Link href="/browse" className="text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                  Browse All Listings
-                </Link>
-              </li>
-              <li>
-                <Link href="/sell" className="text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                  + Sell an Item
-                </Link>
-              </li>
-              <li>
-                <Link href="/browse?category=books" className="text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                  Textbooks &amp; Notes
-                </Link>
-              </li>
-              <li>
-                <Link href="/browse?category=electronics" className="text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                  Calculators &amp; Electronics
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Quick Links Column 2: Trust & Safety */}
-          <div className="space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
-              Trust &amp; Safety
-            </h3>
-            <ul className="space-y-2 text-xs">
-              <li>
-                <Link href="/student-verification" className="text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                  Get Student Verified
-                </Link>
-              </li>
-              <li>
-                <Link href="/safety" className="text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                  Safe Campus Meetup Spots
-                </Link>
-              </li>
-              <li>
-                <Link href="/how-it-works" className="text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                  How Buying &amp; Selling Works
-                </Link>
-              </li>
-              <li>
-                <Link href="/guidelines" className="text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                  Community Rules
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Quick Links Column 3: Help & Account */}
-          <div className="space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
-              Support &amp; Account
-            </h3>
-            <ul className="space-y-2 text-xs">
-              <li>
-                <Link href="/faq" className="text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                  Help Center &amp; FAQs
-                </Link>
-              </li>
-              <li>
-                <Link href="/orders" className="text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                  My Orders
-                </Link>
-              </li>
-              <li>
-                <Link href="/profile" className="text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                  My Profile
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                  Contact Campus Team
-                </Link>
-              </li>
-            </ul>
+            <form onSubmit={handleSubscribe} className="flex items-center gap-2 pt-1 max-w-md">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 outline-hidden focus:border-blue-600 focus:bg-white transition-all"
+              />
+              <button
+                type="submit"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition-colors shrink-0 shadow-xs cursor-pointer"
+              >
+                Subscribe
+              </button>
+            </form>
           </div>
 
         </div>
 
-        {/* Bottom Bar: Copyright & Note */}
-        <div className="mt-10 pt-6 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+        {/* Bottom Bar: Copyright matching Figma step_58_media_0.png */}
+        <div className="pt-8 border-t border-slate-100 text-center text-xs text-slate-400">
           <p>
-            &copy; {new Date().getFullYear()} CampusCart &bull; Built for IKGPTU students
+            Copyright {new Date().getFullYear()} &copy; CampusCart. All Rights Reserved.
           </p>
-
-          <div className="flex items-center gap-4">
-            <Link href="/guidelines" className="hover:text-slate-900 dark:hover:text-white transition-colors">
-              Privacy
-            </Link>
-            <span>&bull;</span>
-            <Link href="/guidelines" className="hover:text-slate-900 dark:hover:text-white transition-colors">
-              Terms
-            </Link>
-            <span>&bull;</span>
-            <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
-              <ShieldCheck className="w-3.5 h-3.5" /> Verified Students Only
-            </span>
-          </div>
         </div>
       </div>
     </footer>

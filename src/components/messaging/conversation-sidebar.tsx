@@ -124,22 +124,22 @@ export function ConversationSidebar({
 
   return (
     <div
-      className={`${isIndex ? "flex" : "hidden md:flex"} w-full md:w-80 shrink-0 flex-col border-r border-slate-200 dark:border-slate-800 h-full bg-white dark:bg-slate-900`}
+      className={`${isIndex ? "flex" : "hidden md:flex"} w-full md:w-80 shrink-0 flex-col border-r border-slate-200 h-full bg-white`}
     >
-      <div className="p-4 border-b border-slate-200 dark:border-slate-800 space-y-3">
-        <h1 className="font-display font-extrabold text-xl text-slate-900 dark:text-white">Messages</h1>
+      <div className="p-4 border-b border-slate-200 space-y-3">
+        <h1 className="font-display font-extrabold text-xl text-slate-900">Messages</h1>
         <div className="relative">
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search conversations..."
-            className="h-9 pl-8 text-xs rounded-xl bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
+            className="h-9 pl-8 text-xs rounded-xl bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white"
           />
           <Search className="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800/60">
+      <div className="flex-1 overflow-y-auto divide-y divide-slate-100">
         {filtered.length === 0 ? (
           <p className="text-xs text-slate-500 text-center py-8 px-4">
             {conversations.length === 0
@@ -165,17 +165,17 @@ export function ConversationSidebar({
                 href={`/dashboard/messages/${conversation.id}`}
                 className={`flex items-center gap-3 p-3.5 transition-colors ${
                   isActive
-                    ? "bg-indigo-50/80 dark:bg-indigo-950/40 border-l-4 border-l-indigo-600"
-                    : "hover:bg-slate-50 dark:hover:bg-slate-800/60"
+                    ? "bg-blue-50/80 border-l-4 border-l-blue-600"
+                    : "hover:bg-slate-50"
                 }`}
               >
                 {/* User Avatar with Product Thumbnail overlay */}
                 <div className="relative shrink-0">
-                  <div className="h-11 w-11 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 font-bold text-sm flex items-center justify-center border border-indigo-200 dark:border-indigo-800">
+                  <div className="h-11 w-11 rounded-full bg-blue-100 text-blue-600 font-bold text-sm flex items-center justify-center border border-blue-200">
                     {studentInitial}
                   </div>
                   {cover && (
-                    <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-md border border-white dark:border-slate-900 overflow-hidden shadow-2xs">
+                    <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-md border border-white overflow-hidden shadow-2xs">
                       <Image src={cover} alt="" fill className="object-cover" />
                     </div>
                   )}
@@ -183,20 +183,20 @@ export function ConversationSidebar({
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-1.5">
-                    <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
+                    <p className="text-xs font-bold text-slate-900 truncate">
                       {conversation.otherUser?.name ?? "Campus Student"}
                     </p>
                     <span className="text-[10px] font-medium text-slate-400 shrink-0">
                       {timeAgo(conversation.updatedAt)}
                     </span>
                   </div>
-                  <p className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 truncate">
+                  <p className="text-[11px] font-semibold text-blue-600 truncate">
                     {conversation.product.name} · {formatPrice(conversation.product.priceCents)}
                   </p>
                   <p
                     className={`text-xs truncate mt-0.5 ${
                       unreadCount > 0
-                        ? "font-bold text-slate-900 dark:text-white"
+                        ? "font-bold text-slate-900"
                         : "text-slate-500"
                     }`}
                   >
@@ -205,7 +205,7 @@ export function ConversationSidebar({
                 </div>
 
                 {unreadCount > 0 && (
-                  <span className="flex items-center justify-center h-5 min-w-5 px-1.5 rounded-full bg-indigo-600 text-white text-[10px] font-bold shrink-0">
+                  <span className="flex items-center justify-center h-5 min-w-5 px-1.5 rounded-full bg-blue-600 text-white text-[10px] font-bold shrink-0">
                     {unreadCount > 9 ? "9+" : unreadCount}
                   </span>
                 )}

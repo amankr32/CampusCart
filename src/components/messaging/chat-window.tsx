@@ -452,13 +452,13 @@ export function ChatWindow({
         : "Available";
 
   return (
-    <div className="flex flex-col h-full bg-white dark:bg-slate-900">
+    <div className="flex flex-col h-full bg-white">
       {/* Header */}
-      <div className="flex items-center justify-between gap-3 p-3.5 sm:p-4 border-b border-slate-200 dark:border-slate-800 shrink-0 bg-white dark:bg-slate-900">
+      <div className="flex items-center justify-between gap-3 p-3.5 sm:p-4 border-b border-slate-200 shrink-0 bg-white">
         <div className="flex items-center gap-3 min-w-0">
           <Link
             href="/dashboard/messages"
-            className="md:hidden flex items-center justify-center h-8 w-8 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors"
+            className="md:hidden flex items-center justify-center h-8 w-8 rounded-lg hover:bg-slate-100 text-slate-700 transition-colors"
             aria-label="Back to conversations"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -466,21 +466,21 @@ export function ChatWindow({
 
           {/* Student Avatar */}
           <div className="relative shrink-0">
-            <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-indigo-600 text-white font-bold text-sm sm:text-base flex items-center justify-center shadow-xs">
+            <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-blue-600 text-white font-bold text-sm sm:text-base flex items-center justify-center shadow-xs">
               {otherUser.name.slice(0, 1).toUpperCase()}
             </div>
             {presence.isOnline && (
-              <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900" />
+              <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-500 border-2 border-white" />
             )}
           </div>
 
           <div className="min-w-0">
-            <p className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate">
+            <p className="text-xs sm:text-sm font-bold text-slate-900 truncate">
               {otherUser.name}
             </p>
             <p className="text-[11px] text-slate-500">
               {presence.isTyping ? (
-                <span className="italic text-indigo-600 font-semibold">typing...</span>
+                <span className="italic text-blue-600 font-semibold">typing...</span>
               ) : presence.isOnline ? (
                 <span className="text-emerald-600 font-semibold">Active now</span>
               ) : (
@@ -493,9 +493,9 @@ export function ChatWindow({
         {/* Compact Product Pill (Right) */}
         <Link
           href={`/product/${product.slug}`}
-          className="flex items-center gap-2.5 p-1.5 sm:px-3 sm:py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 hover:border-indigo-500/40 transition-colors max-w-[180px] sm:max-w-xs shrink-0 group"
+          className="flex items-center gap-2.5 p-1.5 sm:px-3 sm:py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-blue-500/40 transition-colors max-w-[180px] sm:max-w-xs shrink-0 group"
         >
-          <div className="relative h-8 w-8 rounded-lg overflow-hidden bg-slate-200 dark:bg-slate-700 shrink-0">
+          <div className="relative h-8 w-8 rounded-lg overflow-hidden bg-slate-100 shrink-0">
             {product.image ? (
               <Image src={product.image} alt="" fill className="object-cover" />
             ) : (
@@ -505,10 +505,10 @@ export function ChatWindow({
             )}
           </div>
           <div className="hidden sm:flex flex-col min-w-0 text-left">
-            <span className="text-xs font-semibold text-slate-900 dark:text-white truncate group-hover:text-indigo-600 transition-colors">
+            <span className="text-xs font-semibold text-slate-900 truncate group-hover:text-blue-600 transition-colors">
               {product.name}
             </span>
-            <span className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400">
+            <span className="text-[11px] font-bold text-blue-600">
               {formatPrice(product.priceCents)}
             </span>
           </div>
@@ -528,7 +528,7 @@ export function ChatWindow({
             </p>
             <Button
               size="sm"
-              className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl px-4"
+              className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl px-4"
               disabled={isOrderActionPending}
               onClick={() => runOrderAction(() => markAsSoldAction(conversationId))}
             >
@@ -611,7 +611,7 @@ export function ChatWindow({
                 <Button
                   size="sm"
                   variant="outline"
-                  className="rounded-xl text-xs font-bold border-indigo-500/30 text-[var(--brand-primary)] hover:bg-[var(--brand-primary-light)]"
+                  className="rounded-xl text-xs font-bold border-blue-500/30 text-[var(--brand-primary)] hover:bg-[var(--brand-primary-light)]"
                   onClick={() => setShowBuyerRating(true)}
                 >
                   Rate this buyer
@@ -654,11 +654,11 @@ export function ChatWindow({
                   onChange={(e) => setBuyerRatingNote(e.target.value)}
                   placeholder="Any notes about this buyer? (optional)"
                   rows={2}
-                  className="w-full resize-none rounded-xl border border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full resize-none rounded-xl border border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <Button
                   size="sm"
-                  className="self-start bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold"
+                  className="self-start bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold"
                   disabled={buyerRating === 0 || isSubmittingRating}
                   onClick={handleSubmitBuyerRating}
                 >
@@ -671,17 +671,17 @@ export function ChatWindow({
       </div>
 
       {/* Messages */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 sm:p-5 flex flex-col gap-3.5 bg-slate-50/70 dark:bg-slate-950/60">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 sm:p-5 flex flex-col gap-3.5 bg-slate-50/70">
         {messages.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center p-6 space-y-4 max-w-sm mx-auto my-auto">
-            <div className="h-14 w-14 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold text-xl flex items-center justify-center shadow-xs">
+            <div className="h-14 w-14 rounded-full bg-blue-50 text-blue-600 font-bold text-xl flex items-center justify-center shadow-xs">
               {otherUser.name.slice(0, 1).toUpperCase()}
             </div>
             <div>
-              <h4 className="font-display font-bold text-base text-slate-900 dark:text-white">
+              <h4 className="font-display font-bold text-base text-slate-900">
                 Chatting with {otherUser.name}
               </h4>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
                 Coordinate handoffs at safe public campus spots like the <strong>Central Library</strong> or <strong>Canteen</strong>.
               </p>
             </div>
@@ -698,7 +698,7 @@ export function ChatWindow({
                   key={starter}
                   type="button"
                   onClick={() => setDraft(starter)}
-                  className="w-full text-left text-xs font-medium px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-indigo-50/60 dark:hover:bg-indigo-950/40 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 text-slate-800 dark:text-slate-200 transition-all cursor-pointer shadow-2xs"
+                  className="w-full text-left text-xs font-medium px-3.5 py-2.5 rounded-xl bg-white hover:bg-blue-50/60 border border-slate-200 hover:border-blue-400 text-slate-800 transition-all cursor-pointer shadow-2xs"
                 >
                   {starter}
                 </button>
@@ -710,7 +710,7 @@ export function ChatWindow({
             if (m.type === "system") {
               return (
                 <div key={m.id} className="flex justify-center my-1.5">
-                  <p className="text-[11px] font-medium text-slate-500 bg-slate-200/70 dark:bg-slate-800 rounded-full px-3.5 py-1 text-center max-w-[85%]">
+                  <p className="text-[11px] font-medium text-slate-500 bg-slate-200/70 rounded-full px-3.5 py-1 text-center max-w-[85%]">
                     {m.message}
                   </p>
                 </div>
@@ -728,12 +728,12 @@ export function ChatWindow({
                 <div
                   className={`px-4 py-2.5 shadow-2xs ${
                     isMine
-                      ? "bg-indigo-600 text-white rounded-2xl rounded-br-xs"
-                      : "bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 rounded-2xl rounded-bl-xs"
+                      ? "bg-blue-600 text-white rounded-2xl rounded-br-xs"
+                      : "bg-white text-slate-900 border border-slate-200 rounded-2xl rounded-bl-xs"
                   }`}
                 >
                   {m.image && (
-                    <div className="relative w-48 sm:w-56 aspect-square rounded-xl overflow-hidden mb-2 border border-black/10 dark:border-white/10">
+                    <div className="relative w-48 sm:w-56 aspect-square rounded-xl overflow-hidden mb-2 border border-black/10">
                       <Image src={m.image} alt="Attachment" fill className="object-cover" />
                     </div>
                   )}
@@ -746,7 +746,7 @@ export function ChatWindow({
                 <span className="text-[10px] text-slate-400 mt-1 px-1 font-medium">
                   {formatTime(m.createdAt)}
                   {isMine && m.id === lastOwnMessage?.id && (
-                    <span className="ml-1 text-indigo-500 font-semibold">
+                    <span className="ml-1 text-blue-500 font-semibold">
                       {m.isRead ? "✓✓ Read" : "✓ Sent"}
                     </span>
                   )}
@@ -758,7 +758,7 @@ export function ChatWindow({
       </div>
 
       {/* Composer */}
-      <div className="border-t border-slate-200 dark:border-slate-800 p-3 sm:p-4 shrink-0 bg-white dark:bg-slate-900">
+      <div className="border-t border-slate-200 p-3 sm:p-4 shrink-0 bg-white">
         {/* Campus Quick Reply Chips for Students */}
         {role === "buyer" && messages.length <= 1 && !draft && (
           <div className="flex items-center gap-1.5 overflow-x-auto pb-2.5 scrollbar-none">
@@ -767,7 +767,7 @@ export function ChatWindow({
                 key={chip}
                 type="button"
                 onClick={() => setDraft(chip)}
-                className="shrink-0 text-[11px] font-medium px-2.5 py-1 rounded-full bg-[var(--input-bg)] border border-[var(--border-subtle)] hover:border-indigo-500/50 hover:text-indigo-600 text-[var(--text-primary)] transition-colors cursor-pointer shadow-2xs"
+                className="shrink-0 text-[11px] font-medium px-2.5 py-1 rounded-full bg-[var(--input-bg)] border border-[var(--border-subtle)] hover:border-blue-500/50 hover:text-blue-600 text-[var(--text-primary)] transition-colors cursor-pointer shadow-2xs"
               >
                 {chip}
               </button>
@@ -823,7 +823,7 @@ export function ChatWindow({
           <button
             type="button"
             onClick={() => setShowEmoji((v) => !v)}
-            className="flex items-center justify-center h-10 w-10 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0 text-slate-500 transition-colors cursor-pointer"
+            className="flex items-center justify-center h-10 w-10 rounded-xl hover:bg-slate-100 shrink-0 text-slate-500 transition-colors cursor-pointer"
             aria-label="Emoji"
           >
             <Smile className="h-5 w-5" />
@@ -833,7 +833,7 @@ export function ChatWindow({
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading}
-            className="flex items-center justify-center h-10 w-10 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 shrink-0 text-slate-500 transition-colors disabled:opacity-50 cursor-pointer"
+            className="flex items-center justify-center h-10 w-10 rounded-xl hover:bg-slate-100 shrink-0 text-slate-500 transition-colors disabled:opacity-50 cursor-pointer"
             aria-label="Attach image"
           >
             {isUploading ? (
@@ -861,12 +861,12 @@ export function ChatWindow({
             }}
             placeholder="Type a message... (Press Enter to send)"
             rows={1}
-            className="flex-1 resize-none rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white px-3.5 py-2.5 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-indigo-500 max-h-32"
+            className="flex-1 resize-none rounded-xl border border-slate-300 bg-slate-50 text-slate-900 px-3.5 py-2.5 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-blue-500 max-h-32"
           />
 
           <Button
             size="icon"
-            className="rounded-xl h-10 w-10 bg-indigo-600 hover:bg-indigo-700 text-white shrink-0 shadow-xs cursor-pointer transition-colors"
+            className="rounded-xl h-10 w-10 bg-blue-600 hover:bg-blue-700 text-white shrink-0 shadow-xs cursor-pointer transition-colors"
             onClick={handleSend}
             disabled={isSending || (!draft.trim() && !pendingImage)}
             aria-label="Send message"

@@ -15,10 +15,10 @@ export async function CategoryPills({
       <Link
         href="/browse"
         className={cn(
-          "text-xs font-bold px-4 py-2 rounded-xl border transition-all",
+          "text-xs font-semibold px-4 py-2 rounded-xl border transition-all cursor-pointer",
           !activeCategorySlug
-            ? "bg-indigo-600 border-transparent text-white shadow-xs"
-            : "bg-[var(--card-bg)] border-[var(--border-subtle)] text-[var(--text-primary)] hover:border-[var(--brand-primary)]/50 hover:text-[var(--brand-primary)]"
+            ? "bg-blue-600 border-blue-600 text-white shadow-xs"
+            : "bg-white border-slate-200 text-slate-600 hover:border-blue-400 hover:text-blue-600"
         )}
       >
         All Items
@@ -28,10 +28,10 @@ export async function CategoryPills({
           key={category.id}
           href={`/browse?category=${category.slug}`}
           className={cn(
-            "text-xs font-bold px-4 py-2 rounded-xl border transition-all",
+            "text-xs font-semibold px-4 py-2 rounded-xl border transition-all cursor-pointer",
             activeCategorySlug === category.slug
-              ? "bg-indigo-600 border-transparent text-white shadow-xs"
-              : "bg-[var(--card-bg)] border-[var(--border-subtle)] text-[var(--text-primary)] hover:border-[var(--brand-primary)]/50 hover:text-[var(--brand-primary)]"
+              ? "bg-blue-600 border-blue-600 text-white shadow-xs"
+              : "bg-white border-slate-200 text-slate-600 hover:border-blue-400 hover:text-blue-600"
           )}
         >
           {category.name}

@@ -55,21 +55,34 @@ export default async function BrowsePage({
   });
 
   return (
-    <div className="w-full px-4 lg:px-12 py-10">
-      <div className="mb-6">
-        <h1 className="font-display font-bold text-3xl mb-1">Browse listings</h1>
-        <p className="text-[var(--text-muted)] text-sm mb-4">
-          Showing {totalCount} item{totalCount === 1 ? "" : "s"}
-        </p>
-        <CategoryPills activeCategorySlug={params.category} />
+    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8">
+      {/* Page Header */}
+      <div className="space-y-3">
+        <div>
+          <span className="text-[11px] font-extrabold uppercase tracking-widest text-blue-600">
+            IKGPTU Student Marketplace
+          </span>
+          <h1 className="font-display font-black text-3xl sm:text-4xl text-slate-900 tracking-tight mt-1">
+            Explore Campus Listings
+          </h1>
+          <p className="text-sm text-slate-500 mt-1 max-w-2xl">
+            Browse genuine textbooks, cycles, engineering tools, and hostel essentials listed by verified campus peers.
+          </p>
+        </div>
+
+        {/* Category Pills Bar */}
+        <div className="pt-1">
+          <CategoryPills activeCategorySlug={params.category} />
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8">
-        <aside className="lg:sticky lg:top-24 lg:self-start">
+      {/* Main Browse Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8 items-start">
+        <aside className="lg:sticky lg:top-24 lg:self-start w-full">
           <SearchFilters />
         </aside>
 
-        <div>
+        <div className="min-w-0 space-y-6">
           <BrowseResults products={docs} totalCount={totalCount} filterParams={params} />
           <ProductPagination
             currentPage={currentPage}
@@ -79,33 +92,42 @@ export default async function BrowsePage({
         </div>
       </div>
 
-      <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6 border-t border-[var(--border-subtle)] pt-8">
+      {/* Campus Trust Strip */}
+      <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-4 p-6 rounded-2xl border border-slate-200 bg-white shadow-xs">
         <div className="flex items-start gap-3">
-          <ShieldCheck className="h-5 w-5 text-emerald-600 shrink-0" />
+          <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 shrink-0">
+            <ShieldCheck className="h-5 w-5" />
+          </div>
           <div>
-            <p className="text-sm font-medium">Verified Students</p>
-            <p className="text-xs text-[var(--text-muted)]">Campus email required</p>
+            <p className="text-xs font-bold text-slate-900">Verified Students</p>
+            <p className="text-[11px] text-slate-500">IKGPTU roll check</p>
           </div>
         </div>
         <div className="flex items-start gap-3">
-          <MapPin className="h-5 w-5 text-blue-600 shrink-0" />
+          <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-50 text-blue-600 shrink-0">
+            <MapPin className="h-5 w-5" />
+          </div>
           <div>
-            <p className="text-sm font-medium">Safe Campus Deals</p>
-            <p className="text-xs text-[var(--text-muted)]">Meet in person on campus</p>
+            <p className="text-xs font-bold text-slate-900">Campus Pickups</p>
+            <p className="text-[11px] text-slate-500">Hostels &amp; Library</p>
           </div>
         </div>
         <div className="flex items-start gap-3">
-          <IndianRupee className="h-5 w-5 text-orange-600 shrink-0" />
+          <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-amber-50 text-amber-600 shrink-0">
+            <IndianRupee className="h-5 w-5" />
+          </div>
           <div>
-            <p className="text-sm font-medium">No Platform Fee</p>
-            <p className="text-xs text-[var(--text-muted)]">Keep 100% of your earnings</p>
+            <p className="text-xs font-bold text-slate-900">Zero Brokerage</p>
+            <p className="text-[11px] text-slate-500">Keep 100% earnings</p>
           </div>
         </div>
         <div className="flex items-start gap-3">
-          <MessageCircle className="h-5 w-5 text-violet-600 shrink-0" />
+          <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-purple-50 text-purple-600 shrink-0">
+            <MessageCircle className="h-5 w-5" />
+          </div>
           <div>
-            <p className="text-sm font-medium">Direct Chat</p>
-            <p className="text-xs text-[var(--text-muted)]">Chat directly with sellers</p>
+            <p className="text-xs font-bold text-slate-900">Direct Chat</p>
+            <p className="text-[11px] text-slate-500">Instant messaging</p>
           </div>
         </div>
       </div>

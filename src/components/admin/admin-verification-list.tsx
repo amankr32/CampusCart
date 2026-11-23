@@ -88,7 +88,7 @@ export function AdminVerificationList({
               onClick={() => setFilter(tab)}
               className={`px-4 py-2 text-xs font-semibold rounded-xl capitalize transition-all whitespace-nowrap ${
                 filter === tab
-                  ? "bg-indigo-600 text-white shadow-sm"
+                  ? "bg-blue-600 text-white shadow-sm"
                   : "bg-[var(--input-bg)] text-[var(--text-muted)] hover:bg-[var(--border-subtle)]"
               }`}
             >

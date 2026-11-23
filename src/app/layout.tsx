@@ -6,7 +6,6 @@ import { AppSessionProvider } from "@/components/providers/session-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
-import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { CommandPalette } from "@/components/layout/command-palette";
 
 import { Toaster } from "@/components/ui/toaster";
@@ -18,11 +17,11 @@ export const metadata: Metadata = {
     template: "%s | CampusCart",
   },
   description:
-    "Buy, sell, and swap textbooks, hostel essentials, cycles, and gadgets with fellow IK Gujral Punjab Technical University students. Verified campus community, zero listing fees.",
+    "Buy, sell, and swap textbooks, hostel essentials, cycles, drafters, and gadgets with fellow IK Gujral Punjab Technical University students. Verified student community, zero commission fees.",
   keywords: [
-    "IKGPTU",
     "CampusCart",
-    "PTU Bazar",
+    "IKGPTU",
+    "Campus Marketplace",
     "Student Marketplace",
     "College textbooks",
     "Hostel essentials",
@@ -73,13 +72,12 @@ export default async function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
         />
       </head>
-      <body className="min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)]">
+      <body className="min-h-full flex flex-col bg-white text-slate-900 antialiased">
         <AppSessionProvider session={session}>
           <ThemeProvider>
             <Navbar />
-            <main className="flex-1 flex flex-col w-full pb-16 md:pb-0">{children}</main>
+            <main className="flex-1 flex flex-col w-full">{children}</main>
             <Footer />
-            <MobileBottomNav />
             <CommandPalette />
             <Toaster />
           </ThemeProvider>

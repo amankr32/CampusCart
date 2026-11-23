@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 @import "@fontsource/dm-sans/400.css";
 @import "@fontsource/dm-sans/500.css";
 @import "@fontsource/dm-sans/700.css";
@@ -56,77 +58,54 @@
 .material-symbols-rounded.w-16, .material-symbols-rounded.h-16 { font-size: 64px; width: 64px; height: 64px; }
 
 /* ---------------------------------------------------------------------------
- * 1. LIGHT THEME (Default)
+ * 1. LIGHT THEME (Default - FlipEarn & College Marketplace Design System)
  * --------------------------------------------------------------------------- */
 :root,
 [data-theme="light"] {
-  --background: #f8fafc;
+  --background: #ffffff;
   --foreground: #0f172a;
   --card-bg: #ffffff;
   --border-subtle: #e2e8f0;
 
-  --brand-primary: #4f46e5;
-  --brand-primary-hover: #4338ca;
-  --brand-primary-light: #eef2ff;
+  --brand-primary: #2563eb;
+  --brand-primary-hover: #1d4ed8;
+  --brand-primary-light: #eff6ff;
+  --brand-secondary: #7c3aed;
+  --brand-secondary-hover: #6d28d9;
+  --brand-secondary-light: #f5f3ff;
   --brand-black: #0f172a;
 
+  --college-navy: #0f172a;
+  --college-blue: #1e3a8a;
+  --college-gold: #d97706;
+  --college-gold-light: #fef3c7;
+
+  --verified-emerald: #059669;
+  --verified-emerald-light: #ecfdf5;
+  --verified-emerald-border: #a7f3d0;
+
+  --pending-amber: #d97706;
+  --pending-amber-light: #fef3c7;
+  --pending-amber-border: #fde68a;
+
+  --danger-red: #dc2626;
+  --danger-red-light: #fee2e2;
+  --danger-red-border: #fecaca;
+
   --text-primary: #0f172a;
+  --text-body: #334155;
   --text-muted: #64748b;
+  --text-subtle: #94a3b8;
   --input-bg: #ffffff;
 
-  --shadow-card: 0 1px 3px 0 rgba(15, 23, 42, 0.08), 0 1px 2px -1px rgba(15, 23, 42, 0.06);
-  --shadow-card-hover: 0 10px 25px -5px rgba(79, 70, 229, 0.12), 0 8px 10px -6px rgba(79, 70, 229, 0.08);
-}
-
-/* ---------------------------------------------------------------------------
- * 2. SLATE PRO DARK THEME
- * --------------------------------------------------------------------------- */
-[data-theme="dark"],
-.dark {
-  --background: #0f172a;
-  --foreground: #f8fafc;
-  --card-bg: #1e293b;
-  --border-subtle: #334155;
-
-  --brand-primary: #6366f1;
-  --brand-primary-hover: #818cf8;
-  --brand-primary-light: #1e1b4b;
-  --brand-black: #f8fafc;
-
-  --text-primary: #f8fafc;
-  --text-muted: #94a3b8;
-  --input-bg: #0f172a;
-
-  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
-  --shadow-card-hover: 0 4px 12px -2px rgba(0, 0, 0, 0.4);
-}
-
-/* ---------------------------------------------------------------------------
- * 3. OFFICIAL DRACULA THEME (Developer Mode)
- * --------------------------------------------------------------------------- */
-[data-theme="dracula"] {
-  --background: #282a36;
-  --foreground: #f8f8f2;
-  --card-bg: #343746;
-  --border-subtle: #44475a;
-
-  --brand-primary: #bd93f9;
-  --brand-primary-hover: #ff79c6;
-  --brand-primary-light: #383a59;
-  --brand-black: #f8f8f2;
-
-  --text-primary: #f8f8f2;
-  --text-muted: #a6accd;
-  --input-bg: #21222c;
-
-  --shadow-card: 0 2px 8px 0 rgba(0, 0, 0, 0.4);
-  --shadow-card-hover: 0 10px 25px -5px rgba(189, 147, 249, 0.3);
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  --shadow-card-hover: 0 10px 15px -3px rgba(37, 99, 235, 0.08), 0 4px 6px -2px rgba(37, 99, 235, 0.04);
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
@@ -136,7 +115,8 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: -0.02em;
 }
 
 /* ---------------------------------------------------------------------------
@@ -194,5 +174,103 @@ h6 {
     rgba(189, 147, 249, 0)
   );
 }
+
+/* ---------------------------------------------------------------------------
+ * FLIPEARN / MODERN MARKETPLACE UI UTILITIES
+ * --------------------------------------------------------------------------- */
+.brand-gradient {
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+}
+
+.brand-gradient-hover:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #6d28d9 100%);
+}
+
+.brand-gradient-text {
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.dark .brand-gradient-text,
+[data-theme="dark"] .brand-gradient-text {
+  background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.college-gradient-bar {
+  background: linear-gradient(90deg, #1e3a8a 0%, #2563eb 50%, #7c3aed 100%);
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.dark .glass-panel,
+[data-theme="dark"] .glass-panel {
+  background: rgba(19, 27, 46, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.hero-gradient-bg {
+  background: radial-gradient(circle at 50% -10%, rgba(37, 99, 235, 0.12) 0%, rgba(124, 58, 237, 0.05) 35%, rgba(248, 250, 252, 0) 70%);
+}
+
+.dark .hero-gradient-bg,
+[data-theme="dark"] .hero-gradient-bg {
+  background: radial-gradient(circle at 50% -10%, rgba(37, 99, 235, 0.22) 0%, rgba(124, 58, 237, 0.1) 35%, rgba(11, 15, 25, 0) 70%);
+}
+
+.flipearn-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.75rem; /* 12px */
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.flipearn-card:hover {
+  border-color: #93c5fd;
+  box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.08), 0 4px 6px -2px rgba(37, 99, 235, 0.04);
+  transform: translateY(-2px);
+}
+
+.dark .flipearn-card:hover,
+[data-theme="dark"] .flipearn-card:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(59, 130, 246, 0.2);
+}
+
+.badge-pulse {
+  position: relative;
+}
+
+.badge-pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+}
+
 
 

@@ -68,7 +68,7 @@ export function SignInForm() {
             <div className="pt-1">
               <Link
                 href={`/verify-email?email=${encodeURIComponent(unverifiedEmail)}`}
-                className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 px-3.5 py-2 rounded-xl shadow-xs transition-colors"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 px-3.5 py-2 rounded-xl shadow-xs transition-colors"
               >
                 Verify Email Code Now <ArrowRight className="w-3.5 h-3.5" />
               </Link>
@@ -137,7 +137,7 @@ export function SignInForm() {
       <Button
         type="submit"
         disabled={isPending}
-        className="w-full h-11.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition-colors shadow-xs mt-2 cursor-pointer"
+        className="w-full h-11.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm transition-colors shadow-xs mt-2 cursor-pointer"
       >
         {isPending ? (
           <>

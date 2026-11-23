@@ -28,7 +28,7 @@ export default async function MyListingsPage() {
         <h1 className="text-2xl font-bold font-display text-[var(--text-primary)]">No Storefront Found</h1>
         <p className="text-[var(--text-muted)]">Please create a storefront to manage your listings.</p>
         <Link href="/sell">
-          <Button className="bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-xl font-bold text-xs px-4 py-2.5">
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs px-4 py-2.5">
             + Create Storefront & List Item
           </Button>
         </Link>
@@ -45,18 +45,18 @@ export default async function MyListingsPage() {
 
   return (
     <div className="space-y-6 pb-12">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[var(--card-bg)] p-6 sm:p-8 rounded-2xl border border-[var(--border-subtle)] shadow-xs">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-xs">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold font-display text-[var(--text-primary)] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold font-display text-slate-900 tracking-tight">
             My Listings
           </h1>
-          <p className="text-xs sm:text-sm text-[var(--text-muted)] mt-1">
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
             Manage your listed textbooks, electronics, and campus items. Edit details, toggle availability, or post new items.
           </p>
         </div>
 
         <Link href="/sell" className="shrink-0">
-          <Button size="lg" className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-md shadow-indigo-500/25 flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer">
+          <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-xs flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer">
             <Plus className="h-4 w-4 stroke-[2.5]" />
             Post New Listing
           </Button>

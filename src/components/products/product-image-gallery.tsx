@@ -124,7 +124,7 @@ export function ProductImageGallery({
                 onClick={() => setSelectedIndex(idx)}
                 className={`relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden border-2 transition-all cursor-pointer shrink-0 ${
                   isSelected
-                    ? "border-[var(--brand-primary)] ring-2 ring-indigo-500/30 scale-102 shadow-xs"
+                    ? "border-[var(--brand-primary)] ring-2 ring-blue-500/30 scale-102 shadow-xs"
                     : "border-[var(--border-subtle)] opacity-70 hover:opacity-100 hover:border-[var(--brand-primary)]/50"
                 }`}
                 aria-label={`View photo ${idx + 1}`}

@@ -74,7 +74,7 @@ export function Sidebar() {
               href={href}
               className={`flex items-center justify-between gap-3 px-3.5 py-2.5 rounded-2xl transition-all font-medium text-sm ${
                 isActive
-                  ? "bg-indigo-600 text-white font-semibold shadow-xs"
+                  ? "bg-blue-600 text-white font-semibold shadow-xs"
                   : "text-[var(--text-primary)] hover:bg-[var(--border-subtle)]/40 hover:text-[var(--brand-primary)]"
               }`}
             >
@@ -84,7 +84,7 @@ export function Sidebar() {
               </span>
               {showUnread && unreadCount > 0 && (
                 <span className={`flex items-center justify-center h-5 min-w-5 px-1.5 rounded-full text-[11px] font-bold ${
-                  isActive ? "bg-white text-indigo-600" : "bg-indigo-600 text-white"
+                  isActive ? "bg-white text-blue-600" : "bg-blue-600 text-white"
                 }`}>
                   {unreadCount > 9 ? "9+" : unreadCount}
                 </span>
@@ -114,7 +114,7 @@ export function Sidebar() {
           </p>
           {studentStatus !== "verified" && (
             <Link href="/student-verification" className="block pt-1">
-              <span className="inline-block w-full text-center text-xs font-bold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 py-2 rounded-xl transition-all shadow-xs cursor-pointer">
+              <span className="inline-block w-full text-center text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 py-2 rounded-xl transition-all shadow-xs cursor-pointer">
                 Get Student Verified
               </span>
             </Link>

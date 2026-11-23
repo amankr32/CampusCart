@@ -157,6 +157,8 @@ export async function getProducts(filters: ProductFilters = {}) {
         status: products.status,
         images: products.images,
         hostel: products.hostel,
+        branch: products.branch,
+        description: products.description,
         createdAt: products.createdAt,
         tenant: {
           id: tenants.id,

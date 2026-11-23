@@ -183,7 +183,7 @@ export function UserProfileClient({
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
           {/* Avatar Upload Container */}
           <div className="relative group shrink-0">
-            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-3xl overflow-hidden border-4 border-[var(--card-bg)] shadow-md">
+            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-3xl overflow-hidden border-4 border-[var(--card-bg)] shadow-md">
               {avatarUrl ? (
                 <img src={avatarUrl} alt={profile.name} className="w-full h-full object-cover" />
               ) : (
@@ -191,7 +191,7 @@ export function UserProfileClient({
               )}
             </div>
 
-            <label className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center cursor-pointer shadow-md hover:bg-indigo-700 transition-colors">
+            <label className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center cursor-pointer shadow-md hover:bg-blue-700 transition-colors">
               {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
               <input type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />
             </label>
@@ -206,7 +206,7 @@ export function UserProfileClient({
 
               <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2">
                 <Link href="/settings">
-                  <Button variant="outline" size="sm" className="rounded-2xl text-xs gap-1 font-semibold border-indigo-500/30 text-[var(--brand-primary)] hover:bg-[var(--brand-primary-light)]">
+                  <Button variant="outline" size="sm" className="rounded-2xl text-xs gap-1 font-semibold border-blue-500/30 text-[var(--brand-primary)] hover:bg-[var(--brand-primary-light)]">
                     <Sliders className="w-3.5 h-3.5 text-[var(--brand-primary)]" /> Settings & Theme
                   </Button>
                 </Link>
@@ -218,7 +218,7 @@ export function UserProfileClient({
                 <Button
                   size="sm"
                   onClick={() => setIsEditing(!isEditing)}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-xs"
+                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-xs"
                 >
                   {isEditing ? "Cancel Editing" : "Edit Profile"}
                 </Button>
@@ -227,7 +227,7 @@ export function UserProfileClient({
 
             {/* Badges */}
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
-              <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-[var(--brand-primary)] border border-indigo-500/20">
+              <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-[var(--brand-primary)] border border-blue-500/20">
                 <Mail className="w-3.5 h-3.5 text-[var(--brand-primary)]" /> Email Verified
               </span>
 
@@ -338,7 +338,7 @@ export function UserProfileClient({
                 onChange={(e) => setBio(e.target.value)}
                 placeholder="Tell other students what you study or sell..."
                 rows={3}
-                className="w-full p-3 rounded-2xl border border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full p-3 rounded-2xl border border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -360,7 +360,7 @@ export function UserProfileClient({
               <Button type="button" variant="outline" onClick={() => setIsEditing(false)} className="rounded-2xl border-[var(--border-subtle)] text-[var(--text-primary)]">
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSaving} className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl px-6">
+              <Button type="submit" disabled={isSaving} className="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl px-6">
                 {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Changes"}
               </Button>
             </div>
@@ -423,7 +423,7 @@ export function UserProfileClient({
             <Button
               type="submit"
               disabled={isChangingPass}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-xs h-10 px-5"
+              className="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-xs h-10 px-5"
             >
               {isChangingPass ? <Loader2 className="w-4 h-4 animate-spin" /> : "Update Password"}
             </Button>

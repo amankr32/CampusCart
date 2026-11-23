@@ -73,7 +73,7 @@ export default async function DashboardPage() {
 
         <div className="flex items-center gap-3 shrink-0">
           <Link href="/sell">
-            <Button size="lg" className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-md shadow-indigo-500/25 flex items-center gap-1.5 transition-all active:scale-95">
+            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-md shadow-blue-500/25 flex items-center gap-1.5 transition-all active:scale-95">
               <Plus className="h-4 w-4 stroke-[2.5]" />
               Sell Item
             </Button>
@@ -148,7 +148,7 @@ export default async function DashboardPage() {
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">Trust Score</span>
             <span className={`flex items-center justify-center h-9 w-9 rounded-xl ${
-              studentStatus === "verified" ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+              studentStatus === "verified" ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"
             }`}>
               {studentStatus === "verified" ? <ShieldCheck className="h-5 w-5" /> : <ShieldAlert className="h-5 w-5" />}
             </span>
@@ -156,7 +156,7 @@ export default async function DashboardPage() {
           <div className="flex items-baseline justify-between">
             <span className="text-2xl font-black text-[var(--text-primary)]">{trustScore} pts</span>
             <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-              studentStatus === "verified" ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+              studentStatus === "verified" ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"
             }`}>
               {studentStatus === "verified" ? "Verified" : "Verify"}
             </span>
@@ -166,12 +166,12 @@ export default async function DashboardPage() {
 
       {/* Unverified Seller Alert */}
       {studentStatus !== "verified" && (
-        <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="p-5 rounded-2xl bg-amber-50 border border-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-start gap-3">
-            <ShieldAlert className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+            <ShieldAlert className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
             <div>
-              <h3 className="font-bold text-xs uppercase tracking-wider text-amber-600 dark:text-amber-400 font-display">Unverified Seller Limits</h3>
-              <p className="text-xs text-[var(--text-muted)] leading-relaxed mt-0.5">
+              <h3 className="font-bold text-xs uppercase tracking-wider text-amber-700 font-display">Unverified Seller Limits</h3>
+              <p className="text-xs text-slate-600 leading-relaxed mt-0.5">
                 Unverified sellers can list up to 2 items max. Get Student Verified using your PTU Portal to unlock unlimited listings and higher search ranking!
               </p>
             </div>
@@ -200,7 +200,7 @@ export default async function DashboardPage() {
             <div className="text-center py-8 border border-dashed border-[var(--border-subtle)] rounded-xl p-4">
               <p className="text-xs text-[var(--text-muted)]">No listings yet — post your unused books or gadgets!</p>
               <Link href="/sell" className="inline-block mt-3">
-                <Button size="sm" className="bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-xs rounded-xl font-bold cursor-pointer">
+                <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-xl font-bold cursor-pointer">
                   + Create Listing
                 </Button>
               </Link>
@@ -223,7 +223,7 @@ export default async function DashboardPage() {
                     <p className="text-[11px] text-[var(--text-muted)] font-medium mt-0.5">{formatPrice(item.priceCents)}</p>
                   </div>
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
-                    item.status === "available" ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "bg-[var(--border-subtle)] text-[var(--text-muted)]"
+                    item.status === "available" ? "bg-emerald-50 text-emerald-600 border border-emerald-100" : "bg-slate-100 text-slate-600"
                   }`}>
                     {item.status}
                   </span>

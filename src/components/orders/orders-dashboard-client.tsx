@@ -104,7 +104,7 @@ export function OrdersDashboardClient({
             }}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               activeMode === "purchases"
-                ? "bg-indigo-600 text-white shadow-xs"
+                ? "bg-blue-600 text-white shadow-xs"
                 : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
             }`}
           >
@@ -119,7 +119,7 @@ export function OrdersDashboardClient({
             }}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               activeMode === "sales"
-                ? "bg-indigo-600 text-white shadow-xs"
+                ? "bg-blue-600 text-white shadow-xs"
                 : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
             }`}
           >
@@ -137,7 +137,7 @@ export function OrdersDashboardClient({
             onClick={() => setStatusFilter("all")}
             className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
               statusFilter === "all"
-                ? "bg-indigo-600 text-white"
+                ? "bg-blue-600 text-white"
                 : "bg-[var(--input-bg)] text-[var(--text-muted)] hover:bg-[var(--border-subtle)]"
             }`}
           >
@@ -224,7 +224,7 @@ export function OrdersDashboardClient({
               </Button>
             )}
             <Link href="/browse">
-              <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold px-5 h-10 shadow-xs cursor-pointer">
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold px-5 h-10 shadow-xs cursor-pointer">
                 Browse Marketplace →
               </Button>
             </Link>
@@ -288,7 +288,7 @@ export function OrdersDashboardClient({
                   </Link>
 
                   <Link href="/dashboard/messages">
-                    <Button size="sm" variant="outline" className="rounded-xl text-xs font-bold gap-1 border-indigo-500/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary-light)]">
+                    <Button size="sm" variant="outline" className="rounded-xl text-xs font-bold gap-1 border-blue-500/20 text-[var(--brand-primary)] hover:bg-[var(--brand-primary-light)]">
                       <MessageSquare className="w-3.5 h-3.5" /> Messages Chat
                     </Button>
                   </Link>

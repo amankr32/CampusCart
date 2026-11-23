@@ -86,7 +86,7 @@ export default async function PublicSellerProfilePage({
       {/* Seller Header */}
       <div className="bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] p-6 sm:p-10 shadow-xs space-y-6">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
-          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-3xl overflow-hidden border-4 border-[var(--card-bg)] shadow-md shrink-0">
+          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-3xl overflow-hidden border-4 border-[var(--card-bg)] shadow-md shrink-0">
             {seller.avatarUrl ? (
               <img src={seller.avatarUrl} alt={seller.name} className="w-full h-full object-cover" />
             ) : (
@@ -103,7 +103,7 @@ export default async function PublicSellerProfilePage({
 
               {activeListings.length > 0 && (
                 <Link href={`/product/${activeListings[0].slug}`}>
-                  <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-xs gap-1.5 shadow-md shadow-indigo-100">
+                  <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-xs gap-1.5 shadow-md shadow-blue-100">
                     <MessageSquare className="w-4 h-4" /> Message Seller
                   </Button>
                 </Link>
@@ -182,7 +182,7 @@ export default async function PublicSellerProfilePage({
                       alt={item.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
-                    <div className="absolute top-3 right-3 bg-indigo-600 text-white font-bold text-sm px-3 py-1 rounded-full shadow-md">
+                    <div className="absolute top-3 right-3 bg-blue-600 text-white font-bold text-sm px-3 py-1 rounded-full shadow-md">
                       ₹{priceRs}
                     </div>
                   </div>

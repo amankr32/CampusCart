@@ -18,15 +18,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("light");
 
   useEffect(() => {
+    // Default to Figma light mode
     const saved = localStorage.getItem("campuscart_theme") as Theme | null;
-    const initial = saved && ["light", "dark", "dracula"].includes(saved) ? saved : "light";
+    const initial = saved === "light" ? "light" : "light";
     setThemeState(initial);
-    document.documentElement.setAttribute("data-theme", initial);
-    if (initial !== "light") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    document.documentElement.setAttribute("data-theme", "light");
+    document.documentElement.classList.remove("dark");
   }, []);
 
   const setTheme = (newTheme: Theme) => {

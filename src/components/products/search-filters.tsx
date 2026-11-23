@@ -2,7 +2,14 @@
 
 import { useCallback, useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Search } from "@/components/ui/material-symbol";
+import {
+  Search,
+  SlidersHorizontal,
+  RefreshCw,
+  ShieldCheck,
+  MapPin,
+  Check,
+} from "@/components/ui/material-symbol";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,6 +36,13 @@ export function SearchFilters() {
 
   const activeConditions = searchParams.getAll("condition");
   const activeSort = searchParams.get("sort") ?? "newest";
+
+  const hasActiveFilters =
+    activeConditions.length > 0 ||
+    Boolean(searchParams.get("search")) ||
+    Boolean(searchParams.get("minPrice")) ||
+    Boolean(searchParams.get("maxPrice")) ||
+    Boolean(searchParams.get("category"));
 
   const updateParams = useCallback(
     (updates: Record<string, string | string[] | null>) => {
@@ -60,13 +74,42 @@ export function SearchFilters() {
     updateParams({ condition: next.length > 0 ? next : null });
   };
 
+  const handleClearAll = () => {
+    setSearch("");
+    setMinPrice("");
+    setMaxPrice("");
+    startTransition(() => router.push("/browse"));
+  };
+
   return (
     <div
       className={cn(
-        "flex flex-col gap-6 p-5 rounded-2xl border border-[var(--border-subtle)] bg-[var(--card-bg)] shadow-sm h-fit",
+        "flex flex-col gap-5 p-5 rounded-2xl border border-slate-200 bg-white shadow-xs h-fit transition-opacity",
         isPending && "opacity-60"
       )}
     >
+      {/* Filters Header (FlipEarn Figma sidebar header) */}
+      <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div className="flex items-center gap-2">
+          <SlidersHorizontal className="h-4 w-4 text-blue-600" />
+          <h2 className="font-display font-bold text-slate-900 text-base">
+            Filters
+          </h2>
+        </div>
+
+        {hasActiveFilters && (
+          <button
+            type="button"
+            onClick={handleClearAll}
+            className="text-xs font-semibold text-blue-600 hover:text-blue-700 hover:underline flex items-center gap-1 cursor-pointer"
+          >
+            <RefreshCw className="h-3 w-3" />
+            Reset
+          </button>
+        )}
+      </div>
+
+      {/* Search Input Box */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -74,103 +117,131 @@ export function SearchFilters() {
         }}
         className="flex flex-col gap-2"
       >
-        <Label htmlFor="search">Search</Label>
-        <div className="flex gap-2">
+        <Label htmlFor="search" className="text-xs font-bold text-slate-700">
+          Search Keyword
+        </Label>
+        <div className="relative flex items-center">
+          <Search className="absolute left-3 h-4 w-4 text-slate-400 pointer-events-none" />
           <Input
             id="search"
-            placeholder="Search listings..."
+            placeholder="Textbooks, drafter, cycle..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            className="pl-9 pr-3 h-10 text-xs rounded-xl border-slate-200 bg-slate-50/70 focus-visible:border-blue-600 focus-visible:ring-blue-500/20"
           />
-          <Button type="submit" variant="elevated" size="icon">
-            <Search className="h-4 w-4" />
-          </Button>
         </div>
       </form>
 
+      {/* Sort By Selector */}
       <div className="flex flex-col gap-2">
-        <Label>Sort by</Label>
+        <Label className="text-xs font-bold text-slate-700">
+          Sort by
+        </Label>
         <select
           value={activeSort}
           onChange={(e) => updateParams({ sort: e.target.value })}
-          className="h-10 rounded-xl border border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] px-3 text-sm outline-hidden focus-visible:border-[var(--brand-primary)]"
+          className="h-10 rounded-xl border border-slate-200 bg-slate-50/70 text-slate-900 px-3 text-xs outline-hidden focus-visible:border-blue-600 cursor-pointer font-medium"
         >
           {SORT_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value} className="bg-[var(--card-bg)] text-[var(--text-primary)]">
+            <option key={option.value} value={option.value} className="bg-white text-slate-900">
               {option.label}
             </option>
           ))}
         </select>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <Label>Condition</Label>
+      {/* Condition Filter */}
+      <div className="flex flex-col gap-2.5 pt-2 border-t border-slate-100">
+        <Label className="text-xs font-bold text-slate-700">
+          Item Condition
+        </Label>
         <div className="flex flex-col gap-2">
-          {CONDITIONS.map((condition) => (
-            <label
-              key={condition}
-              className="flex items-center gap-2 text-sm cursor-pointer text-[var(--text-primary)]"
-            >
-              <input
-                type="checkbox"
-                checked={activeConditions.includes(condition)}
-                onChange={() => toggleCondition(condition)}
-                className="h-4 w-4 accent-[var(--brand-primary)]"
-              />
-              {CONDITION_LABELS[condition]}
-            </label>
-          ))}
+          {CONDITIONS.map((condition) => {
+            const isChecked = activeConditions.includes(condition);
+            return (
+              <label
+                key={condition}
+                className={cn(
+                  "flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium cursor-pointer transition-all border",
+                  isChecked
+                    ? "bg-blue-50 text-blue-700 border-blue-200 font-semibold"
+                    : "border-slate-100 text-slate-600 hover:bg-slate-50"
+                )}
+              >
+                <div className="flex items-center gap-2.5">
+                  <input
+                    type="checkbox"
+                    checked={isChecked}
+                    onChange={() => toggleCondition(condition)}
+                    className="h-4 w-4 rounded-md accent-blue-600 cursor-pointer"
+                  />
+                  <span>{CONDITION_LABELS[condition]}</span>
+                </div>
+                {isChecked && <Check className="h-3.5 w-3.5 text-blue-600" />}
+              </label>
+            );
+          })}
         </div>
       </div>
 
+      {/* Price Range Filter */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
           updateParams({ minPrice, maxPrice });
         }}
-        className="flex flex-col gap-2"
+        className="flex flex-col gap-2.5 pt-2 border-t border-slate-100"
       >
-        <Label>Price range (₹)</Label>
+        <Label className="text-xs font-bold text-slate-700">
+          Price range (₹)
+        </Label>
         <div className="flex items-center gap-2">
-          <Input
-            type="number"
-            min={0}
-            placeholder="Min"
-            value={minPrice}
-            onChange={(e) => setMinPrice(e.target.value)}
-          />
-          <span className="text-[var(--text-muted)]">–</span>
-          <Input
-            type="number"
-            min={0}
-            placeholder="Max"
-            value={maxPrice}
-            onChange={(e) => setMaxPrice(e.target.value)}
-          />
+          <div className="relative flex-1">
+            <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">₹</span>
+            <Input
+              type="number"
+              min={0}
+              placeholder="Min"
+              value={minPrice}
+              onChange={(e) => setMinPrice(e.target.value)}
+              className="pl-6 h-9 text-xs rounded-xl border-slate-200 bg-slate-50/70"
+            />
+          </div>
+          <span className="text-slate-400 text-xs font-bold">–</span>
+          <div className="relative flex-1">
+            <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">₹</span>
+            <Input
+              type="number"
+              min={0}
+              placeholder="Max"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+              className="pl-6 h-9 text-xs rounded-xl border-slate-200 bg-slate-50/70"
+            />
+          </div>
         </div>
-        <Button type="submit" variant="ghost" size="sm" className="self-start">
-          Apply
+        <Button
+          type="submit"
+          variant="outline"
+          size="sm"
+          className="mt-1 h-8 rounded-xl text-xs font-bold border-blue-200 text-blue-600 hover:bg-blue-50 cursor-pointer"
+        >
+          Apply Price
         </Button>
       </form>
 
-      {(activeConditions.length > 0 ||
-        searchParams.get("search") ||
-        searchParams.get("minPrice") ||
-        searchParams.get("maxPrice") ||
-        searchParams.get("category")) && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => {
-            setSearch("");
-            setMinPrice("");
-            setMaxPrice("");
-            startTransition(() => router.push("/browse"));
-          }}
-        >
-          Clear all filters
-        </Button>
-      )}
+      {/* Student Safety Badge inside Sidebar */}
+      <div className="pt-3 border-t border-slate-100">
+        <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200/80 flex items-start gap-2.5">
+          <ShieldCheck className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
+          <div className="text-[11px] leading-snug">
+            <p className="font-bold text-emerald-800">IKGPTU Campus Verified</p>
+            <p className="text-emerald-700/80 text-[10px] mt-0.5">
+              Only verified university students can list or chat.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

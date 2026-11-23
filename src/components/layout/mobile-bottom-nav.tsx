@@ -98,7 +98,7 @@ export function MobileBottomNav() {
         <div className="flex flex-col items-center justify-center flex-1 relative -top-3">
           <Link
             href="/sell"
-            className="flex items-center justify-center w-12 h-12 rounded-full bg-indigo-600 text-white shadow-md border-4 border-[var(--card-bg)] active:scale-95 transition-all focus:outline-hidden"
+            className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/30 border-4 border-[var(--card-bg)] active:scale-95 transition-all focus:outline-hidden"
             aria-label="Sell Item"
           >
             <Plus className="w-6 h-6 stroke-[2.5]" />

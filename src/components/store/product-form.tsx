@@ -132,7 +132,7 @@ export function ProductForm({
             <Label htmlFor="categoryId" className="text-xs font-semibold text-[var(--text-primary)]">Category</Label>
             <select
               id="categoryId"
-              className="h-10 rounded-xl border border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] px-3 text-xs outline-none focus:ring-2 focus:ring-indigo-500"
+              className="h-10 rounded-xl border border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] px-3 text-xs outline-none focus:ring-2 focus:ring-blue-500"
               {...register("categoryId")}
             >
               <option value="">Select a category</option>
@@ -151,7 +151,7 @@ export function ProductForm({
             id="description"
             rows={4}
             placeholder="Condition, features and any other details about the item..."
-            className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] px-3 py-2 text-xs outline-none focus:ring-2 focus:ring-blue-500"
             {...register("description")}
           />
           {errors.description && (
@@ -191,7 +191,7 @@ export function ProductForm({
             <Label htmlFor="condition" className="text-xs font-semibold text-[var(--text-primary)]">Condition</Label>
             <select
               id="condition"
-              className="h-10 rounded-xl border border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] px-3 text-xs outline-none focus:ring-2 focus:ring-indigo-500"
+              className="h-10 rounded-xl border border-[var(--border-subtle)] bg-[var(--input-bg)] text-[var(--text-primary)] px-3 text-xs outline-none focus:ring-2 focus:ring-blue-500"
               {...register("condition")}
             >
               {PRODUCT_CONDITIONS.map((condition) => (
@@ -235,7 +235,7 @@ export function ProductForm({
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl px-6 py-2.5 text-sm shadow-xs transition-colors cursor-pointer"
+            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl px-6 py-2.5 text-sm shadow-xs transition-colors cursor-pointer"
           >
             {isSubmitting
               ? "Saving..."

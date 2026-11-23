@@ -363,7 +363,7 @@ export function CommandPalette() {
                               <>
                                 <span>•</span>
                                 <span className="inline-flex items-center gap-0.5 truncate">
-                                  <MapPin className="w-3 h-3 text-indigo-500" />
+                                  <MapPin className="w-3 h-3 text-blue-500" />
                                   {product.hostel}
                                 </span>
                               </>
@@ -408,7 +408,7 @@ export function CommandPalette() {
                 <div>
                   <div className="flex items-center justify-between pb-2 text-[11px] font-bold uppercase tracking-wider text-[var(--text-muted)]">
                     <span className="inline-flex items-center gap-1.5">
-                      <History className="w-3.5 h-3.5 text-indigo-500" />
+                      <History className="w-3.5 h-3.5 text-blue-500" />
                       Recent Searches
                     </span>
                     <button
@@ -475,7 +475,7 @@ export function CommandPalette() {
                     onClick={() => navigateTo("/browse")}
                     className="flex items-center gap-3 p-2.5 rounded-xl border border-[var(--border-subtle)] hover:bg-[var(--border-subtle)]/40 transition-colors text-left cursor-pointer group"
                   >
-                    <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-950 dark:text-indigo-400">
+                    <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400">
                       <Compass className="w-4 h-4" />
                     </span>
                     <div>

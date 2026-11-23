@@ -77,7 +77,7 @@ export default async function EditListingPage({
 
           <div className="flex flex-col gap-4 text-xs">
             <div className="flex items-start gap-3">
-              <div className="w-9 h-9 rounded-2xl bg-indigo-500/10 text-[var(--brand-primary)] flex items-center justify-center shrink-0">
+              <div className="w-9 h-9 rounded-2xl bg-blue-500/10 text-[var(--brand-primary)] flex items-center justify-center shrink-0">
                 <Tag className="w-4 h-4" />
               </div>
               <div>

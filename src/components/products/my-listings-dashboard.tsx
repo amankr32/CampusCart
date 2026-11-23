@@ -137,19 +137,103 @@ export function MyListingsDashboard({
     }
   };
 
+  const totalListings = productList.length;
+  const activeListings = productList.filter((p) => p.status === "available").length;
+  const soldListings = productList.filter((p) => p.status === "sold").length;
+  const totalValueRupees = Math.round(
+    productList
+      .filter((p) => p.status === "available")
+      .reduce((acc, p) => acc + p.priceCents, 0) / 100
+  );
+
   return (
     <div className="space-y-6">
+      {/* 4 KPI Metric Cards (FlipEarn Figma step_30_media_0.png) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Total Listings */}
+        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Total Listings
+            </span>
+            <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-blue-50 text-blue-600">
+              <Tag className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="font-display font-black text-2xl sm:text-3xl text-slate-900">
+              {totalListings}
+            </span>
+            <span className="text-[11px] text-slate-400">items posted</span>
+          </div>
+        </div>
+
+        {/* Active Listings */}
+        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Active Listings
+            </span>
+            <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600">
+              <Sparkles className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="font-display font-black text-2xl sm:text-3xl text-emerald-600">
+              {activeListings}
+            </span>
+            <span className="text-[11px] text-emerald-600 font-medium">available now</span>
+          </div>
+        </div>
+
+        {/* Items Sold */}
+        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Items Sold
+            </span>
+            <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-blue-50 text-blue-600">
+              <CheckCircle className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="font-display font-black text-2xl sm:text-3xl text-slate-900">
+              {soldListings}
+            </span>
+            <span className="text-[11px] text-slate-400">campus deals</span>
+          </div>
+        </div>
+
+        {/* Total Value */}
+        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Total Active Value
+            </span>
+            <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-purple-50 text-purple-600">
+              <Tag className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="flex items-baseline gap-2">
+            <span className="font-display font-black text-2xl sm:text-3xl text-slate-900">
+              ₹{totalValueRupees.toLocaleString("en-IN")}
+            </span>
+            <span className="text-[11px] text-slate-400">in inventory</span>
+          </div>
+        </div>
+      </div>
+
       {/* Header controls & tabs */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-[var(--card-bg)] p-4 rounded-3xl border border-[var(--border-subtle)] shadow-xs">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
         <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto">
           {(["all", "available", "sold", "hidden"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-4 py-2 text-xs font-semibold rounded-2xl capitalize transition-all whitespace-nowrap ${
+              className={`px-3.5 py-1.5 text-xs font-bold rounded-xl capitalize transition-all whitespace-nowrap cursor-pointer ${
                 activeTab === tab
-                  ? "bg-indigo-600 text-white shadow-sm"
-                  : "bg-[var(--input-bg)] text-[var(--text-muted)] hover:bg-[var(--border-subtle)]"
+                  ? "bg-blue-600 text-white shadow-xs"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
             >
               {tab} ({productList.filter((p) => (tab === "all" ? true : p.status === tab)).length})
@@ -163,33 +247,33 @@ export function MyListingsDashboard({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search your listings..."
-              className="pl-9 h-10 text-xs rounded-2xl bg-[var(--input-bg)] border-[var(--border-subtle)] text-[var(--text-primary)]"
+              className="pl-9 h-9 text-xs rounded-xl bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white"
             />
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-muted)]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
           </div>
 
           <Link href="/sell">
-            <Button size="sm" className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white rounded-2xl shrink-0 h-10 shadow-md shadow-indigo-500/20">
-              <Plus className="w-4 h-4 mr-1.5" /> Post New Item
+            <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl shrink-0 h-9 px-3.5 text-xs font-bold shadow-xs cursor-pointer">
+              <Plus className="w-3.5 h-3.5 mr-1" /> Post Item
             </Button>
           </Link>
         </div>
       </div>
 
       {filteredProducts.length === 0 ? (
-        <div className="text-center py-16 bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] p-8 space-y-4 shadow-xs max-w-md mx-auto">
-          <div className="w-16 h-16 rounded-3xl bg-[var(--brand-primary-light)] text-[var(--brand-primary)] border border-[var(--brand-primary)]/20 flex items-center justify-center mx-auto shadow-sm">
+        <div className="text-center py-16 bg-white rounded-3xl border border-slate-200 p-8 space-y-4 shadow-xs max-w-md mx-auto">
+          <div className="w-16 h-16 rounded-3xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center mx-auto shadow-sm">
             <Tag className="w-8 h-8" />
           </div>
           <div className="space-y-1.5">
-            <h3 className="text-xl font-bold font-display text-[var(--text-primary)]">
+            <h3 className="text-xl font-bold font-display text-slate-900">
               {search.trim()
                 ? `No items matching "${search}"`
                 : activeTab !== "all"
                   ? `No ${activeTab} items found`
                   : "You haven't listed any items yet"}
             </h3>
-            <p className="text-xs sm:text-sm text-[var(--text-muted)] leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
               {search.trim()
                 ? "Try searching for a different keyword or clear the search input."
                 : activeTab !== "all"
@@ -202,7 +286,7 @@ export function MyListingsDashboard({
               <Button
                 variant="outline"
                 onClick={() => setSearch("")}
-                className="rounded-2xl text-xs font-bold px-5 h-10 border-[var(--border-subtle)] cursor-pointer"
+                className="rounded-2xl text-xs font-bold px-5 h-10 border-slate-200 cursor-pointer"
               >
                 Clear Search
               </Button>
@@ -210,14 +294,14 @@ export function MyListingsDashboard({
               <Button
                 variant="outline"
                 onClick={() => setActiveTab("all")}
-                className="rounded-2xl text-xs font-bold px-5 h-10 border-[var(--border-subtle)] cursor-pointer"
+                className="rounded-2xl text-xs font-bold px-5 h-10 border-slate-200 cursor-pointer"
               >
                 Show All Items
               </Button>
             ) : null}
 
             <Link href="/sell">
-              <Button className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white rounded-2xl px-5 h-10 font-bold text-xs shadow-md shadow-indigo-500/20 cursor-pointer">
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl px-5 h-10 font-bold text-xs shadow-md shadow-blue-500/20 cursor-pointer">
                 <Plus className="w-4 h-4 mr-1" /> Post First Listing
               </Button>
             </Link>
@@ -233,11 +317,11 @@ export function MyListingsDashboard({
             return (
               <div
                 key={product.id}
-                className="bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] overflow-hidden shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between"
+                className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between"
               >
                 <div>
                   {/* Image & Status Badge */}
-                  <div className="h-48 w-full bg-[var(--input-bg)] relative overflow-hidden group">
+                  <div className="h-48 w-full bg-slate-100 relative overflow-hidden group">
                     <img
                       src={primaryImg}
                       alt={product.name}
@@ -266,16 +350,16 @@ export function MyListingsDashboard({
                   {/* Content */}
                   <div className="p-5 space-y-3">
                     <div className="flex items-start justify-between gap-2">
-                      <h3 className="font-bold text-[var(--text-primary)] line-clamp-1 font-display text-base">
+                      <h3 className="font-bold text-slate-900 line-clamp-1 font-display text-base">
                         {product.name}
                       </h3>
-                      <span className="font-bold text-[var(--brand-primary)] text-lg shrink-0">
+                      <span className="font-bold text-blue-600 text-lg shrink-0">
                         ₹{priceRs}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]">
-                      <span className="capitalize bg-[var(--input-bg)] px-2.5 py-0.5 rounded-full font-medium text-[var(--text-primary)]">
+                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                      <span className="capitalize bg-slate-100 px-2.5 py-0.5 rounded-full font-medium text-slate-700">
                         Condition: {product.condition.replace("_", " ")}
                       </span>
                       <span>•</span>
@@ -285,14 +369,14 @@ export function MyListingsDashboard({
                 </div>
 
                 {/* Actions Bar */}
-                <div className="p-4 bg-[var(--input-bg)]/40 border-t border-[var(--border-subtle)] flex items-center justify-between gap-2">
+                <div className="p-4 bg-slate-50/60 border-t border-slate-100 flex items-center justify-between gap-2">
                   <div className="flex items-center gap-1">
                     {/* Edit button */}
                     <Link href={`/sell/${product.id}`}>
                       <Button
                         size="icon"
                         variant="ghost"
-                        className="h-9 w-9 text-[var(--text-muted)] hover:text-[var(--brand-primary)] hover:bg-[var(--brand-primary-light)] rounded-xl"
+                        className="h-9 w-9 text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-xl"
                         title="Edit Listing"
                       >
                         <Edit3 className="w-4 h-4" />
@@ -316,7 +400,7 @@ export function MyListingsDashboard({
                         variant="ghost"
                         disabled={actionPendingId === product.id}
                         onClick={() => handleRepublish(product.id)}
-                        className="text-xs text-indigo-600 hover:bg-indigo-50 rounded-xl h-9 px-2.5"
+                        className="text-xs text-blue-600 hover:bg-blue-50 rounded-xl h-9 px-2.5"
                       >
                         <RotateCw className="w-3.5 h-3.5 mr-1" /> Mark Available
                       </Button>
@@ -340,7 +424,7 @@ export function MyListingsDashboard({
                         variant="ghost"
                         disabled={actionPendingId === product.id}
                         onClick={() => handleRepublish(product.id)}
-                        className="h-9 w-9 text-indigo-600 hover:bg-indigo-50 rounded-xl"
+                        className="h-9 w-9 text-blue-600 hover:bg-blue-50 rounded-xl"
                         title="Republish Listing"
                       >
                         <RotateCw className="w-4 h-4" />
@@ -368,21 +452,21 @@ export function MyListingsDashboard({
       {/* Permanent Delete Confirmation Dialog Modal */}
       {deleteTarget && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] max-w-md w-full p-6 space-y-5 shadow-2xl animate-in fade-in zoom-in-95">
+          <div className="bg-white rounded-3xl border border-slate-200 max-w-md w-full p-6 space-y-5 shadow-2xl animate-in fade-in zoom-in-95">
             <div className="flex items-center gap-3 text-rose-600">
-              <div className="w-12 h-12 rounded-2xl bg-rose-500/10 flex items-center justify-center shrink-0">
+              <div className="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center shrink-0">
                 <AlertTriangle className="w-6 h-6 text-rose-500" />
               </div>
               <div>
-                <h3 className="text-lg font-bold font-display text-[var(--text-primary)]">
+                <h3 className="text-lg font-bold font-display text-slate-900">
                   Delete Listing Permanently?
                 </h3>
-                <p className="text-xs text-[var(--text-muted)]">This action cannot be undone.</p>
+                <p className="text-xs text-slate-500">This action cannot be undone.</p>
               </div>
             </div>
 
-            <p className="text-sm text-[var(--text-muted)] leading-relaxed">
-              Are you sure you want to permanently delete <strong className="text-[var(--text-primary)] font-semibold">&quot;{deleteTarget.name}&quot;</strong>? This will remove all listing details and associated photos from storage.
+            <p className="text-sm text-slate-600 leading-relaxed">
+              Are you sure you want to permanently delete <strong className="text-slate-900 font-semibold">&quot;{deleteTarget.name}&quot;</strong>? This will remove all listing details and associated photos from storage.
             </p>
 
             <div className="flex items-center justify-end gap-3 pt-2">
@@ -390,7 +474,7 @@ export function MyListingsDashboard({
                 variant="outline"
                 onClick={() => setDeleteTarget(null)}
                 disabled={isDeleting}
-                className="rounded-2xl h-11"
+                className="rounded-2xl h-11 border-slate-200"
               >
                 Cancel
               </Button>

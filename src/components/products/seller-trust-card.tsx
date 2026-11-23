@@ -48,7 +48,7 @@ export function SellerTrustCard({
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           {/* Avatar */}
-          <div className="flex items-center justify-center w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-600 text-white font-bold text-sm shadow-xs shrink-0">
+          <div className="flex items-center justify-center w-11 h-11 rounded-2xl bg-blue-600 text-white font-bold text-sm shadow-xs shrink-0">
             {initials}
           </div>
 
@@ -68,12 +68,12 @@ export function SellerTrustCard({
 
         {/* Verification Status Pill */}
         {isVerified ? (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shrink-0">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200 shrink-0">
             <ShieldCheck className="w-3.5 h-3.5" />
             Verified
           </span>
         ) : (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 shrink-0">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-600 border border-amber-200 shrink-0">
             <ShieldAlert className="w-3.5 h-3.5" />
             Unverified
           </span>

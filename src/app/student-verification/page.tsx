@@ -37,7 +37,7 @@ export default function StudentVerificationPage() {
   if (status === "loading") {
     return (
       <div className="min-h-[70vh] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+        <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
       </div>
     );
   }
@@ -129,7 +129,7 @@ export default function StudentVerificationPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-10 sm:py-14 space-y-8">
       <div className="text-center space-y-3">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[var(--brand-primary-light)] border border-indigo-500/20 text-[var(--brand-primary)] text-xs font-semibold">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[var(--brand-primary-light)] border border-blue-500/20 text-[var(--brand-primary)] text-xs font-semibold">
           <ShieldCheck className="w-4 h-4 text-[var(--brand-primary)]" /> Safe & Trusted Campus Community
         </div>
         <h1 className="text-3xl sm:text-4xl font-bold font-display text-[var(--text-primary)] tracking-tight">
@@ -195,7 +195,7 @@ export default function StudentVerificationPage() {
           {/* Anti-Fraud Code Banner */}
           <div className="p-5 rounded-xl bg-slate-900 text-white border border-slate-800 space-y-2.5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-indigo-400">
+              <span className="text-xs font-semibold uppercase tracking-wider text-blue-400">
                 Anti-Fraud Safety Code
               </span>
               <button
@@ -207,7 +207,7 @@ export default function StudentVerificationPage() {
               </button>
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-2xl sm:text-3xl font-extrabold tracking-widest font-mono text-indigo-400">
+              <span className="text-2xl sm:text-3xl font-extrabold tracking-widest font-mono text-blue-400">
                 {antiFraudCode}
               </span>
             </div>
@@ -235,7 +235,7 @@ export default function StudentVerificationPage() {
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 2. PTU Portal Proof Image (With Code {antiFraudCode})
               </label>
-              <div className="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-6 text-center hover:border-indigo-500 transition-colors bg-slate-50/50 dark:bg-slate-800/40">
+              <div className="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-6 text-center hover:border-blue-500 transition-colors bg-slate-50/50 dark:bg-slate-800/40">
                 {screenshotUrl ? (
                   <div className="space-y-3">
                     <img
@@ -253,7 +253,7 @@ export default function StudentVerificationPage() {
                   </div>
                 ) : (
                   <label className="cursor-pointer flex flex-col items-center gap-2">
-                    <div className="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
                       {isUploading ? (
                         <Loader2 className="w-5 h-5 animate-spin" />
                       ) : (
@@ -281,7 +281,7 @@ export default function StudentVerificationPage() {
             <Button
               type="submit"
               disabled={isSubmitting || !screenshotUrl || !ptuRollNo}
-              className="w-full h-11.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition-colors cursor-pointer shadow-xs disabled:opacity-50"
+              className="w-full h-11.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm transition-colors cursor-pointer shadow-xs disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>

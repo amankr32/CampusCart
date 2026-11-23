@@ -56,7 +56,7 @@ export function EmptyProductsState({
     <div className="flex flex-col items-center justify-center text-center p-8 sm:p-12 rounded-3xl border border-[var(--border-subtle)] bg-[var(--card-bg)] shadow-xs space-y-6">
       {/* Friendly Icon with ambient glow & sparkle */}
       <div className="relative">
-        <div className="flex items-center justify-center h-20 w-20 rounded-3xl bg-[var(--brand-primary-light)] text-[var(--brand-primary)] border border-[var(--brand-primary)]/20 shadow-md shadow-indigo-500/10">
+        <div className="flex items-center justify-center h-20 w-20 rounded-3xl bg-[var(--brand-primary-light)] text-[var(--brand-primary)] border border-[var(--brand-primary)]/20 shadow-md shadow-blue-500/10">
           <SearchX className="h-10 w-10 stroke-[1.75]" />
         </div>
         <span className="absolute -top-1 -right-1 flex items-center justify-center h-7 w-7 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 text-white shadow-xs">
@@ -90,7 +90,7 @@ export function EmptyProductsState({
         )}
 
         <Link href="/sell">
-          <Button className="rounded-2xl text-xs font-bold px-5 h-11 bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs flex items-center gap-2 cursor-pointer transition-all active:scale-95">
+          <Button className="rounded-2xl text-xs font-bold px-5 h-11 bg-blue-600 hover:bg-blue-700 text-white shadow-xs flex items-center gap-2 cursor-pointer transition-all active:scale-95">
             <PlusCircle className="h-4 w-4" />
             Post a Listing
           </Button>

@@ -138,13 +138,13 @@ export function SettingsClient({
                 }}
                 className={`relative flex flex-col text-left p-5 rounded-2xl border-2 transition-all group cursor-pointer ${
                   isSelected
-                    ? "border-indigo-600 bg-indigo-50/20 shadow-md"
-                    : "border-[var(--border-subtle)] hover:border-indigo-300"
+                    ? "border-blue-600 bg-blue-50/20 shadow-md"
+                    : "border-[var(--border-subtle)] hover:border-blue-300"
                 }`}
               >
                 {/* Checkmark indicator */}
                 {isSelected && (
-                  <span className="absolute top-3.5 right-3.5 flex items-center justify-center h-6 w-6 rounded-full bg-indigo-600 text-white">
+                  <span className="absolute top-3.5 right-3.5 flex items-center justify-center h-6 w-6 rounded-full bg-blue-600 text-white">
                     <CheckCircle2 className="w-4 h-4" />
                   </span>
                 )}
@@ -311,7 +311,7 @@ export function SettingsClient({
               <X className="w-5 h-5" />
             </button>
 
-            <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-indigo-500/10 text-[var(--brand-primary)] mx-auto">
+            <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-blue-500/10 text-[var(--brand-primary)] mx-auto">
               <LogOut className="w-7 h-7" />
             </div>
 
@@ -332,7 +332,7 @@ export function SettingsClient({
               </Button>
               <Button
                 onClick={() => signOut({ callbackUrl: "/" })}
-                className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs"
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs"
               >
                 Confirm Log Out
               </Button>
