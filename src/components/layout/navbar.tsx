@@ -11,6 +11,8 @@ import {
   Heart,
   ShieldCheck,
   ShieldAlert,
+  Shield,
+  User,
   LogOut,
   ChevronDown,
   X,
@@ -191,6 +193,31 @@ export function Navbar() {
                       {/* Account Links */}
                       <div className="py-1.5">
                         <Link
+                          href="/profile"
+                          onClick={() => setIsProfileOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition-colors"
+                        >
+                          <User className="w-4 h-4 text-slate-400" />
+                          <span>Profile &amp; Account</span>
+                        </Link>
+
+                        {session.user.isAdmin && (
+                          <Link
+                            href="/admin"
+                            onClick={() => setIsProfileOpen(false)}
+                            className="flex items-center justify-between px-4 py-2 text-xs font-semibold text-purple-700 hover:bg-purple-50 transition-colors"
+                          >
+                            <span className="flex items-center gap-2.5">
+                              <Shield className="w-4 h-4 text-purple-600" />
+                              <span>Admin Center</span>
+                            </span>
+                            <span className="text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded-md bg-purple-100 text-purple-700 border border-purple-200">
+                              Admin
+                            </span>
+                          </Link>
+                        )}
+
+                        <Link
                           href="/dashboard/my-listings"
                           onClick={() => setIsProfileOpen(false)}
                           className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition-colors"
@@ -315,6 +342,32 @@ export function Navbar() {
             >
               My Listings
             </Link>
+
+            {session?.user && (
+              <>
+                <Link
+                  href="/profile"
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`block px-3 py-2 rounded-xl text-sm font-semibold ${
+                    isActive("/profile") ? "bg-blue-50 text-blue-600" : "text-slate-700"
+                  }`}
+                >
+                  Profile &amp; Account
+                </Link>
+
+                {session.user.isAdmin && (
+                  <Link
+                    href="/admin"
+                    onClick={() => setIsMenuOpen(false)}
+                    className={`block px-3 py-2 rounded-xl text-sm font-semibold ${
+                      isActive("/admin") ? "bg-purple-50 text-purple-700 font-bold" : "text-purple-700"
+                    }`}
+                  >
+                    Admin Command Center
+                  </Link>
+                )}
+              </>
+            )}
 
             <div className="pt-2">
               <Link href="/sell" onClick={() => setIsMenuOpen(false)}>

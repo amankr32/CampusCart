@@ -58,18 +58,20 @@ export default async function ProfilePage() {
   const averageRating = Number(ratingRes?.avgRating ?? 0);
 
   return (
-    <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12 py-10 space-y-8">
-      <UserProfileClient
-        user={{
-          ...user,
-          trustScore,
-        }}
-        stats={{
-          activeListingsCount,
-          totalSalesCount,
-          averageRating,
-        }}
-      />
+    <div className="min-h-screen bg-slate-50/50 py-10 px-4 sm:px-8">
+      <div className="w-full max-w-5xl mx-auto space-y-8">
+        <UserProfileClient
+          user={{
+            ...user,
+            trustScore,
+          }}
+          stats={{
+            activeListingsCount,
+            totalSalesCount,
+            averageRating,
+          }}
+        />
+      </div>
     </div>
   );
 }

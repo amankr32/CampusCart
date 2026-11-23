@@ -89,6 +89,7 @@ export const ListOrdered = (props: IconProps) => <MaterialSymbol name="format_li
 export const Receipt = (props: IconProps) => <MaterialSymbol name="receipt_long" {...props} />;
 export const Search = (props: IconProps) => <MaterialSymbol name="search" {...props} />;
 export const Settings = (props: IconProps) => <MaterialSymbol name="settings" {...props} />;
+export const Shield = (props: IconProps) => <MaterialSymbol name="shield" {...props} />;
 export const ShieldAlert = (props: IconProps) => <MaterialSymbol name="gpp_bad" {...props} />;
 export const ShieldCheck = (props: IconProps) => <MaterialSymbol name="verified_user" {...props} />;
 export const ShoppingBag = (props: IconProps) => <MaterialSymbol name="shopping_bag" {...props} />;
