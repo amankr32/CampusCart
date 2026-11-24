@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
+  <defs>
+    <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5" />
+      <stop offset="50%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#7c3aed" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#4f46e5" flood-opacity="0.3" />
+    </filter>
+  </defs>
+  <!-- Background Container -->
+  <rect width="64" height="64" rx="16" fill="url(#brandGrad)" filter="url(#shadow)" />
+  <!-- Shopping Bag Symbol -->
+  <path d="M18 20 L22 12 H42 L46 20 Z" fill="none" stroke="#ffffff" stroke-width="3" stroke-linejoin="round" />
+  <path d="M18 20 H46 V50 C46 52.2 44.2 54 42 54 H22 C19.8 54 18 52.2 18 50 Z" fill="none" stroke="#ffffff" stroke-width="3" stroke-linejoin="round" />
+  <!-- Bag Handle -->
+  <path d="M26 26 C26 29.5 28.5 32 32 32 C35.5 32 38 29.5 38 26" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+</svg>

@@ -1,6 +1,7 @@
 "use server";
 
 import crypto from "crypto";
+import { headers } from "next/headers";
 import { eq, and, gt, isNull, desc } from "drizzle-orm";
 import { AuthError } from "next-auth";
 
@@ -416,7 +417,18 @@ export async function forgotPasswordAction(
       expiresAt,
     });
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    let appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    try {
+      const headerList = await headers();
+      const host = headerList.get("x-forwarded-host") || headerList.get("host");
+      const proto = headerList.get("x-forwarded-proto") || (host?.includes("localhost") ? "http" : "https");
+      if (host) {
+        appUrl = `${proto}://${host}`;
+      }
+    } catch {
+      // fallback to process.env
+    }
+
     const resetUrl = `${appUrl}/reset-password?token=${token}`;
 
     await sendPasswordResetEmail(cleanEmail, resetUrl);
