@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
   ShoppingBag,
@@ -19,10 +19,10 @@ import { verifyOtpAction, resendOtpAction } from "@/lib/actions/auth";
 
 function VerifyEmailFormContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const emailParam = searchParams.get("email") || "";
 
-  const [email, setEmail] = useState(emailParam);
+  const [manualEmail, setManualEmail] = useState("");
+  const email = emailParam || manualEmail;
   const [digits, setDigits] = useState<string[]>(["", "", "", "", "", ""]);
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
@@ -35,11 +35,6 @@ function VerifyEmailFormContent() {
   useEffect(() => {
     inputRefs.current[0]?.focus();
   }, []);
-
-  // Sync if URL query param changes
-  useEffect(() => {
-    if (emailParam) setEmail(emailParam);
-  }, [emailParam]);
 
   // Resend cooldown timer
   useEffect(() => {
@@ -140,10 +135,10 @@ function VerifyEmailFormContent() {
         return;
       }
 
-      setSuccessMsg("Email verified successfully! Taking you to sign in...");
+      setSuccessMsg("Account verified! Redirecting to your dashboard...");
       setTimeout(() => {
-        router.push("/sign-in?verified=true");
-      }, 1200);
+        window.location.assign("/dashboard");
+      }, 800);
     } catch {
       setError("Failed to verify code. Please check your internet connection and try again.");
       setIsPending(false);
@@ -230,13 +225,13 @@ function VerifyEmailFormContent() {
             {!emailParam && (
               <div>
                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                  Your Student Email
+                  Email Address
                 </label>
                 <input
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="student@ptu.ac.in"
+                  value={manualEmail}
+                  onChange={(e) => setManualEmail(e.target.value)}
+                  placeholder="you@example.com"
                   className="w-full h-11 px-3.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
                   required
                 />
@@ -324,9 +319,9 @@ function VerifyEmailFormContent() {
         </div>
 
         {/* Campus Verification Reassurance Footnote */}
-        <div className="mt-6 flex items-center justify-center gap-2 text-xs text-slate-500">
+        <div className="mt-6 flex items-center justify-center gap-2 text-xs text-slate-500 text-center">
           <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-          <span>Only verified IKGPTU students can buy and sell on CampusCart</span>
+          <span>Verifying your email OTP automatically activates your verified CampusCart account</span>
         </div>
       </div>
     </div>

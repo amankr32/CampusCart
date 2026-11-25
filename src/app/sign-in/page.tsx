@@ -20,7 +20,14 @@ const perks = [
   },
 ];
 
-export default function SignInPage() {
+export default async function SignInPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ reset?: string }>;
+}) {
+  const params = await searchParams;
+  const resetSuccess = params.reset === "true";
+
   return (
     <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-(--breakpoint-xl) mx-auto w-full px-4 lg:px-12 py-12 lg:py-20 items-center">
       <div className="hidden lg:flex flex-col gap-6">
@@ -62,9 +69,9 @@ export default function SignInPage() {
             Sign in to Campus Cart
           </h2>
           <p className="text-sm text-[var(--text-muted)] mb-6">
-            Enter your student email and password to access your account.
+            Enter your email and password to access your account.
           </p>
-          <SignInForm />
+          <SignInForm resetSuccess={resetSuccess} />
         </div>
       </div>
     </div>

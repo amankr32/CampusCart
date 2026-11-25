@@ -64,7 +64,7 @@ export default function SignUpPage() {
             Create your account
           </h2>
           <p className="text-sm text-[var(--text-muted)] mb-6">
-            Fill in your details to get started.
+            Sign up with any email address — verify with the 6-digit OTP sent to your inbox to become a verified user right away.
           </p>
           <SignUpForm />
         </div>

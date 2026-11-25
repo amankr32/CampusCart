@@ -86,7 +86,7 @@ export function SignUpForm() {
           <Input
             {...register("email")}
             type="email"
-            placeholder="student@ptu.ac.in"
+            placeholder="you@example.com"
             className="pl-10 h-11 rounded-xl border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
           />
           <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />

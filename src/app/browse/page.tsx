@@ -99,8 +99,8 @@ export default async function BrowsePage({
             <ShieldCheck className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
           </div>
           <div className="min-w-0">
-            <p className="text-xs font-bold text-slate-900">Verified Students</p>
-            <p className="text-[11px] text-slate-500">IKGPTU roll check</p>
+            <p className="text-xs font-bold text-slate-900">Verified Users</p>
+            <p className="text-[11px] text-slate-500">Email OTP verified</p>
           </div>
         </div>
         <div className="flex items-start gap-2.5 sm:gap-3 min-w-0">

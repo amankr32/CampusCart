@@ -232,7 +232,7 @@ export default async function HomePage() {
                   <span className="font-display font-black text-3xl sm:text-4xl text-slate-900">
                     Free
                   </span>
-                  <span className="text-xs text-slate-400">with IKGPTU Roll No.</span>
+                  <span className="text-xs text-slate-400">with Email OTP</span>
                 </div>
               </div>
 
@@ -260,9 +260,9 @@ export default async function HomePage() {
               </ul>
             </div>
 
-            <Link href="/student-verification" className="w-full">
+            <Link href="/sign-up" className="w-full">
               <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-2.5 text-xs font-semibold shadow-xs transition-all border-0 cursor-pointer">
-                Get Student Verified
+                Verify via Email OTP
               </Button>
             </Link>
           </div>

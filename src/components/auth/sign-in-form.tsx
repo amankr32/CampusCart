@@ -4,14 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Mail, Lock, AlertCircle, ArrowRight, Eye, EyeOff } from "@/components/ui/material-symbol";
+import { Loader2, Mail, Lock, AlertCircle, ArrowRight, Eye, EyeOff, CheckCircle } from "@/components/ui/material-symbol";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { signInSchema, type SignInInput } from "@/lib/validations/auth";
 import { credentialsSignInAction } from "@/lib/actions/auth";
 
-export function SignInForm() {
+export function SignInForm({ resetSuccess = false }: { resetSuccess?: boolean }) {
   const [error, setError] = useState<string | null>(null);
   const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
@@ -49,7 +49,7 @@ export function SignInForm() {
       }
 
       // Hard redirect to dashboard so session cookie hydrates RootLayout & Navbar immediately
-      window.location.href = "/dashboard";
+      window.location.assign("/dashboard");
     } catch {
       setError("An unexpected error occurred. Please try again.");
       setIsPending(false);
@@ -58,6 +58,13 @@ export function SignInForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      {resetSuccess && !error && (
+        <div className="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs sm:text-sm font-medium flex items-start gap-2">
+          <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+          <span>Your password has been updated! Sign in with your new password.</span>
+        </div>
+      )}
+
       {error && (
         <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-sm space-y-2">
           <div className="flex items-start gap-2">
@@ -85,7 +92,7 @@ export function SignInForm() {
           <Input
             {...register("email")}
             type="email"
-            placeholder="student@ptu.ac.in"
+            placeholder="you@example.com"
             className="pl-10 h-11 rounded-xl border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
           />
           <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--text-muted)]" />

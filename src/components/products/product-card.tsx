@@ -181,7 +181,7 @@ export function ProductCard({
           </span>
         )}
         <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200/80 text-[10px] font-semibold">
-          IKGPTU Roll Verified
+          OTP Verified Seller
         </span>
         <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/80 text-[10px] font-semibold">
           0% Commission

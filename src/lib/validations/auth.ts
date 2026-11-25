@@ -52,7 +52,7 @@ export const forgotPasswordSchema = z.object({
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 
 export const resetPasswordSchema = z.object({
-  token: z.string().min(1, "Invalid password reset token."),
+  token: z.string().trim().min(1, "Invalid password reset token."),
   password: z
     .string()
     .min(8, "New password must be at least 8 characters.")
@@ -60,3 +60,18 @@ export const resetPasswordSchema = z.object({
 });
 
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
+
+export const resetPasswordWithOtpSchema = z.object({
+  email: z.string().trim().toLowerCase().email("Enter a valid email address."),
+  code: z
+    .string()
+    .trim()
+    .length(6, "Reset code must be 6 digits.")
+    .regex(/^\d{6}$/, "Reset code must contain only numbers."),
+  password: z
+    .string()
+    .min(8, "New password must be at least 8 characters.")
+    .max(72, "Password is too long."),
+});
+
+export type ResetPasswordWithOtpInput = z.infer<typeof resetPasswordWithOtpSchema>;

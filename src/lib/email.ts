@@ -124,18 +124,21 @@ export async function sendVerificationOtpEmail(
 }
 
 /**
- * Sends a password reset link to the user via Brevo REST API
+ * Sends a password reset link (and optional 6-digit reset code) to the user via Brevo REST API
  */
 export async function sendPasswordResetEmail(
   email: string,
-  resetUrl: string
+  resetUrl: string,
+  resetCode?: string
 ): Promise<{ success: boolean; error?: string }> {
   const { apiKey, senderEmail, senderName } = getEmailConfig();
   logger.info("EMAIL_RESET", `Sending password reset email to ${email}`, { email });
 
   if (process.env.NODE_ENV !== "production") {
     console.log(
-      `\n========================================\n[DEV/LOCAL] Password Reset URL for ${email}: ${resetUrl}\n========================================\n`
+      `\n========================================\n[DEV/LOCAL] Password Reset URL for ${email}: ${resetUrl}${
+        resetCode ? `\n[DEV/LOCAL] Password Reset Code: ${resetCode}` : ""
+      }\n========================================\n`
     );
   }
 
@@ -149,6 +152,14 @@ export async function sendPasswordResetEmail(
     );
     return { success: false, error: "Email service is not configured (missing BREVO_API_KEY)." };
   }
+
+  const codeBlockHtml = resetCode
+    ? `
+            <p style="font-size: 14px; color: #374151; margin-top: 20px;">Or enter this 6-digit reset code on the Forgot Password page:</p>
+            <div style="background-color: #f3f4f6; border-radius: 8px; padding: 16px; text-align: center; margin: 14px 0 22px;">
+              <span style="font-size: 30px; font-weight: bold; letter-spacing: 8px; color: #1f2937;">${resetCode}</span>
+            </div>`
+    : "";
 
   try {
     const response = await fetch("https://api.brevo.com/v3/smtp/email", {
@@ -168,17 +179,19 @@ export async function sendPasswordResetEmail(
             email: email,
           },
         ],
-        subject: "Reset your Campus Cart Password",
+        subject: resetCode
+          ? `Reset your Campus Cart Password (Code: ${resetCode})`
+          : "Reset your Campus Cart Password",
         htmlContent: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 12px; background-color: #ffffff;">
-            <h2 style="color: #4f46e5; margin-bottom: 16px; font-size: 22px;">Campus Cart Password Reset</h2>
+            <h2 style="color: #2563eb; margin-bottom: 16px; font-size: 22px;">Campus Cart Password Reset</h2>
             <p style="font-size: 15px; color: #374151; line-height: 1.5;">We received a request to reset your Campus Cart password. Click the button below to set a new password:</p>
             <div style="text-align: center; margin: 28px 0;">
-              <a href="${resetUrl}" style="background-color: #4f46e5; color: #ffffff; padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Reset Password</a>
-            </div>
+              <a href="${resetUrl}" style="background-color: #2563eb; color: #ffffff; padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Reset Password</a>
+            </div>${codeBlockHtml}
             <p style="font-size: 13px; color: #6b7280;">If the button above does not work, copy and paste this link into your browser:</p>
-            <p style="font-size: 13px; word-break: break-all; color: #4f46e5;">${resetUrl}</p>
-            <p style="font-size: 13px; color: #6b7280; margin-top: 20px;">This single-use link will expire in 15 minutes.</p>
+            <p style="font-size: 13px; word-break: break-all; color: #2563eb;">${resetUrl}</p>
+            <p style="font-size: 13px; color: #6b7280; margin-top: 20px;">This single-use reset link and code will expire in 15 minutes.</p>
             <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;" />
             <p style="font-size: 12px; color: #9ca3af; text-align: center;">Campus Cart — Student Marketplace</p>
           </div>
