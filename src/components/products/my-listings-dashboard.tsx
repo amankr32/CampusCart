@@ -149,83 +149,83 @@ export function MyListingsDashboard({
   return (
     <div className="space-y-6">
       {/* 4 KPI Metric Cards (FlipEarn Figma step_30_media_0.png) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Total Listings */}
-        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+        <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2 min-w-0">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider leading-tight">
               Total Listings
             </span>
-            <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-blue-50 text-blue-600">
-              <Tag className="w-4 h-4" />
+            <div className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-blue-50 text-blue-600 shrink-0">
+              <Tag className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="font-display font-black text-2xl sm:text-3xl text-slate-900">
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+            <span className="font-display font-black text-xl sm:text-3xl text-slate-900">
               {totalListings}
             </span>
-            <span className="text-[11px] text-slate-400">items posted</span>
+            <span className="text-[10px] sm:text-[11px] text-slate-400">items posted</span>
           </div>
         </div>
 
         {/* Active Listings */}
-        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+        <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2 min-w-0">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider leading-tight">
               Active Listings
             </span>
-            <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600">
-              <Sparkles className="w-4 h-4" />
+            <div className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-50 text-emerald-600 shrink-0">
+              <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="font-display font-black text-2xl sm:text-3xl text-emerald-600">
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+            <span className="font-display font-black text-xl sm:text-3xl text-emerald-600">
               {activeListings}
             </span>
-            <span className="text-[11px] text-emerald-600 font-medium">available now</span>
+            <span className="text-[10px] sm:text-[11px] text-emerald-600 font-medium">available now</span>
           </div>
         </div>
 
         {/* Items Sold */}
-        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+        <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2 min-w-0">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider leading-tight">
               Items Sold
             </span>
-            <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-blue-50 text-blue-600">
-              <CheckCircle className="w-4 h-4" />
+            <div className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-blue-50 text-blue-600 shrink-0">
+              <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="font-display font-black text-2xl sm:text-3xl text-slate-900">
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+            <span className="font-display font-black text-xl sm:text-3xl text-slate-900">
               {soldListings}
             </span>
-            <span className="text-[11px] text-slate-400">campus deals</span>
+            <span className="text-[10px] sm:text-[11px] text-slate-400">campus deals</span>
           </div>
         </div>
 
         {/* Total Value */}
-        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+        <div className="p-3.5 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-2 min-w-0">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider leading-tight">
               Total Active Value
             </span>
-            <div className="flex items-center justify-center w-8 h-8 rounded-xl bg-purple-50 text-purple-600">
-              <Tag className="w-4 h-4" />
+            <div className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-purple-50 text-purple-600 shrink-0">
+              <Tag className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="font-display font-black text-2xl sm:text-3xl text-slate-900">
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+            <span className="font-display font-black text-xl sm:text-3xl text-slate-900">
               ₹{totalValueRupees.toLocaleString("en-IN")}
             </span>
-            <span className="text-[11px] text-slate-400">in inventory</span>
+            <span className="text-[10px] sm:text-[11px] text-slate-400">in inventory</span>
           </div>
         </div>
       </div>
 
       {/* Header controls & tabs */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
-        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-xs">
+        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto scrollbar-none">
           {(["all", "available", "sold", "hidden"] as const).map((tab) => (
             <button
               key={tab}
@@ -281,7 +281,7 @@ export function MyListingsDashboard({
                   : "Sell your unused textbooks, drafters, calculators, or hostel gear to students on campus in minutes."}
             </p>
           </div>
-          <div className="pt-2 flex items-center justify-center gap-3">
+          <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
             {search.trim() ? (
               <Button
                 variant="outline"
@@ -369,7 +369,7 @@ export function MyListingsDashboard({
                 </div>
 
                 {/* Actions Bar */}
-                <div className="p-4 bg-slate-50/60 border-t border-slate-100 flex items-center justify-between gap-2">
+                <div className="p-3.5 sm:p-4 bg-slate-50/60 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-1">
                     {/* Edit button */}
                     <Link href={`/sell/${product.id}`}>

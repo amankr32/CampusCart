@@ -119,7 +119,7 @@ export function AdminVerificationList({
           {filtered.map((req) => (
             <div
               key={req.id}
-              className="bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] p-6 shadow-xs flex flex-col md:flex-row items-start gap-6"
+              className="bg-[var(--card-bg)] rounded-3xl border border-[var(--border-subtle)] p-4 sm:p-6 shadow-xs flex flex-col md:flex-row items-start gap-4 sm:gap-6"
             >
               {/* Proof Image Preview */}
               <div className="w-full md:w-48 h-48 rounded-2xl bg-[var(--input-bg)] border border-[var(--border-subtle)] overflow-hidden relative group shrink-0">
@@ -132,22 +132,22 @@ export function AdminVerificationList({
                   href={req.portalScreenshotUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs font-semibold transition-opacity gap-1"
+                  className="absolute inset-0 bg-black/30 sm:bg-black/40 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 flex items-center justify-center text-white text-xs font-semibold transition-opacity gap-1"
                 >
                   View Full Image <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               </div>
 
               {/* Request Info */}
-              <div className="flex-1 space-y-3">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="text-lg font-bold text-[var(--text-primary)] font-display">{req.userName}</h3>
-                    <p className="text-xs text-[var(--text-muted)]">{req.userEmail}</p>
+              <div className="flex-1 w-full min-w-0 space-y-3">
+                <div className="flex flex-wrap items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <h3 className="text-base sm:text-lg font-bold text-[var(--text-primary)] font-display truncate">{req.userName}</h3>
+                    <p className="text-xs text-[var(--text-muted)] truncate">{req.userEmail}</p>
                   </div>
 
                   <span
-                    className={`text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
+                    className={`text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shrink-0 ${
                       req.status === "approved"
                         ? "bg-emerald-100 text-emerald-800"
                         : req.status === "rejected"
@@ -159,7 +159,7 @@ export function AdminVerificationList({
                   </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 text-xs bg-[var(--input-bg)]/50 p-3 rounded-2xl border border-[var(--border-subtle)]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs bg-[var(--input-bg)]/50 p-3 rounded-2xl border border-[var(--border-subtle)]">
                   <div>
                     <span className="text-[var(--text-muted)] block">PTU Roll Number:</span>
                     <span className="font-bold text-[var(--text-primary)]">{req.ptuRollNo}</span>
@@ -180,7 +180,7 @@ export function AdminVerificationList({
 
                 {/* Actions */}
                 {req.status === "pending" && (
-                  <div className="pt-2 flex items-center gap-3">
+                  <div className="pt-2 flex flex-wrap items-center gap-2.5 sm:gap-3">
                     <Button
                       onClick={() => handleReview(req.id, "approve")}
                       disabled={loadingId === req.id}

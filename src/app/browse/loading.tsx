@@ -5,9 +5,9 @@ export default function BrowseLoading() {
   return (
     <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12 py-10 space-y-8">
       <div className="bg-[var(--card-bg)] p-6 sm:p-8 rounded-3xl border border-[var(--border-subtle)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-2">
-          <Skeleton className="h-8 w-64 rounded-xl" />
-          <Skeleton className="h-4 w-96 rounded-lg" />
+        <div className="space-y-2 min-w-0">
+          <Skeleton className="h-8 w-48 sm:w-64 rounded-xl" />
+          <Skeleton className="h-4 w-full max-w-96 rounded-lg" />
         </div>
         <Skeleton className="h-10 w-44 rounded-xl shrink-0" />
       </div>

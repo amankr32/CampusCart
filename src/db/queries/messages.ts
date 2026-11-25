@@ -1,11 +1,15 @@
 import "server-only";
-import { and, desc, eq, gt, inArray, ne, sql } from "drizzle-orm";
+import { and, desc, eq, gt, inArray, isNull, ne, sql } from "drizzle-orm";
 
 import { db } from "@/db";
 import { conversations, messages, products, users } from "@/db/schema";
 import { publishChatEvent } from "@/lib/chat-events";
 
 const RECENT_MESSAGES_LIMIT = 50;
+
+function visibleToUserCondition(userId: string) {
+  return sql`NOT (${messages.deletedByUserIds} @> ${JSON.stringify([userId])}::jsonb)`;
+}
 
 /**
  * Returns the existing conversation for this buyer+seller+product, or
@@ -149,11 +153,18 @@ export async function getConversationMembers(conversationId: string) {
 }
 
 /** Recent message history for a conversation, oldest first. */
-export async function listMessages(conversationId: string) {
+export async function listMessages(conversationId: string, userId?: string) {
   const rows = await db
     .select()
     .from(messages)
-    .where(eq(messages.conversationId, conversationId))
+    .where(
+      userId
+        ? and(
+            eq(messages.conversationId, conversationId),
+            visibleToUserCondition(userId)
+          )
+        : eq(messages.conversationId, conversationId)
+    )
     .orderBy(desc(messages.createdAt))
     .limit(RECENT_MESSAGES_LIMIT);
 
@@ -161,14 +172,19 @@ export async function listMessages(conversationId: string) {
 }
 
 /** Messages created after a given timestamp — used by the poll endpoint. */
-export async function listMessagesAfter(conversationId: string, after: Date) {
+export async function listMessagesAfter(
+  conversationId: string,
+  after: Date,
+  userId?: string
+) {
   return db
     .select()
     .from(messages)
     .where(
       and(
         eq(messages.conversationId, conversationId),
-        gt(messages.createdAt, after)
+        gt(messages.createdAt, after),
+        userId ? visibleToUserCondition(userId) : undefined
       )
     )
     .orderBy(messages.createdAt);
@@ -242,6 +258,164 @@ export async function markConversationRead(
   });
 }
 
+/** Edits a text message authored by userId (not deleted for everyone). */
+export async function editMessage({
+  conversationId,
+  messageId,
+  userId,
+  message,
+}: {
+  conversationId: string;
+  messageId: string;
+  userId: string;
+  message: string;
+}) {
+  const [existing] = await db
+    .select()
+    .from(messages)
+    .where(
+      and(
+        eq(messages.id, messageId),
+        eq(messages.conversationId, conversationId)
+      )
+    )
+    .limit(1);
+
+  if (!existing) {
+    return { error: "Message not found.", status: 404 as const };
+  }
+
+  if (existing.senderId !== userId) {
+    return { error: "You can only edit your own messages.", status: 403 as const };
+  }
+
+  if (existing.type !== "text") {
+    return { error: "System messages cannot be edited.", status: 400 as const };
+  }
+
+  if (existing.deletedForEveryoneAt) {
+    return { error: "Deleted messages cannot be edited.", status: 400 as const };
+  }
+
+  const [updated] = await db
+    .update(messages)
+    .set({
+      message,
+      editedAt: new Date(),
+    })
+    .where(eq(messages.id, messageId))
+    .returning();
+
+  publishChatEvent(conversationId, {
+    type: "message_updated",
+    data: updated,
+  });
+
+  return { message: updated };
+}
+
+/** Hides a message for the current user only ("Delete for me"). */
+export async function deleteMessageForMe({
+  conversationId,
+  messageId,
+  userId,
+}: {
+  conversationId: string;
+  messageId: string;
+  userId: string;
+}) {
+  const [existing] = await db
+    .select({
+      id: messages.id,
+      deletedByUserIds: messages.deletedByUserIds,
+    })
+    .from(messages)
+    .where(
+      and(
+        eq(messages.id, messageId),
+        eq(messages.conversationId, conversationId)
+      )
+    )
+    .limit(1);
+
+  if (!existing) {
+    return { error: "Message not found.", status: 404 as const };
+  }
+
+  const currentList = Array.isArray(existing.deletedByUserIds)
+    ? existing.deletedByUserIds
+    : [];
+
+  if (!currentList.includes(userId)) {
+    await db
+      .update(messages)
+      .set({
+        deletedByUserIds: [...currentList, userId],
+      })
+      .where(eq(messages.id, messageId));
+  }
+
+  return { ok: true as const };
+}
+
+/** Deletes a message for all participants ("Delete for everyone"). */
+export async function deleteMessageForEveryone({
+  conversationId,
+  messageId,
+  userId,
+}: {
+  conversationId: string;
+  messageId: string;
+  userId: string;
+}) {
+  const [existing] = await db
+    .select()
+    .from(messages)
+    .where(
+      and(
+        eq(messages.id, messageId),
+        eq(messages.conversationId, conversationId)
+      )
+    )
+    .limit(1);
+
+  if (!existing) {
+    return { error: "Message not found.", status: 404 as const };
+  }
+
+  if (existing.senderId !== userId) {
+    return {
+      error: "You can only delete your own messages for everyone.",
+      status: 403 as const,
+    };
+  }
+
+  if (existing.type !== "text") {
+    return {
+      error: "System messages cannot be deleted for everyone.",
+      status: 400 as const,
+    };
+  }
+
+  const [updated] = await db
+    .update(messages)
+    .set({
+      message: null,
+      image: null,
+      isRead: true,
+      deletedForEveryoneAt: existing.deletedForEveryoneAt ?? new Date(),
+    })
+    .where(eq(messages.id, messageId))
+    .returning();
+
+  publishChatEvent(conversationId, {
+    type: "message_updated",
+    data: updated,
+  });
+
+  return { message: updated, previousImage: existing.image };
+}
+
 /**
  * Conversation list for a user's inbox: the other party, the product, the
  * last message, and an unread count — all without an N+1 query per thread.
@@ -292,7 +466,9 @@ export async function listConversationsForUser(userId: string) {
         and(
           inArray(messages.conversationId, conversationIds),
           ne(messages.senderId, userId),
-          eq(messages.isRead, false)
+          eq(messages.isRead, false),
+          isNull(messages.deletedForEveryoneAt),
+          visibleToUserCondition(userId)
         )
       )
       .groupBy(messages.conversationId),
@@ -306,10 +482,16 @@ export async function listConversationsForUser(userId: string) {
       message: messages.message,
       image: messages.image,
       senderId: messages.senderId,
+      deletedForEveryoneAt: messages.deletedForEveryoneAt,
       createdAt: messages.createdAt,
     })
     .from(messages)
-    .where(inArray(messages.conversationId, conversationIds))
+    .where(
+      and(
+        inArray(messages.conversationId, conversationIds),
+        visibleToUserCondition(userId)
+      )
+    )
     .orderBy(messages.conversationId, desc(messages.createdAt));
 
   const otherUserById = new Map(otherUsers.map((u) => [u.id, u]));
@@ -349,7 +531,9 @@ export async function countUnreadMessagesForUser(userId: string) {
       and(
         sql`${conversations.buyerId} = ${userId} OR ${conversations.sellerId} = ${userId}`,
         ne(messages.senderId, userId),
-        eq(messages.isRead, false)
+        eq(messages.isRead, false),
+        isNull(messages.deletedForEveryoneAt),
+        visibleToUserCondition(userId)
       )
     );
 

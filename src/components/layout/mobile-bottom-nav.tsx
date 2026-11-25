@@ -34,12 +34,21 @@ export function MobileBottomNav() {
     return unsubscribe;
   }, [session?.user?.id]);
 
+  // Hide bottom nav inside an active chat thread so it never covers the message composer
+  const isChatThread =
+    pathname.startsWith("/dashboard/messages/") && pathname !== "/dashboard/messages";
+
+  if (isChatThread) {
+    return null;
+  }
+
   const isExploreActive = pathname === "/";
   const isSearchActive = pathname.startsWith("/browse");
   const isSellActive = pathname === "/sell";
   const isMessagesActive = pathname.startsWith("/dashboard/messages");
   const isProfileActive =
     pathname.startsWith("/profile") ||
+    pathname.startsWith("/settings") ||
     pathname.startsWith("/student-verification") ||
     pathname.startsWith("/dashboard/my-listings") ||
     pathname.startsWith("/orders") ||
@@ -48,9 +57,9 @@ export function MobileBottomNav() {
   return (
     <nav
       aria-label="Mobile Bottom Navigation"
-      className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-[var(--card-bg)]/95 backdrop-blur-md border-t border-[var(--border-subtle)] shadow-[0_-4px_20px_rgba(0,0,0,0.06)] select-none"
+      className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] select-none pb-[env(safe-area-inset-bottom)]"
     >
-      <div className="max-w-md mx-auto px-3 h-16 flex items-center justify-between">
+      <div className="max-w-md mx-auto px-2 h-16 flex items-center justify-between">
         {/* 1. Explore */}
         <Link
           href="/"

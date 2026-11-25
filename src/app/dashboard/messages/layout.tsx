@@ -16,8 +16,8 @@ export default async function MessagesLayout({
   const conversations = await listConversationsForUser(session.user.id);
 
   return (
-    <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12 py-6">
-      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex h-[calc(100vh-9rem)] min-h-[520px] w-full">
+    <div className="w-full max-w-[1600px] mx-auto px-0 md:px-8 lg:px-12 py-0 md:py-6">
+      <div className="bg-white border-0 md:border border-slate-200 rounded-none md:rounded-2xl shadow-none md:shadow-sm overflow-hidden flex h-[calc(100dvh-3.5rem)] md:h-[calc(100vh-9rem)] md:min-h-[520px] w-full">
         <ConversationSidebar
           initialConversations={conversations}
           currentUserId={session.user.id}

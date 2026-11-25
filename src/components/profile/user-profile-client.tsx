@@ -178,9 +178,9 @@ export function UserProfileClient({
   };
 
   return (
-    <div className="space-y-8 max-w-5xl mx-auto">
+    <div className="space-y-6 sm:space-y-8 max-w-5xl mx-auto">
       {/* Profile Header Banner */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-6">
+      <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-8 shadow-xs space-y-5 sm:space-y-6">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
           {/* Avatar Upload Container */}
           <div className="relative group shrink-0">
@@ -253,7 +253,7 @@ export function UserProfileClient({
 
             {/* Campus Info row if provided */}
             {(profile.branch || profile.yearSemester || profile.hostel) && (
-              <div className="flex flex-wrap items-center gap-3 pt-2 text-xs text-slate-600 font-medium">
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3 pt-2 text-xs text-slate-600 font-medium">
                 {profile.branch && (
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-100 text-slate-700 border border-slate-200">
                     Dept: {profile.branch}
@@ -424,7 +424,7 @@ export function UserProfileClient({
       )}
 
       {/* Security & Change Password */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-4">
+      <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-8 shadow-xs space-y-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
             <Lock className="w-5 h-5" />

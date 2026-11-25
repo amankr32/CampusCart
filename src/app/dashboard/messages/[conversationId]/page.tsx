@@ -1,7 +1,11 @@
 import { notFound } from "next/navigation";
 
 import { auth } from "@/auth";
-import { getConversationDetail, listMessages } from "@/db/queries/messages";
+import {
+  getConversationDetail,
+  listMessages,
+  markConversationRead,
+} from "@/db/queries/messages";
 import { getActiveOrderForConversation } from "@/db/queries/orders";
 import { getReviewForOrder } from "@/db/queries/products";
 import { ChatWindow } from "@/components/messaging/chat-window";
@@ -35,9 +39,13 @@ export default async function ConversationPage({
   const otherUser = isBuyer ? conversation.seller : conversation.buyer;
 
   const [messages, order] = await Promise.all([
-    listMessages(conversationId),
+    listMessages(conversationId, session.user.id),
     getActiveOrderForConversation(conversationId),
   ]);
+
+  if (messages.some((m) => !m.isRead && m.senderId !== session.user.id)) {
+    await markConversationRead(conversationId, session.user.id);
+  }
 
   const hasReviewed =
     order && order.status === "completed"
@@ -64,6 +72,10 @@ export default async function ConversationPage({
       initialMessages={messages.map((m) => ({
         ...m,
         createdAt: m.createdAt.toISOString(),
+        editedAt: m.editedAt ? m.editedAt.toISOString() : null,
+        deletedForEveryoneAt: m.deletedForEveryoneAt
+          ? m.deletedForEveryoneAt.toISOString()
+          : null,
       }))}
       initialOrder={
         order

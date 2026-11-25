@@ -6,17 +6,19 @@ import Link from "next/link";
 import { upload } from "@vercel/blob/client";
 import {
   ArrowLeft,
+  Check,
   CheckCircle2,
+  Edit3,
   ImageOff,
   ImagePlus,
   Loader2,
+  MoreVertical,
   Send,
   Smile,
   Star,
-  Store,
+  Trash2,
   X,
   AlertCircle,
-  MessageSquare,
 } from "@/components/ui/material-symbol";
 
 import { Button } from "@/components/ui/button";
@@ -30,7 +32,7 @@ import {
 import { submitBuyerReviewAction } from "@/lib/actions/reviews";
 import { refreshUnreadCount } from "@/lib/unread-store";
 
-const FALLBACK_SYNC_INTERVAL_MS = 30_000;
+const FALLBACK_SYNC_INTERVAL_MS = 2_500;
 const HEARTBEAT_INTERVAL_MS = 20_000;
 const TYPING_STOP_DELAY_MS = 2000;
 const QUICK_EMOJIS = ["👍", "🙏", "😂", "❤️", "🔥", "😢", "👀", "✅"];
@@ -43,7 +45,16 @@ interface ChatMessage {
   message: string | null;
   image: string | null;
   isRead: boolean;
+  editedAt?: string | null;
+  deletedForEveryoneAt?: string | null;
   createdAt: string;
+}
+
+function upsertMessage(prev: ChatMessage[], incoming: ChatMessage): ChatMessage[] {
+  if (prev.some((m) => m.id === incoming.id)) {
+    return prev.map((m) => (m.id === incoming.id ? incoming : m));
+  }
+  return [...prev, incoming];
 }
 
 interface OrderState {
@@ -80,7 +91,9 @@ function areMessagesEqual(prev: ChatMessage[], next: ChatMessage[]): boolean {
       a.id !== b.id ||
       a.isRead !== b.isRead ||
       a.message !== b.message ||
-      a.image !== b.image
+      a.image !== b.image ||
+      a.editedAt !== b.editedAt ||
+      a.deletedForEveryoneAt !== b.deletedForEveryoneAt
     ) {
       return false;
     }
@@ -143,11 +156,17 @@ export function ChatWindow({
     lastActiveAt: string | null;
     isTyping: boolean;
   }>({ isOnline: false, lastActiveAt: null, isTyping: false });
+  const [openMenuMessageId, setOpenMenuMessageId] = useState<string | null>(null);
+  const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
+  const [editingDraft, setEditingDraft] = useState("");
+  const [isSavingEdit, setIsSavingEdit] = useState(false);
+  const [deletingMessageId, setDeletingMessageId] = useState<string | null>(null);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isTypingRef = useRef(false);
+  const prevMessageCountRef = useRef(initialMessages.length);
 
   // Real-time chat via Server-Sent Events (SSE) with resilient 30s background sync
   useEffect(() => {
@@ -199,17 +218,25 @@ export function ChatWindow({
         if (cancelled) return;
         try {
           const newMsg: ChatMessage = JSON.parse(e.data);
-          setMessages((prev) => {
-            if (prev.some((m) => m.id === newMsg.id)) {
-              return prev.map((m) => (m.id === newMsg.id ? newMsg : m));
-            }
-            return [...prev, newMsg];
-          });
+          setMessages((prev) => upsertMessage(prev, newMsg));
           // If incoming message is from the other party, mark as read and refresh unread badges
           if (newMsg.senderId !== currentUserId) {
             void fetch(`/api/conversations/${conversationId}/messages`).catch(() => {});
             refreshUnreadCount();
           }
+        } catch {}
+      });
+
+      es.addEventListener("message_updated", (e: MessageEvent) => {
+        if (cancelled) return;
+        try {
+          const updatedMsg: ChatMessage = JSON.parse(e.data);
+          setMessages((prev) =>
+            prev.some((m) => m.id === updatedMsg.id)
+              ? prev.map((m) => (m.id === updatedMsg.id ? updatedMsg : m))
+              : prev
+          );
+          refreshUnreadCount();
         } catch {}
       });
 
@@ -268,8 +295,9 @@ export function ChatWindow({
     };
 
     setupSSE();
+    void syncMessagesAndPresence();
 
-    // Fallback sync (every 30s instead of 3s) as a resilient safety net
+    // Active sync every 2.5s while visible ensures instant delivery across serverless workers
     fallbackTimer = setInterval(syncMessagesAndPresence, FALLBACK_SYNC_INTERVAL_MS);
 
     const onVisibilityChange = () => {
@@ -314,8 +342,24 @@ export function ChatWindow({
   }, []);
 
   useEffect(() => {
-    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
-  }, [messages]);
+    if (messages.length > prevMessageCountRef.current) {
+      scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
+    }
+    prevMessageCountRef.current = messages.length;
+  }, [messages.length]);
+
+  // Close message action menu when clicking outside
+  useEffect(() => {
+    if (!openMenuMessageId) return;
+    const handleOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (!target?.closest("[data-message-menu]")) {
+        setOpenMenuMessageId(null);
+      }
+    };
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
+  }, [openMenuMessageId]);
 
   const setTypingState = async (isTyping: boolean) => {
     if (isTypingRef.current === isTyping) return;
@@ -342,6 +386,7 @@ export function ChatWindow({
   };
 
   const handleSend = async () => {
+    if (isSending) return;
     const trimmed = draft.trim();
     if (!trimmed && !pendingImage) return;
 
@@ -358,7 +403,7 @@ export function ChatWindow({
 
       if (res.ok) {
         const data = await res.json();
-        setMessages((prev) => [...prev, data.message]);
+        setMessages((prev) => upsertMessage(prev, data.message));
         setDraft("");
         setPendingImage(null);
         setSendError(null);
@@ -371,6 +416,84 @@ export function ChatWindow({
       setSendError("Network error. Could not send message.");
     } finally {
       setIsSending(false);
+    }
+  };
+
+  const handleStartEdit = (m: ChatMessage) => {
+    setOpenMenuMessageId(null);
+    setEditingMessageId(m.id);
+    setEditingDraft(m.message ?? "");
+  };
+
+  const handleCancelEdit = () => {
+    setEditingMessageId(null);
+    setEditingDraft("");
+  };
+
+  const handleSaveEdit = async (messageId: string) => {
+    const trimmed = editingDraft.trim();
+    if (!trimmed || isSavingEdit) return;
+
+    setIsSavingEdit(true);
+    try {
+      const res = await fetch(
+        `/api/conversations/${conversationId}/messages/${messageId}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: trimmed }),
+        }
+      );
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        toast.error(data.error || "Failed to edit message.");
+        return;
+      }
+
+      setMessages((prev) => upsertMessage(prev, data.message));
+      setEditingMessageId(null);
+      setEditingDraft("");
+      toast.success("Message edited");
+    } catch {
+      toast.error("Network error. Could not edit message.");
+    } finally {
+      setIsSavingEdit(false);
+    }
+  };
+
+  const handleDeleteMessage = async (
+    messageId: string,
+    scope: "me" | "everyone"
+  ) => {
+    setOpenMenuMessageId(null);
+    setDeletingMessageId(messageId);
+    try {
+      const res = await fetch(
+        `/api/conversations/${conversationId}/messages/${messageId}?scope=${scope}`,
+        { method: "DELETE" }
+      );
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        toast.error(data.error || "Failed to delete message.");
+        return;
+      }
+
+      if (scope === "me") {
+        setMessages((prev) => prev.filter((m) => m.id !== messageId));
+        toast.success("Message deleted for you");
+      } else if (data.message) {
+        setMessages((prev) => upsertMessage(prev, data.message));
+        if (editingMessageId === messageId) {
+          handleCancelEdit();
+        }
+        toast.success("Message deleted for everyone");
+      }
+      refreshUnreadCount();
+    } catch {
+      toast.error("Network error. Could not delete message.");
+    } finally {
+      setDeletingMessageId(null);
     }
   };
 
@@ -442,14 +565,12 @@ export function ChatWindow({
 
   const lastOwnMessage = [...messages]
     .reverse()
-    .find((m) => m.senderId === currentUserId && m.type === "text");
-
-  const productStatusLabel =
-    product.status === "sold"
-      ? "Sold"
-      : product.status === "reserved"
-        ? "Reserved"
-        : "Available";
+    .find(
+      (m) =>
+        m.senderId === currentUserId &&
+        m.type === "text" &&
+        !m.deletedForEveryoneAt
+    );
 
   return (
     <div className="flex flex-col h-full bg-white">
@@ -515,20 +636,33 @@ export function ChatWindow({
         </Link>
       </div>
 
+      {/* Mobile Compact Product Strip */}
+      <Link
+        href={`/product/${product.slug}`}
+        className="sm:hidden flex items-center justify-between gap-2 px-3.5 py-2 border-b border-slate-100 bg-slate-50/80 shrink-0"
+      >
+        <span className="text-xs font-semibold text-slate-800 truncate min-w-0">
+          {product.name}
+        </span>
+        <span className="text-xs font-bold text-blue-600 shrink-0">
+          {formatPrice(product.priceCents)}
+        </span>
+      </Link>
+
       {/* Order status / action bar */}
-      <div className="border-b border-[var(--border-subtle)] bg-[var(--brand-primary-light)]/40 px-4 py-3 shrink-0">
+      <div className="border-b border-[var(--border-subtle)] bg-[var(--brand-primary-light)]/40 px-3.5 sm:px-4 py-2.5 sm:py-3 shrink-0">
         {orderActionError && (
           <p className="text-xs text-red-600 font-medium mb-2">{orderActionError}</p>
         )}
 
         {!order && role === "seller" && product.status === "available" && (
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
             <p className="text-xs text-[var(--text-primary)] font-medium">
               Handed the item over and got paid offline?
             </p>
             <Button
               size="sm"
-              className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl px-4"
+              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl px-4 shrink-0"
               disabled={isOrderActionPending}
               onClick={() => runOrderAction(() => markAsSoldAction(conversationId))}
             >
@@ -595,7 +729,7 @@ export function ChatWindow({
 
         {order && order.status === "completed" && (
           <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-2.5 sm:gap-3">
               <p className="text-xs sm:text-sm font-bold text-emerald-600 flex items-center gap-1.5">
                 <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                 Order completed
@@ -718,35 +852,167 @@ export function ChatWindow({
             }
 
             const isMine = m.senderId === currentUserId;
+            const isDeletedForAll = Boolean(m.deletedForEveryoneAt);
+            const isEditing = editingMessageId === m.id;
+            const isMenuOpen = openMenuMessageId === m.id;
+            const isDeletingThis = deletingMessageId === m.id;
+
             return (
               <div
                 key={m.id}
-                className={`flex flex-col max-w-[80%] sm:max-w-[70%] ${
+                className={`group flex flex-col max-w-[85%] sm:max-w-[72%] ${
                   isMine ? "self-end items-end" : "self-start items-start"
                 }`}
               >
                 <div
-                  className={`px-4 py-2.5 shadow-2xs ${
-                    isMine
-                      ? "bg-blue-600 text-white rounded-2xl rounded-br-xs"
-                      : "bg-white text-slate-900 border border-slate-200 rounded-2xl rounded-bl-xs"
+                  className={`flex items-end gap-1.5 ${
+                    isMine ? "flex-row-reverse" : "flex-row"
                   }`}
                 >
-                  {m.image && (
-                    <div className="relative w-48 sm:w-56 aspect-square rounded-xl overflow-hidden mb-2 border border-black/10">
-                      <Image src={m.image} alt="Attachment" fill className="object-cover" />
+                  {isDeletedForAll ? (
+                    <div
+                      className={`px-3.5 py-2 rounded-2xl border text-xs italic ${
+                        isMine
+                          ? "bg-slate-100 border-slate-200 text-slate-500 rounded-br-xs"
+                          : "bg-white border-slate-200 text-slate-400 rounded-bl-xs"
+                      }`}
+                    >
+                      This message was deleted
+                    </div>
+                  ) : isEditing ? (
+                    <div className="w-64 sm:w-80 rounded-2xl border border-blue-300 bg-white p-2.5 shadow-sm space-y-2">
+                      <textarea
+                        value={editingDraft}
+                        onChange={(e) => setEditingDraft(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault();
+                            void handleSaveEdit(m.id);
+                          } else if (e.key === "Escape") {
+                            handleCancelEdit();
+                          }
+                        }}
+                        rows={2}
+                        autoFocus
+                        className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs sm:text-sm text-slate-900 outline-none focus:border-blue-500 focus:bg-white"
+                      />
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          type="button"
+                          onClick={handleCancelEdit}
+                          disabled={isSavingEdit}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer"
+                        >
+                          <X className="h-3 w-3" /> Cancel
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => void handleSaveEdit(m.id)}
+                          disabled={isSavingEdit || !editingDraft.trim()}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50 cursor-pointer"
+                        >
+                          {isSavingEdit ? (
+                            <Loader2 className="h-3 w-3 animate-spin" />
+                          ) : (
+                            <Check className="h-3 w-3" />
+                          )}
+                          Save
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      className={`px-4 py-2.5 shadow-2xs ${
+                        isMine
+                          ? "bg-blue-600 text-white rounded-2xl rounded-br-xs"
+                          : "bg-white text-slate-900 border border-slate-200 rounded-2xl rounded-bl-xs"
+                      }`}
+                    >
+                      {m.image && (
+                        <div className="relative w-48 sm:w-56 aspect-square rounded-xl overflow-hidden mb-2 border border-black/10">
+                          <Image src={m.image} alt="Attachment" fill className="object-cover" />
+                        </div>
+                      )}
+                      {m.message && (
+                        <p className="text-xs sm:text-sm whitespace-pre-line break-words leading-relaxed font-normal">
+                          {m.message}
+                        </p>
+                      )}
                     </div>
                   )}
-                  {m.message && (
-                    <p className="text-xs sm:text-sm whitespace-pre-line break-words leading-relaxed font-normal">
-                      {m.message}
-                    </p>
+
+                  {/* Message Action Menu (Edit / Delete for me / Delete for everyone) */}
+                  {!isEditing && (
+                    <div className="relative shrink-0" data-message-menu>
+                      <button
+                        type="button"
+                        disabled={isDeletingThis}
+                        onClick={() =>
+                          setOpenMenuMessageId((prev) => (prev === m.id ? null : m.id))
+                        }
+                        aria-label="Message actions"
+                        className={`flex items-center justify-center h-7 w-7 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-200/70 transition-all cursor-pointer ${
+                          isMenuOpen
+                            ? "opacity-100 bg-slate-200/70 text-slate-700"
+                            : "opacity-75 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100"
+                        }`}
+                      >
+                        {isDeletingThis ? (
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        ) : (
+                          <MoreVertical className="h-3.5 w-3.5" />
+                        )}
+                      </button>
+
+                      {isMenuOpen && (
+                        <div
+                          className={`absolute bottom-full mb-1 z-30 w-44 rounded-xl border border-slate-200 bg-white shadow-lg py-1 text-xs animate-in fade-in zoom-in-95 duration-100 ${
+                            isMine ? "right-0" : "left-0"
+                          }`}
+                        >
+                          {isMine && m.message && !isDeletedForAll && (
+                            <button
+                              type="button"
+                              onClick={() => handleStartEdit(m)}
+                              className="w-full flex items-center gap-2 px-3 py-2 text-left font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition-colors cursor-pointer"
+                            >
+                              <Edit3 className="h-3.5 w-3.5" />
+                              <span>Edit message</span>
+                            </button>
+                          )}
+
+                          <button
+                            type="button"
+                            onClick={() => void handleDeleteMessage(m.id, "me")}
+                            className="w-full flex items-center gap-2 px-3 py-2 text-left font-medium text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
+                          >
+                            <Trash2 className="h-3.5 w-3.5 text-slate-400" />
+                            <span>Delete for me</span>
+                          </button>
+
+                          {isMine && !isDeletedForAll && (
+                            <button
+                              type="button"
+                              onClick={() => void handleDeleteMessage(m.id, "everyone")}
+                              className="w-full flex items-center gap-2 px-3 py-2 text-left font-semibold text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="h-3.5 w-3.5 text-rose-500" />
+                              <span>Delete for everyone</span>
+                            </button>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   )}
                 </div>
-                <span className="text-[10px] text-slate-400 mt-1 px-1 font-medium">
-                  {formatTime(m.createdAt)}
+
+                <span className="text-[10px] text-slate-400 mt-1 px-1 font-medium flex items-center gap-1.5">
+                  <span>{formatTime(m.createdAt)}</span>
+                  {m.editedAt && !isDeletedForAll && (
+                    <span className="text-slate-400 italic">• Edited</span>
+                  )}
                   {isMine && m.id === lastOwnMessage?.id && (
-                    <span className="ml-1 text-blue-500 font-semibold">
+                    <span className="text-blue-500 font-semibold">
                       {m.isRead ? "✓✓ Read" : "✓ Sent"}
                     </span>
                   )}
@@ -819,11 +1085,11 @@ export function ChatWindow({
           </div>
         )}
 
-        <div className="flex items-end gap-2">
+        <div className="flex items-end gap-1.5 sm:gap-2">
           <button
             type="button"
             onClick={() => setShowEmoji((v) => !v)}
-            className="flex items-center justify-center h-10 w-10 rounded-xl hover:bg-slate-100 shrink-0 text-slate-500 transition-colors cursor-pointer"
+            className="flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-xl hover:bg-slate-100 shrink-0 text-slate-500 transition-colors cursor-pointer"
             aria-label="Emoji"
           >
             <Smile className="h-5 w-5" />
@@ -833,7 +1099,7 @@ export function ChatWindow({
             type="button"
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading}
-            className="flex items-center justify-center h-10 w-10 rounded-xl hover:bg-slate-100 shrink-0 text-slate-500 transition-colors disabled:opacity-50 cursor-pointer"
+            className="flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-xl hover:bg-slate-100 shrink-0 text-slate-500 transition-colors disabled:opacity-50 cursor-pointer"
             aria-label="Attach image"
           >
             {isUploading ? (
@@ -859,14 +1125,14 @@ export function ChatWindow({
                 handleSend();
               }
             }}
-            placeholder="Type a message... (Press Enter to send)"
+            placeholder="Type a message..."
             rows={1}
-            className="flex-1 resize-none rounded-xl border border-slate-300 bg-slate-50 text-slate-900 px-3.5 py-2.5 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-blue-500 max-h-32"
+            className="min-w-0 flex-1 resize-none rounded-xl border border-slate-300 bg-slate-50 text-slate-900 px-3 sm:px-3.5 py-2 sm:py-2.5 text-xs sm:text-sm outline-none focus:ring-2 focus:ring-blue-500 max-h-32"
           />
 
           <Button
             size="icon"
-            className="rounded-xl h-10 w-10 bg-blue-600 hover:bg-blue-700 text-white shrink-0 shadow-xs cursor-pointer transition-colors"
+            className="rounded-xl h-9 w-9 sm:h-10 sm:w-10 bg-blue-600 hover:bg-blue-700 text-white shrink-0 shadow-xs cursor-pointer transition-colors"
             onClick={handleSend}
             disabled={isSending || (!draft.trim() && !pendingImage)}
             aria-label="Send message"

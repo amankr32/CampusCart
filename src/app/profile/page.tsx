@@ -58,7 +58,7 @@ export default async function ProfilePage() {
   const averageRating = Number(ratingRes?.avgRating ?? 0);
 
   return (
-    <div className="min-h-screen bg-slate-50/50 py-10 px-4 sm:px-8">
+    <div className="min-h-screen bg-slate-50/50 py-6 sm:py-10 px-4 sm:px-8">
       <div className="w-full max-w-5xl mx-auto space-y-8">
         <UserProfileClient
           user={{

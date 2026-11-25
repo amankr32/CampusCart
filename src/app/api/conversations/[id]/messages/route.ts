@@ -48,7 +48,9 @@ export async function GET(
     const after = url.searchParams.get("after");
 
     const [newMessages, activeOrder] = await Promise.all([
-      after ? listMessagesAfter(id, new Date(after)) : listMessages(id),
+      after
+        ? listMessagesAfter(id, new Date(after), session.user.id)
+        : listMessages(id, session.user.id),
       getActiveOrderForConversation(id),
     ]);
 

@@ -9,6 +9,8 @@ import {
   ShieldCheck,
   MapPin,
   Check,
+  ChevronDown,
+  ChevronUp,
 } from "@/components/ui/material-symbol";
 
 import { Button } from "@/components/ui/button";
@@ -33,9 +35,15 @@ export function SearchFilters() {
   const [search, setSearch] = useState(searchParams.get("search") ?? "");
   const [minPrice, setMinPrice] = useState(searchParams.get("minPrice") ?? "");
   const [maxPrice, setMaxPrice] = useState(searchParams.get("maxPrice") ?? "");
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const activeConditions = searchParams.getAll("condition");
   const activeSort = searchParams.get("sort") ?? "newest";
+  const activeFilterCount =
+    activeConditions.length +
+    (searchParams.get("search") ? 1 : 0) +
+    (searchParams.get("minPrice") ? 1 : 0) +
+    (searchParams.get("maxPrice") ? 1 : 0);
 
   const hasActiveFilters =
     activeConditions.length > 0 ||
@@ -82,12 +90,48 @@ export function SearchFilters() {
   };
 
   return (
-    <div
-      className={cn(
-        "flex flex-col gap-5 p-5 rounded-2xl border border-slate-200 bg-white shadow-xs h-fit transition-opacity",
-        isPending && "opacity-60"
-      )}
-    >
+    <div className="space-y-3">
+      {/* Mobile Compact Filter Toggle Bar */}
+      <div className="lg:hidden flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setIsMobileOpen((v) => !v)}
+          aria-expanded={isMobileOpen}
+          className="flex-1 flex items-center justify-between px-4 py-2.5 rounded-2xl border border-slate-200 bg-white shadow-xs text-xs font-bold text-slate-900 cursor-pointer"
+        >
+          <span className="flex items-center gap-2">
+            <SlidersHorizontal className="h-4 w-4 text-blue-600" />
+            <span>Filters &amp; Sort</span>
+            {activeFilterCount > 0 && (
+              <span className="inline-flex items-center justify-center h-5 min-w-5 px-1.5 rounded-full bg-blue-600 text-white text-[10px] font-extrabold">
+                {activeFilterCount}
+              </span>
+            )}
+          </span>
+          <span className="flex items-center gap-1.5 text-[11px] font-medium text-slate-500">
+            <span>{SORT_OPTIONS.find((s) => s.value === activeSort)?.label ?? "Sort"}</span>
+            {isMobileOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </span>
+        </button>
+
+        {hasActiveFilters && (
+          <button
+            type="button"
+            onClick={handleClearAll}
+            className="px-3 py-2.5 rounded-2xl border border-slate-200 bg-white text-xs font-semibold text-blue-600 hover:bg-blue-50 shrink-0 cursor-pointer"
+          >
+            Reset
+          </button>
+        )}
+      </div>
+
+      <div
+        className={cn(
+          isMobileOpen ? "flex" : "hidden lg:flex",
+          "flex-col gap-5 p-4 sm:p-5 rounded-2xl border border-slate-200 bg-white shadow-xs h-fit transition-opacity",
+          isPending && "opacity-60"
+        )}
+      >
       {/* Filters Header (FlipEarn Figma sidebar header) */}
       <div className="flex items-center justify-between pb-3 border-b border-slate-100">
         <div className="flex items-center gap-2">
@@ -241,6 +285,7 @@ export function SearchFilters() {
             </p>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

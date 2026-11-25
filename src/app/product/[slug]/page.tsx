@@ -64,7 +64,7 @@ export default async function ProductPage({ params }: Props) {
   ]);
 
   return (
-    <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-5 sm:space-y-6">
       {/* Top Back Navigation Breadcrumb (FlipEarn pill style) */}
       <Link
         href="/browse"
@@ -75,17 +75,17 @@ export default async function ProductPage({ params }: Props) {
       </Link>
 
       {/* Top Header Overview Card (Figma step_52_media_0.png) */}
-      <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-white p-4 sm:p-8 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
         <div className="space-y-2.5 min-w-0">
           {product.category && (
             <span className="text-[10px] font-extrabold uppercase tracking-widest text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-200 inline-block">
               {product.category.name}
             </span>
           )}
-          <h1 className="font-display font-black text-2xl sm:text-3xl text-slate-900 tracking-tight leading-snug">
+          <h1 className="font-display font-black text-xl sm:text-3xl text-slate-900 tracking-tight leading-snug">
             {product.name}
           </h1>
-          <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 text-xs text-slate-500">
+          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 sm:gap-3 text-xs text-slate-500">
             <span className="font-semibold text-slate-700">
               @{product.seller.username || "student"}
             </span>
@@ -102,22 +102,24 @@ export default async function ProductPage({ params }: Props) {
           </div>
         </div>
 
-        <div className="flex md:flex-col items-baseline md:items-end justify-between md:justify-center border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 md:pl-8 shrink-0">
-          <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-            Asking Price
-          </span>
-          <span className="font-display font-black text-3xl sm:text-4xl text-blue-600 tracking-tight">
-            {formatPrice(product.priceCents)}
-          </span>
-          <span className="text-[11px] text-slate-500 mt-0.5">
+        <div className="flex md:flex-col items-end justify-between md:justify-center border-t md:border-t-0 md:border-l border-slate-100 pt-3.5 md:pt-0 md:pl-8 gap-3 md:gap-0.5 shrink-0">
+          <div className="flex flex-col md:items-end">
+            <span className="text-[10px] sm:text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+              Asking Price
+            </span>
+            <span className="font-display font-black text-2xl sm:text-4xl text-blue-600 tracking-tight">
+              {formatPrice(product.priceCents)}
+            </span>
+          </div>
+          <span className="text-[11px] text-slate-500 text-right">
             Direct Campus Handoff &bull; 0% Fee
           </span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-8 xl:gap-10 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6 lg:gap-8 xl:gap-10 items-start">
         {/* Left Column: Image Gallery, Specs, Description, Reviews */}
-        <div className="flex flex-col gap-8 min-w-0">
+        <div className="flex flex-col gap-5 sm:gap-8 min-w-0">
           {/* Interactive Image Gallery */}
           <ProductImageGallery
             images={product.images}
@@ -125,6 +127,24 @@ export default async function ProductPage({ params }: Props) {
             condition={product.condition}
             status={product.status}
           />
+
+          {/* Mobile Primary CTA (visible right below gallery on mobile so buyers don't scroll past everything) */}
+          <div className="lg:hidden p-4 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-700">
+                Campus Availability
+              </span>
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">
+                ● Available Now
+              </span>
+            </div>
+            <MessageSellerButton
+              productId={product.id}
+              productSlug={product.slug}
+              sellerId={product.tenant.ownerId}
+              productStatus={product.status}
+            />
+          </div>
 
           {/* Quick Specs Grid (Figma Specs Card) */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -155,7 +175,7 @@ export default async function ProductPage({ params }: Props) {
           </div>
 
           {/* Description Section */}
-          <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+          <div className="bg-white p-4 sm:p-8 rounded-2xl border border-slate-200 shadow-xs space-y-3 sm:space-y-4">
             <h2 className="font-display font-bold text-base text-slate-900">
               Item Description &amp; Notes
             </h2>
@@ -173,7 +193,7 @@ export default async function ProductPage({ params }: Props) {
 
           {/* Reviews Section */}
           <div
-            className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-xs space-y-6"
+            className="bg-white p-4 sm:p-8 rounded-2xl border border-slate-200 shadow-xs space-y-5 sm:space-y-6"
             id="reviews"
           >
             <div className="flex items-center justify-between">
@@ -232,8 +252,8 @@ export default async function ProductPage({ params }: Props) {
 
         {/* Right Column: Sticky Buyer Action Rail */}
         <div className="lg:sticky lg:top-24 lg:self-start space-y-5">
-          {/* Action Box with Message Seller CTA */}
-          <div className="p-6 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-4">
+          {/* Action Box with Message Seller CTA (Desktop — mobile CTA shown above specs) */}
+          <div className="hidden lg:block p-6 rounded-2xl border border-slate-200 bg-white shadow-xs space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-700">
                 Campus Availability

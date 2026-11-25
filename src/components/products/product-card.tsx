@@ -93,18 +93,18 @@ export function ProductCard({
   return (
     <Link
       href={`/product/${product.slug}`}
-      className="group relative flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 shadow-xs hover:shadow-md hover:border-blue-400 transition-all duration-200 gap-4"
+      className="group relative flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-xs hover:shadow-md hover:border-blue-400 transition-all duration-200 gap-3.5 sm:gap-4"
     >
       {/* Figma FEATURED Pill Tag */}
       {isFeatured && (
-        <div className="absolute -top-3 left-6 px-3 py-0.5 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white text-[9px] font-extrabold uppercase tracking-wider shadow-xs">
+        <div className="absolute -top-3 left-4 sm:left-6 px-3 py-0.5 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white text-[9px] font-extrabold uppercase tracking-wider shadow-xs">
           FEATURED
         </div>
       )}
 
       {/* Card Header: Icon/Image + Title + Handle + Verified Pill */}
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-start gap-3 min-w-0">
+      <div className="flex items-start justify-between gap-2.5 sm:gap-3">
+        <div className="flex items-start gap-3 min-w-0 flex-1">
           {/* Category Icon or Thumbnail */}
           {coverImage ? (
             <div className="relative h-11 w-11 shrink-0 rounded-xl overflow-hidden border border-slate-200 bg-slate-100">
@@ -122,23 +122,24 @@ export function ProductCard({
             </div>
           )}
 
-          <div className="min-w-0">
-            <h3 className="font-display font-bold text-slate-900 text-sm sm:text-base truncate group-hover:text-blue-600 transition-colors">
+          <div className="min-w-0 flex-1">
+            <h3 className="font-display font-bold text-slate-900 text-sm sm:text-base line-clamp-2 sm:truncate group-hover:text-blue-600 transition-colors leading-snug">
               {product.name}
             </h3>
-            <p className="text-xs text-slate-500 truncate mt-0.5">
+            <p className="text-[11px] sm:text-xs text-slate-500 truncate mt-0.5">
               <span>{sellerHandle}</span>
-              <span className="mx-1.5">&bull;</span>
+              <span className="mx-1">&bull;</span>
               <span>{product.category?.name ?? "Campus Gear"}</span>
             </p>
           </div>
         </div>
 
         {/* Verified Badge / Save Heart */}
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            <span>Verified</span>
+            <span className="hidden sm:inline">Verified</span>
+            <span className="sm:hidden">ID</span>
           </span>
 
           <button
@@ -194,14 +195,14 @@ export function ProductCard({
       </p>
 
       {/* Card Footer: Price on Left, More Details on Right */}
-      <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+      <div className="flex items-center justify-between pt-2 border-t border-slate-100 gap-2">
         <div>
-          <span className="font-display font-black text-xl text-slate-900 tracking-tight">
+          <span className="font-display font-black text-lg sm:text-xl text-slate-900 tracking-tight">
             {formatPrice(product.priceCents)}
           </span>
         </div>
 
-        <span className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors">
+        <span className="inline-flex items-center justify-center px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors shrink-0">
           More Details
         </span>
       </div>

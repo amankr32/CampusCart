@@ -1,7 +1,13 @@
 import "server-only";
 import { EventEmitter } from "node:events";
 
-export type ChatEventType = "message" | "typing" | "order" | "read" | "presence";
+export type ChatEventType =
+  | "message"
+  | "message_updated"
+  | "typing"
+  | "order"
+  | "read"
+  | "presence";
 
 export interface ChatEvent {
   type: ChatEventType;
@@ -17,10 +23,7 @@ const globalForChat = globalThis as unknown as {
 
 const chatEmitter = globalForChat.chatEmitter ?? new EventEmitter();
 chatEmitter.setMaxListeners(250);
-
-if (process.env.NODE_ENV !== "production") {
-  globalForChat.chatEmitter = chatEmitter;
-}
+globalForChat.chatEmitter = chatEmitter;
 
 /**
  * Publishes a real-time chat event to all active SSE subscribers of a conversation.

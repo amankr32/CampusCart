@@ -44,7 +44,7 @@ export default async function SellPage() {
   const categories = await getTopLevelCategories();
 
   return (
-    <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12 py-10 space-y-8">
+    <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12 py-6 sm:py-10 space-y-5 sm:space-y-8">
       <Link
         href="/dashboard"
         className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--text-muted)] hover:text-[var(--brand-primary)] transition-colors"
@@ -52,8 +52,8 @@ export default async function SellPage() {
         <ArrowLeft className="w-4 h-4" /> Back to Dashboard
       </Link>
 
-      <div className="bg-[var(--card-bg)] p-6 sm:p-8 rounded-2xl border border-[var(--border-subtle)] shadow-xs">
-        <h1 className="font-display font-extrabold text-2xl sm:text-3xl text-[var(--text-primary)] tracking-tight">
+      <div className="bg-[var(--card-bg)] p-4 sm:p-8 rounded-2xl border border-[var(--border-subtle)] shadow-xs">
+        <h1 className="font-display font-extrabold text-xl sm:text-3xl text-[var(--text-primary)] tracking-tight">
           List a New Item
         </h1>
         <p className="text-xs sm:text-sm text-[var(--text-muted)] mt-1">
@@ -61,12 +61,12 @@ export default async function SellPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8 items-start">
-        <div className="bg-[var(--card-bg)] p-6 sm:p-8 rounded-2xl border border-[var(--border-subtle)] shadow-xs">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 sm:gap-8 items-start">
+        <div className="bg-[var(--card-bg)] p-4 sm:p-8 rounded-2xl border border-[var(--border-subtle)] shadow-xs">
           <ProductForm categories={categories} />
         </div>
 
-        <aside className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--card-bg)] p-6 flex flex-col gap-5 shadow-xs">
+        <aside className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--card-bg)] p-4 sm:p-6 flex flex-col gap-5 shadow-xs">
           <h2 className="font-bold font-display text-[var(--text-primary)] text-base">Selling on CampusCart</h2>
 
           <div className="flex flex-col gap-4 text-xs">

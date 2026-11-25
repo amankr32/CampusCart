@@ -84,11 +84,11 @@ export function ProductForm({
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-8 items-start"
+      className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-5 sm:gap-8 items-start"
     >
       {/* Left column: photos + safety note */}
-      <div className="flex flex-col gap-5">
-        <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--card-bg)] p-5">
+      <div className="flex flex-col gap-4 sm:gap-5">
+        <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--card-bg)] p-4 sm:p-5">
           <Label className="font-bold text-[var(--text-primary)]">Upload Photos</Label>
           <p className="text-xs text-[var(--text-muted)] mt-1 mb-3">
             Add clear photos of your item (up to 6 photos)
@@ -111,7 +111,7 @@ export function ProductForm({
       </div>
 
       {/* Right column: item details card */}
-      <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--card-bg)] p-6 flex flex-col gap-5">
+      <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--card-bg)] p-4 sm:p-6 flex flex-col gap-4 sm:gap-5">
         <h2 className="font-bold text-lg text-[var(--text-primary)] font-display">Item Details</h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

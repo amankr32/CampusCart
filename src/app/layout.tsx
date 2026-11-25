@@ -6,6 +6,7 @@ import { AppSessionProvider } from "@/components/providers/session-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
+import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
 import { CommandPalette } from "@/components/layout/command-palette";
 
 import { Toaster } from "@/components/ui/toaster";
@@ -76,8 +77,9 @@ export default async function RootLayout({
         <AppSessionProvider session={session}>
           <ThemeProvider>
             <Navbar />
-            <main className="flex-1 flex flex-col w-full">{children}</main>
+            <main className="flex-1 flex flex-col w-full min-w-0">{children}</main>
             <Footer />
+            <MobileBottomNav />
             <CommandPalette />
             <Toaster />
           </ThemeProvider>

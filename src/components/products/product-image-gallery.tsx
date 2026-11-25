@@ -48,7 +48,7 @@ export function ProductImageGallery({
   return (
     <div className="flex flex-col gap-3 w-full">
       {/* Main Preview Container */}
-      <div className="relative aspect-4/3 sm:aspect-square w-full rounded-3xl border border-[var(--border-subtle)] bg-[var(--card-bg)] overflow-hidden shadow-sm group">
+      <div className="relative aspect-4/3 sm:aspect-square w-full rounded-2xl sm:rounded-3xl border border-[var(--border-subtle)] bg-[var(--card-bg)] overflow-hidden shadow-sm group">
         {currentImage ? (
           <Image
             src={currentImage}
@@ -86,7 +86,7 @@ export function ProductImageGallery({
             <button
               type="button"
               onClick={handlePrev}
-              className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 rounded-full bg-black/40 backdrop-blur-md text-white border border-white/20 hover:bg-black/65 transition-all opacity-0 group-hover:opacity-100 cursor-pointer shadow-md active:scale-95"
+              className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 rounded-full bg-black/45 backdrop-blur-md text-white border border-white/20 hover:bg-black/65 transition-all opacity-90 sm:opacity-0 sm:group-hover:opacity-100 cursor-pointer shadow-md active:scale-95"
               aria-label="Previous photo"
             >
               <ChevronLeft className="w-5 h-5" />
@@ -94,7 +94,7 @@ export function ProductImageGallery({
             <button
               type="button"
               onClick={handleNext}
-              className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 rounded-full bg-black/40 backdrop-blur-md text-white border border-white/20 hover:bg-black/65 transition-all opacity-0 group-hover:opacity-100 cursor-pointer shadow-md active:scale-95"
+              className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 rounded-full bg-black/45 backdrop-blur-md text-white border border-white/20 hover:bg-black/65 transition-all opacity-90 sm:opacity-0 sm:group-hover:opacity-100 cursor-pointer shadow-md active:scale-95"
               aria-label="Next photo"
             >
               <ChevronRight className="w-5 h-5" />

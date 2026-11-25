@@ -26,11 +26,11 @@ export default async function HomePage() {
       {/* ------------------------------------------------------------------ */}
       {/* 1. HERO SECTION (Figma FlipEarn Exact Layout) */}
       {/* ------------------------------------------------------------------ */}
-      <section className="pt-16 sm:pt-20 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8 text-center max-w-4xl mx-auto space-y-6">
+      <section className="pt-10 sm:pt-20 pb-10 sm:pb-16 px-4 sm:px-6 lg:px-8 text-center max-w-4xl mx-auto space-y-5 sm:space-y-6 w-full">
         
         {/* Social Proof Pill: Avatars + Stars + Used by */}
-        <div className="inline-flex items-center gap-3 px-3 py-1.5 rounded-full border border-slate-200 bg-slate-50 shadow-2xs">
-          <div className="flex -space-x-2 overflow-hidden">
+        <div className="inline-flex flex-wrap items-center justify-center gap-2 sm:gap-3 px-3 py-1.5 rounded-full border border-slate-200 bg-slate-50 shadow-2xs max-w-full">
+          <div className="flex -space-x-2 overflow-hidden shrink-0">
             <span className="inline-block h-6 w-6 rounded-full ring-2 ring-white bg-blue-500 text-white text-[10px] font-bold flex items-center justify-center">
               AK
             </span>
@@ -53,19 +53,19 @@ export default async function HomePage() {
               <Star className="w-3.5 h-3.5 fill-amber-400" />
               <Star className="w-3.5 h-3.5 fill-amber-400" />
             </div>
-            <span className="text-[11px] text-slate-500 font-medium">
+            <span className="text-[11px] text-slate-500 font-medium whitespace-nowrap">
               Used by 10,000+ students
             </span>
           </div>
         </div>
 
         {/* Headline with Pink Curved Underline (Figma Style) */}
-        <h1 className="font-display font-black text-3xl sm:text-5xl lg:text-6xl text-slate-900 tracking-tight leading-[1.12]">
+        <h1 className="font-display font-black text-[1.85rem] sm:text-5xl lg:text-6xl text-slate-900 tracking-tight leading-[1.15]">
           Buy &amp; Sell your{" "}
-          <span className="relative text-blue-600 inline-block">
+          <span className="relative text-blue-600 inline-block pb-1 sm:pb-0">
             College Essentials
             <svg
-              className="absolute -bottom-2 sm:-bottom-3 left-0 w-full overflow-visible"
+              className="absolute -bottom-1 sm:-bottom-3 left-0 w-full overflow-visible"
               viewBox="0 0 260 14"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -96,7 +96,7 @@ export default async function HomePage() {
       {/* ------------------------------------------------------------------ */}
       {/* 2. LATEST LISTINGS (Figma FlipEarn Card Stack) */}
       {/* ------------------------------------------------------------------ */}
-      <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full space-y-6">
+      <section className="py-8 sm:py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full space-y-5 sm:space-y-6">
         <div className="text-center space-y-1">
           <h2 className="font-display font-black text-2xl sm:text-3xl text-slate-900">
             Latest Listings
@@ -157,7 +157,7 @@ export default async function HomePage() {
       {/* ------------------------------------------------------------------ */}
       {/* 3. CHOOSE YOUR PLAN (Figma FlipEarn Pricing / Tier Cards) */}
       {/* ------------------------------------------------------------------ */}
-      <section className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full space-y-10">
+      <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full space-y-8 sm:space-y-10">
         <div className="text-center space-y-1">
           <h2 className="font-display font-black text-2xl sm:text-3xl text-slate-900">
             Choose Your Plan
@@ -272,8 +272,8 @@ export default async function HomePage() {
       {/* ------------------------------------------------------------------ */}
       {/* 4. CONFIDENCE PROMOTIONAL BANNER (Figma FlipEarn Exact Layout) */}
       {/* ------------------------------------------------------------------ */}
-      <section className="pb-16 sm:pb-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-purple-50/80 via-blue-50/70 to-purple-50/80 border border-blue-100/80 p-8 sm:p-14 text-center space-y-5 shadow-xs">
+      <section className="pb-12 sm:pb-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full">
+        <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-purple-50/80 via-blue-50/70 to-purple-50/80 border border-blue-100/80 p-6 sm:p-14 text-center space-y-4 sm:space-y-5 shadow-xs">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white text-[11px] font-bold text-blue-600 border border-purple-200 shadow-2xs">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
             <span>Trusted by IKGPTU Students</span>

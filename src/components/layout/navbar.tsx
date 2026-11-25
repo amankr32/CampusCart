@@ -25,9 +25,26 @@ import { subscribeToUnreadCount } from "@/lib/unread-store";
 export function Navbar() {
   const { data: session, status } = useSession();
   const pathname = usePathname();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [openMenuPath, setOpenMenuPath] = useState<string | null>(null);
+  const [openProfilePath, setOpenProfilePath] = useState<string | null>(null);
   const [unreadCount, setUnreadCount] = useState(0);
+
+  const isMenuOpen = openMenuPath === pathname;
+  const isProfileOpen = openProfilePath === pathname;
+  const setIsMenuOpen = (val: boolean | ((prev: boolean) => boolean)) => {
+    setOpenMenuPath((prev) => {
+      const curr = prev === pathname;
+      const next = typeof val === "function" ? val(curr) : val;
+      return next ? pathname : null;
+    });
+  };
+  const setIsProfileOpen = (val: boolean | ((prev: boolean) => boolean)) => {
+    setOpenProfilePath((prev) => {
+      const curr = prev === pathname;
+      const next = typeof val === "function" ? val(curr) : val;
+      return next ? pathname : null;
+    });
+  };
 
   const profileRef = useRef<HTMLDivElement>(null);
   const studentStatus = session?.user?.studentStatus || "unverified";
@@ -36,7 +53,7 @@ export function Navbar() {
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
-        setIsProfileOpen(false);
+        setOpenProfilePath(null);
       }
     };
     document.addEventListener("mousedown", handleClick);
@@ -61,13 +78,13 @@ export function Navbar() {
     pathname === href || (href !== "/" && pathname.startsWith(href));
 
   return (
-    <header className="sticky top-0 z-40 bg-white border-b border-slate-200/80 transition-colors">
-      <div className="max-w-6xl mx-auto px-4 sm:px-8">
-        <div className="h-16 flex items-center justify-between gap-6">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 transition-colors">
+      <div className="max-w-6xl mx-auto px-3.5 sm:px-8">
+        <div className="h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-6">
           
           {/* 1. BRAND LOGO (Figma FlipEarn Style: clean lowercase campuscart. with blue dot) */}
-          <Link href="/" className="flex items-center gap-1 shrink-0">
-            <span className="font-display font-black text-2xl tracking-tight text-slate-900">
+          <Link href="/" className="flex items-center gap-1 shrink-0 min-w-0">
+            <span className="font-display font-black text-xl sm:text-2xl tracking-tight text-slate-900">
               campuscart<span className="text-blue-600">.</span>
             </span>
           </Link>
@@ -129,19 +146,20 @@ export function Navbar() {
           </nav>
 
           {/* 3. RIGHT ACTIONS (Figma Style: Clean Login + Blue Button) */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             {status === "loading" ? (
               <div className="h-9 w-20 rounded-xl bg-slate-100 animate-pulse" />
             ) : session?.user ? (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1.5 sm:gap-3">
                 {/* + Sell Button */}
                 <Link href="/sell" prefetch={true}>
                   <Button
                     size="sm"
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm px-4 py-2 rounded-xl shadow-xs transition-all active:scale-95 border-0"
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm px-2.5 sm:px-4 py-1.5 sm:py-2 h-8.5 sm:h-9 rounded-xl shadow-xs transition-all active:scale-95 border-0"
                   >
-                    <Plus className="h-4 w-4 mr-1" />
-                    <span>Sell Item</span>
+                    <Plus className="h-4 w-4 mr-0.5 sm:mr-1" />
+                    <span className="sm:hidden">Sell</span>
+                    <span className="hidden sm:inline">Sell Item</span>
                   </Button>
                 </Link>
 
@@ -150,7 +168,7 @@ export function Navbar() {
                   <button
                     type="button"
                     onClick={() => setIsProfileOpen((v) => !v)}
-                    className="flex items-center gap-2 pl-2 pr-2.5 py-1.5 rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-colors cursor-pointer"
+                    className="flex items-center gap-1.5 sm:gap-2 pl-1.5 pr-1.5 sm:pl-2 sm:pr-2.5 py-1 sm:py-1.5 rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-colors cursor-pointer"
                     aria-label="User Account Menu"
                   >
                     <span className="flex items-center justify-center h-7 w-7 rounded-lg bg-blue-600 text-white font-bold text-xs shrink-0 shadow-xs">
@@ -273,19 +291,20 @@ export function Navbar() {
                 </div>
               </div>
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 <Link
                   href="/sign-in"
-                  className="text-sm font-semibold text-slate-700 hover:text-blue-600 px-3 py-2 transition-colors"
+                  className="text-xs sm:text-sm font-semibold text-slate-700 hover:text-blue-600 px-2.5 sm:px-3 py-1.5 sm:py-2 transition-colors whitespace-nowrap"
                 >
                   Log In
                 </Link>
                 <Link href="/sell">
                   <Button
                     size="sm"
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm px-4 py-2 rounded-xl shadow-xs transition-all border-0"
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 h-8.5 sm:h-9 rounded-xl shadow-xs transition-all border-0 whitespace-nowrap"
                   >
-                    Sell an Item
+                    <span className="sm:hidden">Sell</span>
+                    <span className="hidden sm:inline">Sell an Item</span>
                   </Button>
                 </Link>
               </div>
@@ -297,6 +316,7 @@ export function Navbar() {
               onClick={() => setIsMenuOpen((v) => !v)}
               className="flex md:hidden items-center justify-center h-9 w-9 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
               aria-label="Toggle Navigation"
+              aria-expanded={isMenuOpen}
             >
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
@@ -305,12 +325,12 @@ export function Navbar() {
 
         {/* Mobile Navigation Drawer */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-slate-100 py-4 space-y-3">
+          <div className="md:hidden border-t border-slate-100 py-3.5 pb-5 space-y-1.5 max-h-[calc(100dvh-3.5rem)] overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-150">
             <Link
               href="/"
               onClick={() => setIsMenuOpen(false)}
-              className={`block px-3 py-2 rounded-xl text-sm font-semibold ${
-                pathname === "/" ? "bg-blue-50 text-blue-600" : "text-slate-700"
+              className={`block px-3.5 py-2.5 rounded-xl text-sm font-semibold ${
+                pathname === "/" ? "bg-blue-50 text-blue-600" : "text-slate-700 hover:bg-slate-50"
               }`}
             >
               Home
@@ -318,64 +338,139 @@ export function Navbar() {
             <Link
               href="/browse"
               onClick={() => setIsMenuOpen(false)}
-              className={`block px-3 py-2 rounded-xl text-sm font-semibold ${
-                isActive("/browse") ? "bg-blue-50 text-blue-600" : "text-slate-700"
+              className={`block px-3.5 py-2.5 rounded-xl text-sm font-semibold ${
+                isActive("/browse") ? "bg-blue-50 text-blue-600" : "text-slate-700 hover:bg-slate-50"
               }`}
             >
               Marketplace
             </Link>
             <Link
-              href="/dashboard/messages"
+              href={session?.user ? "/dashboard/messages" : "/sign-in?callbackUrl=/dashboard/messages"}
               onClick={() => setIsMenuOpen(false)}
-              className={`block px-3 py-2 rounded-xl text-sm font-semibold ${
-                isActive("/dashboard/messages") ? "bg-blue-50 text-blue-600" : "text-slate-700"
+              className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold ${
+                isActive("/dashboard/messages") ? "bg-blue-50 text-blue-600" : "text-slate-700 hover:bg-slate-50"
               }`}
             >
-              Messages {unreadCount > 0 && `(${unreadCount})`}
+              <span>Messages</span>
+              {unreadCount > 0 && (
+                <span className="inline-flex items-center justify-center h-5 min-w-5 px-1.5 rounded-full bg-rose-500 text-white text-[10px] font-extrabold">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              )}
             </Link>
             <Link
-              href="/dashboard/my-listings"
+              href={session?.user ? "/dashboard/my-listings" : "/sign-in?callbackUrl=/dashboard/my-listings"}
               onClick={() => setIsMenuOpen(false)}
-              className={`block px-3 py-2 rounded-xl text-sm font-semibold ${
-                isActive("/dashboard/my-listings") ? "bg-blue-50 text-blue-600" : "text-slate-700"
+              className={`block px-3.5 py-2.5 rounded-xl text-sm font-semibold ${
+                isActive("/dashboard/my-listings") ? "bg-blue-50 text-blue-600" : "text-slate-700 hover:bg-slate-50"
               }`}
             >
               My Listings
             </Link>
 
-            {session?.user && (
+            {session?.user ? (
               <>
+                <div className="my-2 border-t border-slate-100" />
+                <Link
+                  href="/dashboard"
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`block px-3.5 py-2.5 rounded-xl text-sm font-semibold ${
+                    pathname === "/dashboard" ? "bg-blue-50 text-blue-600" : "text-slate-700 hover:bg-slate-50"
+                  }`}
+                >
+                  Dashboard Overview
+                </Link>
+                <Link
+                  href="/orders"
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`block px-3.5 py-2.5 rounded-xl text-sm font-semibold ${
+                    isActive("/orders") ? "bg-blue-50 text-blue-600" : "text-slate-700 hover:bg-slate-50"
+                  }`}
+                >
+                  My Orders &amp; Purchases
+                </Link>
+                <Link
+                  href="/student-verification"
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold ${
+                    isActive("/student-verification") ? "bg-blue-50 text-blue-600" : "text-slate-700 hover:bg-slate-50"
+                  }`}
+                >
+                  <span>Student Verification</span>
+                  {studentStatus === "verified" ? (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200">
+                      Verified
+                    </span>
+                  ) : (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-600 border border-amber-200">
+                      Verify
+                    </span>
+                  )}
+                </Link>
                 <Link
                   href="/profile"
                   onClick={() => setIsMenuOpen(false)}
-                  className={`block px-3 py-2 rounded-xl text-sm font-semibold ${
-                    isActive("/profile") ? "bg-blue-50 text-blue-600" : "text-slate-700"
+                  className={`block px-3.5 py-2.5 rounded-xl text-sm font-semibold ${
+                    isActive("/profile") ? "bg-blue-50 text-blue-600" : "text-slate-700 hover:bg-slate-50"
                   }`}
                 >
                   Profile &amp; Account
+                </Link>
+                <Link
+                  href="/settings"
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`block px-3.5 py-2.5 rounded-xl text-sm font-semibold ${
+                    isActive("/settings") ? "bg-blue-50 text-blue-600" : "text-slate-700 hover:bg-slate-50"
+                  }`}
+                >
+                  Settings &amp; Theme
                 </Link>
 
                 {session.user.isAdmin && (
                   <Link
                     href="/admin"
                     onClick={() => setIsMenuOpen(false)}
-                    className={`block px-3 py-2 rounded-xl text-sm font-semibold ${
-                      isActive("/admin") ? "bg-purple-50 text-purple-700 font-bold" : "text-purple-700"
+                    className={`block px-3.5 py-2.5 rounded-xl text-sm font-semibold ${
+                      isActive("/admin") ? "bg-purple-50 text-purple-700 font-bold" : "text-purple-700 hover:bg-purple-50"
                     }`}
                   >
                     Admin Command Center
                   </Link>
                 )}
-              </>
-            )}
 
-            <div className="pt-2">
-              <Link href="/sell" onClick={() => setIsMenuOpen(false)}>
-                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-2.5 text-sm font-semibold">
-                  + Post New Listing
-                </Button>
-              </Link>
-            </div>
+                <div className="pt-2 space-y-2">
+                  <Link href="/sell" onClick={() => setIsMenuOpen(false)} className="block">
+                    <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-2.5 text-sm font-semibold">
+                      + Post New Listing
+                    </Button>
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      signOut({ callbackUrl: "/" });
+                    }}
+                    className="w-full flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 transition-colors cursor-pointer"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="pt-2 grid grid-cols-2 gap-2">
+                <Link href="/sign-in" onClick={() => setIsMenuOpen(false)}>
+                  <Button variant="outline" className="w-full rounded-xl py-2.5 text-sm font-semibold border-slate-200">
+                    Log In
+                  </Button>
+                </Link>
+                <Link href="/sign-up" onClick={() => setIsMenuOpen(false)}>
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-2.5 text-sm font-semibold">
+                    Sign Up
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         )}
       </div>

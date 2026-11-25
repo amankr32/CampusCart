@@ -202,6 +202,7 @@ export default async function AdminPage() {
 
       {/* Main Admin Dashboard */}
       <AdminDashboardClient
+        currentAdminId={session.user.id}
         initialUsers={usersList}
         initialProducts={productsList}
         initialVerifications={verificationsList}

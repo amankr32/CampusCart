@@ -514,6 +514,12 @@ export const messages = pgTable(
     message: text("message"),
     image: text("image"),
     isRead: boolean("is_read").notNull().default(false),
+    editedAt: timestamp("edited_at"),
+    deletedForEveryoneAt: timestamp("deleted_for_everyone_at"),
+    deletedByUserIds: jsonb("deleted_by_user_ids")
+      .$type<string[]>()
+      .notNull()
+      .default([]),
     createdAt: timestamp("created_at").notNull().defaultNow(),
   },
   (table) => [

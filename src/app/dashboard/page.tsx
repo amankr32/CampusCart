@@ -59,11 +59,11 @@ export default async function DashboardPage() {
   const totalOrdersCount = buyerOrders.length + sales.length;
 
   return (
-    <div className="space-y-8 pb-12">
+    <div className="space-y-6 sm:space-y-8 pb-12">
       {/* Welcome Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[var(--card-bg)] p-6 sm:p-8 rounded-2xl border border-[var(--border-subtle)] shadow-xs">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[var(--card-bg)] p-4 sm:p-8 rounded-2xl border border-[var(--border-subtle)] shadow-xs">
         <div>
-          <h1 className="font-display font-extrabold text-2xl sm:text-3xl text-[var(--text-primary)] tracking-tight">
+          <h1 className="font-display font-extrabold text-xl sm:text-3xl text-[var(--text-primary)] tracking-tight">
             Welcome back, {userName} 👋
           </h1>
           <p className="text-xs sm:text-sm text-[var(--text-muted)] mt-1">
@@ -72,8 +72,8 @@ export default async function DashboardPage() {
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
-          <Link href="/sell">
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-md shadow-blue-500/25 flex items-center gap-1.5 transition-all active:scale-95">
+          <Link href="/sell" className="w-full sm:w-auto">
+            <Button size="lg" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-md shadow-blue-500/25 flex items-center justify-center gap-1.5 transition-all active:scale-95">
               <Plus className="h-4 w-4 stroke-[2.5]" />
               Sell Item
             </Button>
@@ -82,21 +82,21 @@ export default async function DashboardPage() {
       </div>
 
       {/* Summary Activity Cards (4 Grid) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Active Listings */}
         <Link
           href="/dashboard/my-listings"
-          className="p-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--border-subtle)] hover:border-[var(--brand-primary)]/50 hover:shadow-md transition-all group"
+          className="p-3.5 sm:p-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--border-subtle)] hover:border-[var(--brand-primary)]/50 hover:shadow-md transition-all group min-w-0"
         >
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">Active Listings</span>
-            <span className="flex items-center justify-center h-9 w-9 rounded-xl bg-[var(--brand-primary-light)] text-[var(--brand-primary)] group-hover:bg-[var(--brand-primary)] group-hover:text-white transition-colors">
-              <ListOrdered className="h-5 w-5" />
+          <div className="flex items-center justify-between gap-2 mb-2.5 sm:mb-3">
+            <span className="text-[10px] sm:text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider leading-tight">Active Listings</span>
+            <span className="flex items-center justify-center h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-[var(--brand-primary-light)] text-[var(--brand-primary)] group-hover:bg-[var(--brand-primary)] group-hover:text-white transition-colors shrink-0">
+              <ListOrdered className="h-4 w-4 sm:h-5 sm:w-5" />
             </span>
           </div>
-          <div className="flex items-baseline justify-between">
-            <span className="text-2xl font-black text-[var(--text-primary)]">{activeListings.length}</span>
-            <span className="text-xs font-semibold text-[var(--brand-primary)] group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
+          <div className="flex items-baseline justify-between gap-1">
+            <span className="text-xl sm:text-2xl font-black text-[var(--text-primary)]">{activeListings.length}</span>
+            <span className="text-[11px] sm:text-xs font-semibold text-[var(--brand-primary)] group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5 sm:gap-1">
               Manage <ArrowRight className="w-3 h-3" />
             </span>
           </div>
@@ -105,17 +105,17 @@ export default async function DashboardPage() {
         {/* Messages */}
         <Link
           href="/dashboard/messages"
-          className="p-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--border-subtle)] hover:border-[var(--brand-primary)]/50 hover:shadow-md transition-all group"
+          className="p-3.5 sm:p-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--border-subtle)] hover:border-[var(--brand-primary)]/50 hover:shadow-md transition-all group min-w-0"
         >
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">Conversations</span>
-            <span className="flex items-center justify-center h-9 w-9 rounded-xl bg-[var(--brand-primary-light)] text-[var(--brand-primary)] group-hover:bg-[var(--brand-primary)] group-hover:text-white transition-colors">
-              <MessageSquare className="h-5 w-5" />
+          <div className="flex items-center justify-between gap-2 mb-2.5 sm:mb-3">
+            <span className="text-[10px] sm:text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider leading-tight">Conversations</span>
+            <span className="flex items-center justify-center h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-[var(--brand-primary-light)] text-[var(--brand-primary)] group-hover:bg-[var(--brand-primary)] group-hover:text-white transition-colors shrink-0">
+              <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5" />
             </span>
           </div>
-          <div className="flex items-baseline justify-between">
-            <span className="text-2xl font-black text-[var(--text-primary)]">{conversations.length}</span>
-            <span className="text-xs font-semibold text-[var(--brand-primary)] group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
+          <div className="flex items-baseline justify-between gap-1">
+            <span className="text-xl sm:text-2xl font-black text-[var(--text-primary)]">{conversations.length}</span>
+            <span className="text-[11px] sm:text-xs font-semibold text-[var(--brand-primary)] group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5 sm:gap-1">
               Inbox <ArrowRight className="w-3 h-3" />
             </span>
           </div>
@@ -124,17 +124,17 @@ export default async function DashboardPage() {
         {/* Orders */}
         <Link
           href="/orders"
-          className="p-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--border-subtle)] hover:border-[var(--brand-primary)]/50 hover:shadow-md transition-all group"
+          className="p-3.5 sm:p-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--border-subtle)] hover:border-[var(--brand-primary)]/50 hover:shadow-md transition-all group min-w-0"
         >
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">Total Orders</span>
-            <span className="flex items-center justify-center h-9 w-9 rounded-xl bg-[var(--brand-primary-light)] text-[var(--brand-primary)] group-hover:bg-[var(--brand-primary)] group-hover:text-white transition-colors">
-              <Package className="h-5 w-5" />
+          <div className="flex items-center justify-between gap-2 mb-2.5 sm:mb-3">
+            <span className="text-[10px] sm:text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider leading-tight">Total Orders</span>
+            <span className="flex items-center justify-center h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-[var(--brand-primary-light)] text-[var(--brand-primary)] group-hover:bg-[var(--brand-primary)] group-hover:text-white transition-colors shrink-0">
+              <Package className="h-4 w-4 sm:h-5 sm:w-5" />
             </span>
           </div>
-          <div className="flex items-baseline justify-between">
-            <span className="text-2xl font-black text-[var(--text-primary)]">{totalOrdersCount}</span>
-            <span className="text-xs font-semibold text-[var(--brand-primary)] group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
+          <div className="flex items-baseline justify-between gap-1">
+            <span className="text-xl sm:text-2xl font-black text-[var(--text-primary)]">{totalOrdersCount}</span>
+            <span className="text-[11px] sm:text-xs font-semibold text-[var(--brand-primary)] group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5 sm:gap-1">
               View <ArrowRight className="w-3 h-3" />
             </span>
           </div>
@@ -143,19 +143,19 @@ export default async function DashboardPage() {
         {/* Student Verification / Trust */}
         <Link
           href="/student-verification"
-          className="p-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--border-subtle)] hover:border-[var(--brand-primary)]/50 hover:shadow-md transition-all group"
+          className="p-3.5 sm:p-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--border-subtle)] hover:border-[var(--brand-primary)]/50 hover:shadow-md transition-all group min-w-0"
         >
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider">Trust Score</span>
-            <span className={`flex items-center justify-center h-9 w-9 rounded-xl ${
+          <div className="flex items-center justify-between gap-2 mb-2.5 sm:mb-3">
+            <span className="text-[10px] sm:text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider leading-tight">Trust Score</span>
+            <span className={`flex items-center justify-center h-8 w-8 sm:h-9 sm:w-9 rounded-xl shrink-0 ${
               studentStatus === "verified" ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"
             }`}>
-              {studentStatus === "verified" ? <ShieldCheck className="h-5 w-5" /> : <ShieldAlert className="h-5 w-5" />}
+              {studentStatus === "verified" ? <ShieldCheck className="h-4 w-4 sm:h-5 sm:w-5" /> : <ShieldAlert className="h-4 w-4 sm:h-5 sm:w-5" />}
             </span>
           </div>
-          <div className="flex items-baseline justify-between">
-            <span className="text-2xl font-black text-[var(--text-primary)]">{trustScore} pts</span>
-            <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+          <div className="flex items-baseline justify-between gap-1">
+            <span className="text-xl sm:text-2xl font-black text-[var(--text-primary)]">{trustScore} pts</span>
+            <span className={`text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full shrink-0 ${
               studentStatus === "verified" ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"
             }`}>
               {studentStatus === "verified" ? "Verified" : "Verify"}

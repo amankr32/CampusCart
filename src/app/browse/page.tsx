@@ -55,17 +55,17 @@ export default async function BrowsePage({
   });
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8">
+    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-6 sm:space-y-8">
       {/* Page Header */}
       <div className="space-y-3">
         <div>
           <span className="text-[11px] font-extrabold uppercase tracking-widest text-blue-600">
             IKGPTU Student Marketplace
           </span>
-          <h1 className="font-display font-black text-3xl sm:text-4xl text-slate-900 tracking-tight mt-1">
+          <h1 className="font-display font-black text-2xl sm:text-4xl text-slate-900 tracking-tight mt-1">
             Explore Campus Listings
           </h1>
-          <p className="text-sm text-slate-500 mt-1 max-w-2xl">
+          <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl">
             Browse genuine textbooks, cycles, engineering tools, and hostel essentials listed by verified campus peers.
           </p>
         </div>
@@ -77,7 +77,7 @@ export default async function BrowsePage({
       </div>
 
       {/* Main Browse Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-5 lg:gap-8 items-start">
         <aside className="lg:sticky lg:top-24 lg:self-start w-full">
           <SearchFilters />
         </aside>
@@ -93,39 +93,39 @@ export default async function BrowsePage({
       </div>
 
       {/* Campus Trust Strip */}
-      <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-4 p-6 rounded-2xl border border-slate-200 bg-white shadow-xs">
-        <div className="flex items-start gap-3">
-          <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 shrink-0">
-            <ShieldCheck className="h-5 w-5" />
+      <div className="mt-10 sm:mt-16 grid grid-cols-2 sm:grid-cols-4 gap-3.5 sm:gap-4 p-4 sm:p-6 rounded-2xl border border-slate-200 bg-white shadow-xs">
+        <div className="flex items-start gap-2.5 sm:gap-3 min-w-0">
+          <div className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-emerald-50 text-emerald-600 shrink-0">
+            <ShieldCheck className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="text-xs font-bold text-slate-900">Verified Students</p>
             <p className="text-[11px] text-slate-500">IKGPTU roll check</p>
           </div>
         </div>
-        <div className="flex items-start gap-3">
-          <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-50 text-blue-600 shrink-0">
-            <MapPin className="h-5 w-5" />
+        <div className="flex items-start gap-2.5 sm:gap-3 min-w-0">
+          <div className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-blue-50 text-blue-600 shrink-0">
+            <MapPin className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="text-xs font-bold text-slate-900">Campus Pickups</p>
             <p className="text-[11px] text-slate-500">Hostels &amp; Library</p>
           </div>
         </div>
-        <div className="flex items-start gap-3">
-          <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-amber-50 text-amber-600 shrink-0">
-            <IndianRupee className="h-5 w-5" />
+        <div className="flex items-start gap-2.5 sm:gap-3 min-w-0">
+          <div className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-50 text-amber-600 shrink-0">
+            <IndianRupee className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="text-xs font-bold text-slate-900">Zero Brokerage</p>
             <p className="text-[11px] text-slate-500">Keep 100% earnings</p>
           </div>
         </div>
-        <div className="flex items-start gap-3">
-          <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-purple-50 text-purple-600 shrink-0">
-            <MessageCircle className="h-5 w-5" />
+        <div className="flex items-start gap-2.5 sm:gap-3 min-w-0">
+          <div className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-purple-50 text-purple-600 shrink-0">
+            <MessageCircle className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="text-xs font-bold text-slate-900">Direct Chat</p>
             <p className="text-[11px] text-slate-500">Instant messaging</p>
           </div>

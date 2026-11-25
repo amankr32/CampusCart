@@ -82,11 +82,11 @@ export function OrdersDashboardClient({
   });
 
   return (
-    <div className="w-full space-y-8">
+    <div className="w-full space-y-6 sm:space-y-8">
       {/* Page Header */}
-      <div className="bg-[var(--card-bg)] p-6 sm:p-8 rounded-2xl border border-[var(--border-subtle)] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-[var(--card-bg)] p-4 sm:p-8 rounded-2xl border border-[var(--border-subtle)] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold font-display tracking-tight text-[var(--text-primary)]">
+          <h1 className="text-xl sm:text-3xl font-extrabold font-display tracking-tight text-[var(--text-primary)]">
             Orders & Sales
           </h1>
           <p className="text-xs sm:text-sm text-[var(--text-muted)] mt-1">
@@ -95,14 +95,14 @@ export function OrdersDashboardClient({
         </div>
 
         {/* Purchases / Sales Mode Toggle */}
-        <div className="inline-flex p-1 rounded-xl bg-[var(--input-bg)] border border-[var(--border-subtle)] shrink-0">
+        <div className="flex w-full sm:w-auto p-1 rounded-xl bg-[var(--input-bg)] border border-[var(--border-subtle)] shrink-0">
           <button
             type="button"
             onClick={() => {
               setActiveMode("purchases");
               setStatusFilter("all");
             }}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               activeMode === "purchases"
                 ? "bg-blue-600 text-white shadow-xs"
                 : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
@@ -117,7 +117,7 @@ export function OrdersDashboardClient({
               setActiveMode("sales");
               setStatusFilter("all");
             }}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               activeMode === "sales"
                 ? "bg-blue-600 text-white shadow-xs"
                 : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
@@ -213,7 +213,7 @@ export function OrdersDashboardClient({
                   : "When you agree on a trade with a buyer and mark it sold, it will be tracked here."}
             </p>
           </div>
-          <div className="pt-2 flex items-center justify-center gap-3">
+          <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
             {search.trim() && (
               <Button
                 variant="outline"
@@ -239,10 +239,10 @@ export function OrdersDashboardClient({
             return (
               <div
                 key={order.id}
-                className="bg-[var(--card-bg)] p-5 rounded-2xl border border-[var(--border-subtle)] shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between gap-4"
+                className="bg-[var(--card-bg)] p-4 sm:p-5 rounded-2xl border border-[var(--border-subtle)] shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between gap-4"
               >
-                <div className="flex items-start gap-4">
-                  <div className="relative h-20 w-20 rounded-2xl bg-[var(--input-bg)] border border-[var(--border-subtle)] overflow-hidden shrink-0">
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="relative h-16 w-16 sm:h-20 sm:w-20 rounded-2xl bg-[var(--input-bg)] border border-[var(--border-subtle)] overflow-hidden shrink-0">
                     {cover ? (
                       <Image src={cover} alt={order.product.name} fill className="object-cover" />
                     ) : (
@@ -253,7 +253,7 @@ export function OrdersDashboardClient({
                   </div>
 
                   <div className="flex-1 min-w-0 space-y-1">
-                    <div className="flex items-center justify-between gap-2">
+                    <div className="flex flex-wrap items-center justify-between gap-1.5">
                       <span className={`inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wider rounded-full px-2.5 py-0.5 border ${STATUS_STYLES[order.status] ?? ""}`}>
                         {order.status === "completed" && <CheckCircle2 className="w-3 h-3 text-emerald-600" />}
                         {order.status === "seller_confirmed" && <Clock className="w-3 h-3 text-amber-600" />}
@@ -282,7 +282,7 @@ export function OrdersDashboardClient({
                 </div>
 
                 {/* Card Bottom Actions */}
-                <div className="flex items-center justify-between gap-2 pt-3 border-t border-[var(--border-subtle)] text-xs">
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-[var(--border-subtle)] text-xs">
                   <Link href={`/product/${order.product.slug}`} className="inline-flex items-center gap-1 font-semibold text-[var(--text-muted)] hover:text-[var(--brand-primary)]">
                     <ExternalLink className="w-3.5 h-3.5" /> View Listing
                   </Link>

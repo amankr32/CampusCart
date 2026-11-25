@@ -244,8 +244,8 @@ export function CommandPalette() {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search textbooks, calculators, drafters, cycles, hostel gear..."
-            className="flex-1 bg-transparent text-sm sm:text-base text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-hidden"
+            placeholder="Search textbooks, calculators, cycles..."
+            className="min-w-0 flex-1 bg-transparent text-sm sm:text-base text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-hidden"
           />
 
           {query && (

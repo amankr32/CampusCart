@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { formatPrice } from "@/lib/format";
 import type { ConversationSummary } from "@/db/queries/messages";
 
-const POLL_INTERVAL_MS = 25_000;
+const POLL_INTERVAL_MS = 5_000;
 
 function timeAgo(date: string | Date) {
   const seconds = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
@@ -37,6 +37,8 @@ function areConversationsEqual(
       a.unreadCount !== b.unreadCount ||
       a.lastMessage?.message !== b.lastMessage?.message ||
       a.lastMessage?.image !== b.lastMessage?.image ||
+      new Date(a.lastMessage?.deletedForEveryoneAt ?? 0).getTime() !==
+        new Date(b.lastMessage?.deletedForEveryoneAt ?? 0).getTime() ||
       new Date(a.lastMessage?.createdAt ?? 0).getTime() !==
         new Date(b.lastMessage?.createdAt ?? 0).getTime() ||
       new Date(a.updatedAt).getTime() !== new Date(b.updatedAt).getTime() ||
@@ -139,7 +141,7 @@ export function ConversationSidebar({
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto divide-y divide-slate-100">
+      <div className="flex-1 overflow-y-auto divide-y divide-slate-100 pb-20 md:pb-0">
         {filtered.length === 0 ? (
           <p className="text-xs text-slate-500 text-center py-8 px-4">
             {conversations.length === 0
@@ -153,9 +155,11 @@ export function ConversationSidebar({
             const unreadCount = isActive ? 0 : conversation.unreadCount;
             const lastMessage = conversation.lastMessage;
             const lastMessagePreview = lastMessage
-              ? lastMessage.senderId === currentUserId
-                ? `You: ${lastMessage.message ?? "Sent a photo"}`
-                : (lastMessage.message ?? "Sent a photo")
+              ? lastMessage.deletedForEveryoneAt
+                ? "This message was deleted"
+                : lastMessage.senderId === currentUserId
+                  ? `You: ${lastMessage.message ?? "Sent a photo"}`
+                  : (lastMessage.message ?? "Sent a photo")
               : "Say hello!";
             const studentInitial = (conversation.otherUser?.name || "U").slice(0, 1).toUpperCase();
 

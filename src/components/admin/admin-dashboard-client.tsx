@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   Users,
   Package,
@@ -14,12 +14,10 @@ import {
   XCircle,
   Trash2,
   Eye,
-  ExternalLink,
   Shield,
   Loader2,
   Check,
   AlertTriangle,
-  RotateCw,
 } from "@/components/ui/material-symbol";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,6 +25,7 @@ import { toast } from "@/lib/toast";
 import {
   adminUpdateUserStudentStatusAction,
   adminToggleUserRoleAction,
+  adminDeleteUserAction,
   adminUpdateProductStatusAction,
   adminDeleteProductAction,
   adminUpdateOrderStatusAction,
@@ -88,6 +87,7 @@ export interface AdminOrderData {
 }
 
 interface AdminDashboardClientProps {
+  currentAdminId: string;
   initialUsers: AdminUserData[];
   initialProducts: AdminProductData[];
   initialVerifications: AdminVerificationData[];
@@ -102,12 +102,14 @@ interface AdminDashboardClientProps {
 }
 
 export function AdminDashboardClient({
+  currentAdminId,
   initialUsers,
   initialProducts,
   initialVerifications,
   initialOrders,
   metrics,
 }: AdminDashboardClientProps) {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<"users" | "products" | "verifications" | "orders">("users");
 
   // State data
@@ -130,6 +132,10 @@ export function AdminDashboardClient({
 
   // Screenshot modal preview
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+  // Permanent User Delete Modal
+  const [deleteUserTarget, setDeleteUserTarget] = useState<AdminUserData | null>(null);
+  const [isDeletingUser, setIsDeletingUser] = useState(false);
 
   // -------------------------------------------------------------------------
   // USER ACTIONS
@@ -187,6 +193,35 @@ export function AdminDashboardClient({
       toast.error("Error updating role");
     } finally {
       setPendingActionId(null);
+    }
+  };
+
+  const handleConfirmDeleteUser = async () => {
+    if (!deleteUserTarget) return;
+    setIsDeletingUser(true);
+    try {
+      const res = await adminDeleteUserAction(deleteUserTarget.id);
+      if (!res.success) {
+        toast.error("Failed to delete account", { description: res.error });
+        return;
+      }
+
+      const deleted = deleteUserTarget;
+      setUsersList((prev) => prev.filter((u) => u.id !== deleted.id));
+      setProductsList((prev) => prev.filter((p) => p.sellerEmail !== deleted.email));
+      setVerificationsList((prev) => prev.filter((v) => v.userId !== deleted.id));
+      setOrdersList((prev) =>
+        prev.filter((o) => o.buyerEmail !== deleted.email && o.sellerName !== deleted.name)
+      );
+      setDeleteUserTarget(null);
+      toast.success("Account permanently deleted", {
+        description: `${deleted.name} (${deleted.email}) and all associated data were removed.`,
+      });
+      router.refresh();
+    } catch {
+      toast.error("Error deleting user account");
+    } finally {
+      setIsDeletingUser(false);
     }
   };
 
@@ -305,88 +340,88 @@ export function AdminDashboardClient({
   });
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* 1. TOP STATS / METRICS CARDS (Pure Light Figma Style) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Total Users */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+        <div className="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2 min-w-0">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider leading-tight">
               Total Students
             </span>
-            <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-              <Users className="w-4 h-4" />
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+              <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="font-display font-black text-2xl sm:text-3xl text-slate-900">
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+            <span className="font-display font-black text-xl sm:text-3xl text-slate-900">
               {metrics.totalUsers}
             </span>
-            <span className="text-[11px] text-slate-400">registered</span>
+            <span className="text-[10px] sm:text-[11px] text-slate-400">registered</span>
           </div>
         </div>
 
         {/* Total Listings */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+        <div className="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2 min-w-0">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider leading-tight">
               Marketplace Items
             </span>
-            <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
-              <Package className="w-4 h-4" />
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+              <Package className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="font-display font-black text-2xl sm:text-3xl text-slate-900">
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+            <span className="font-display font-black text-xl sm:text-3xl text-slate-900">
               {metrics.totalListings}
             </span>
-            <span className="text-[11px] text-slate-400">in catalog</span>
+            <span className="text-[10px] sm:text-[11px] text-slate-400">in catalog</span>
           </div>
         </div>
 
         {/* Pending Verifications */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+        <div className="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2 min-w-0">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider leading-tight">
               Pending Verifications
             </span>
-            <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-              <ShieldAlert className="w-4 h-4" />
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+              <ShieldAlert className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="font-display font-black text-2xl sm:text-3xl text-amber-600">
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+            <span className="font-display font-black text-xl sm:text-3xl text-amber-600">
               {metrics.pendingVerifications}
             </span>
-            <span className="text-[11px] text-amber-600 font-medium">needs review</span>
+            <span className="text-[10px] sm:text-[11px] text-amber-600 font-medium">needs review</span>
           </div>
         </div>
 
         {/* Campus Volume */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+        <div className="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2 min-w-0">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider leading-tight">
               Campus Volume
             </span>
-            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-              <ShoppingBag className="w-4 h-4" />
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+              <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
           </div>
-          <div className="flex items-baseline gap-2">
-            <span className="font-display font-black text-2xl sm:text-3xl text-slate-900">
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+            <span className="font-display font-black text-xl sm:text-3xl text-slate-900">
               ₹{metrics.totalVolumeRupees.toLocaleString("en-IN")}
             </span>
-            <span className="text-[11px] text-slate-400">in {metrics.totalOrders} deals</span>
+            <span className="text-[10px] sm:text-[11px] text-slate-400">in {metrics.totalOrders} deals</span>
           </div>
         </div>
       </div>
 
       {/* 2. ADMIN NAVIGATION TABS */}
       <div className="bg-white p-3 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between flex-wrap gap-3">
-        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto">
+        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto scrollbar-none">
           <button
             onClick={() => setActiveTab("users")}
-            className={`px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`shrink-0 whitespace-nowrap px-3.5 sm:px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
               activeTab === "users"
                 ? "bg-blue-600 text-white shadow-xs"
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200"
@@ -398,7 +433,7 @@ export function AdminDashboardClient({
 
           <button
             onClick={() => setActiveTab("products")}
-            className={`px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`shrink-0 whitespace-nowrap px-3.5 sm:px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
               activeTab === "products"
                 ? "bg-blue-600 text-white shadow-xs"
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200"
@@ -410,7 +445,7 @@ export function AdminDashboardClient({
 
           <button
             onClick={() => setActiveTab("verifications")}
-            className={`px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`shrink-0 whitespace-nowrap px-3.5 sm:px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
               activeTab === "verifications"
                 ? "bg-blue-600 text-white shadow-xs"
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200"
@@ -427,7 +462,7 @@ export function AdminDashboardClient({
 
           <button
             onClick={() => setActiveTab("orders")}
-            className={`px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`shrink-0 whitespace-nowrap px-3.5 sm:px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
               activeTab === "orders"
                 ? "bg-blue-600 text-white shadow-xs"
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200"
@@ -438,7 +473,7 @@ export function AdminDashboardClient({
           </button>
         </div>
 
-        <div className="text-xs text-slate-500 font-semibold px-2">
+        <div className="hidden sm:block text-xs text-slate-500 font-semibold px-2">
           Administrator Desk
         </div>
       </div>
@@ -610,6 +645,23 @@ export function AdminDashboardClient({
                               }`}
                             >
                               {user.isAdmin ? "Demote" : "Make Admin"}
+                            </Button>
+
+                            {/* Permanently Delete User */}
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              disabled={user.id === currentAdminId || isDeletingUser}
+                              onClick={() => setDeleteUserTarget(user)}
+                              title={
+                                user.id === currentAdminId
+                                  ? "You cannot delete your own account"
+                                  : "Permanently delete user account"
+                              }
+                              aria-label={`Delete ${user.name}`}
+                              className="h-7 px-2 text-[11px] font-semibold text-rose-600 border-rose-200 hover:bg-rose-50 rounded-lg cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                            >
+                              <Trash2 className="w-3 h-3" />
                             </Button>
                           </div>
                         </td>
@@ -1030,6 +1082,59 @@ export function AdminDashboardClient({
               alt="Proof full preview"
               className="w-full h-auto max-h-[85vh] object-contain rounded-xl"
             />
+          </div>
+        </div>
+      )}
+
+      {/* 5. DELETE USER CONFIRMATION MODAL */}
+      {deleteUserTarget && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl border border-slate-200 max-w-md w-full p-5 sm:p-6 space-y-5 shadow-2xl animate-in fade-in zoom-in-95">
+            <div className="flex items-center gap-3 text-rose-600">
+              <div className="w-11 h-11 rounded-2xl bg-rose-50 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-6 h-6 text-rose-500" />
+              </div>
+              <div className="min-w-0">
+                <h3 className="text-base sm:text-lg font-bold font-display text-slate-900">
+                  Delete User Account?
+                </h3>
+                <p className="text-xs text-slate-500 truncate">
+                  {deleteUserTarget.email}
+                </p>
+              </div>
+            </div>
+
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Are you sure you want to permanently delete{" "}
+              <strong className="text-slate-900 font-semibold">{deleteUserTarget.name}</strong>{" "}
+              (<span className="font-mono text-xs">@{deleteUserTarget.username}</span>)? This will erase their account, storefront, listings, messages, verification requests, and related orders from the database.
+            </p>
+
+            <div className="flex flex-wrap items-center justify-end gap-2.5 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setDeleteUserTarget(null)}
+                disabled={isDeletingUser}
+                className="rounded-xl h-10 border-slate-200 text-xs font-semibold cursor-pointer"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={handleConfirmDeleteUser}
+                disabled={isDeletingUser}
+                className="bg-rose-600 hover:bg-rose-700 text-white rounded-xl h-10 px-4 text-xs font-bold shadow-xs cursor-pointer"
+              >
+                {isDeletingUser ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> Deleting...
+                  </>
+                ) : (
+                  "Permanently Delete Account"
+                )}
+              </Button>
+            </div>
           </div>
         </div>
       )}
