@@ -15,6 +15,7 @@ import {
 
 import { subscribeToUnreadCount } from "@/lib/unread-store";
 import { openCommandPalette } from "@/lib/command-palette";
+import { getAvatarInitials } from "@/lib/avatar";
 
 export function MobileBottomNav() {
   const pathname = usePathname();
@@ -162,13 +163,13 @@ export function MobileBottomNav() {
         >
           {session?.user?.name ? (
             <span
-              className={`flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-bold ${
+              className={`flex items-center justify-center w-5 h-5 rounded-full text-[9px] font-bold ${
                 isProfileActive
                   ? "bg-[var(--brand-primary)] text-white"
                   : "bg-[var(--border-subtle)] text-[var(--text-primary)]"
               }`}
             >
-              {session.user.name.slice(0, 1).toUpperCase()}
+              {getAvatarInitials(session.user.name, "U")}
             </span>
           ) : (
             <User

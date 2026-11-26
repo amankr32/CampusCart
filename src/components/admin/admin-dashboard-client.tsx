@@ -22,6 +22,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/lib/toast";
+import { getAvatarInitials } from "@/lib/avatar";
 import {
   adminUpdateUserStudentStatusAction,
   adminToggleUserRoleAction,
@@ -340,9 +341,9 @@ export function AdminDashboardClient({
   });
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="w-full min-w-0 space-y-5 sm:space-y-8">
       {/* 1. TOP STATS / METRICS CARDS (Pure Light Figma Style) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
         {/* Total Users */}
         <div className="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2 min-w-0">
           <div className="flex items-center justify-between gap-2">
@@ -417,44 +418,47 @@ export function AdminDashboardClient({
       </div>
 
       {/* 2. ADMIN NAVIGATION TABS */}
-      <div className="bg-white p-3 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between flex-wrap gap-3">
-        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto scrollbar-none">
+      <div className="bg-white p-2.5 sm:p-3 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between flex-wrap gap-3">
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-1.5 w-full sm:w-auto">
           <button
             onClick={() => setActiveTab("users")}
-            className={`shrink-0 whitespace-nowrap px-3.5 sm:px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`min-w-0 justify-center sm:justify-start px-3 sm:px-4 py-2.5 sm:py-2 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
               activeTab === "users"
                 ? "bg-blue-600 text-white shadow-xs"
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
-            <Users className="w-4 h-4" />
-            <span>Students ({usersList.length})</span>
+            <Users className="w-4 h-4 shrink-0" />
+            <span className="truncate">Students ({usersList.length})</span>
           </button>
 
           <button
             onClick={() => setActiveTab("products")}
-            className={`shrink-0 whitespace-nowrap px-3.5 sm:px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`min-w-0 justify-center sm:justify-start px-3 sm:px-4 py-2.5 sm:py-2 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
               activeTab === "products"
                 ? "bg-blue-600 text-white shadow-xs"
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
-            <Package className="w-4 h-4" />
-            <span>Listings ({productsList.length})</span>
+            <Package className="w-4 h-4 shrink-0" />
+            <span className="truncate">Listings ({productsList.length})</span>
           </button>
 
           <button
             onClick={() => setActiveTab("verifications")}
-            className={`shrink-0 whitespace-nowrap px-3.5 sm:px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`min-w-0 justify-center sm:justify-start px-3 sm:px-4 py-2.5 sm:py-2 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
               activeTab === "verifications"
                 ? "bg-blue-600 text-white shadow-xs"
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
-            <ShieldCheck className="w-4 h-4" />
-            <span>Verification Desk ({verificationsList.length})</span>
+            <ShieldCheck className="w-4 h-4 shrink-0" />
+            <span className="sm:hidden truncate">Verify ({verificationsList.length})</span>
+            <span className="hidden sm:inline whitespace-nowrap">
+              Verification Desk ({verificationsList.length})
+            </span>
             {metrics.pendingVerifications > 0 && (
-              <span className="px-1.5 py-0.2 rounded-full bg-amber-500 text-white text-[10px] font-bold">
+              <span className="px-1.5 py-0.5 rounded-full bg-amber-500 text-white text-[10px] font-bold shrink-0">
                 {metrics.pendingVerifications}
               </span>
             )}
@@ -462,18 +466,18 @@ export function AdminDashboardClient({
 
           <button
             onClick={() => setActiveTab("orders")}
-            className={`shrink-0 whitespace-nowrap px-3.5 sm:px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
+            className={`min-w-0 justify-center sm:justify-start px-3 sm:px-4 py-2.5 sm:py-2 text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 ${
               activeTab === "orders"
                 ? "bg-blue-600 text-white shadow-xs"
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
-            <ShoppingBag className="w-4 h-4" />
-            <span>Orders ({ordersList.length})</span>
+            <ShoppingBag className="w-4 h-4 shrink-0" />
+            <span className="truncate">Orders ({ordersList.length})</span>
           </button>
         </div>
 
-        <div className="hidden sm:block text-xs text-slate-500 font-semibold px-2">
+        <div className="hidden md:block text-xs text-slate-500 font-semibold px-2">
           Administrator Desk
         </div>
       </div>
@@ -483,25 +487,25 @@ export function AdminDashboardClient({
       {/* TAB 1: USERS & STUDENTS */}
       {/* ------------------------------------------------------------------ */}
       {activeTab === "users" && (
-        <div className="space-y-4">
+        <div className="space-y-4 min-w-0">
           {/* Controls Bar */}
-          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="bg-white p-3 sm:p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 min-w-0">
             <div className="relative w-full sm:w-80">
               <Input
                 value={userSearch}
                 onChange={(e) => setUserSearch(e.target.value)}
                 placeholder="Search by name, email, roll number..."
-                className="pl-9 h-10 text-xs rounded-xl bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white"
+                className="pl-9 h-10 text-xs rounded-xl bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white w-full"
               />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             </div>
 
-            <div className="flex items-center gap-1 overflow-x-auto w-full sm:w-auto">
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-1.5 w-full sm:w-auto">
               {(["all", "verified", "pending", "unverified", "admin"] as const).map((filter) => (
                 <button
                   key={filter}
                   onClick={() => setUserFilter(filter)}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-xl capitalize transition-all cursor-pointer ${
+                  className={`px-2.5 sm:px-3 py-1.5 text-xs font-bold rounded-xl capitalize transition-all cursor-pointer ${
                     userFilter === filter
                       ? "bg-slate-900 text-white"
                       : "bg-slate-100 text-slate-600 hover:bg-slate-200"
@@ -513,8 +517,145 @@ export function AdminDashboardClient({
             </div>
           </div>
 
-          {/* Users Table */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          {/* Mobile Student Cards */}
+          <div className="md:hidden space-y-3">
+            {filteredUsers.length === 0 ? (
+              <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center text-xs text-slate-400 shadow-xs">
+                No students found matching your search.
+              </div>
+            ) : (
+              filteredUsers.map((user) => (
+                <div
+                  key={user.id}
+                  className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-3 min-w-0"
+                >
+                  <div className="flex items-start justify-between gap-2.5">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <div className="w-10 h-10 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
+                        {getAvatarInitials(user.name, "ST")}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="font-bold text-sm text-slate-900 truncate">
+                          {user.name}
+                        </div>
+                        <div className="text-slate-500 text-xs truncate">{user.email}</div>
+                        <div className="text-slate-400 text-[11px] truncate">@{user.username}</div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col items-end gap-1 shrink-0">
+                      <span
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          user.studentStatus === "verified"
+                            ? "bg-emerald-50 text-emerald-600 border border-emerald-200"
+                            : user.studentStatus === "pending"
+                            ? "bg-amber-50 text-amber-600 border border-amber-200"
+                            : "bg-slate-100 text-slate-600 border border-slate-200"
+                        }`}
+                      >
+                        {user.studentStatus === "verified" ? (
+                          <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                        ) : (
+                          <ShieldAlert className="w-3 h-3 text-amber-600" />
+                        )}
+                        <span className="capitalize">{user.studentStatus}</span>
+                      </span>
+
+                      {user.isAdmin && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-600 border border-purple-200">
+                          <Shield className="w-3 h-3" /> Admin
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 rounded-xl bg-slate-50 border border-slate-100 p-2.5 text-[11px]">
+                    <div>
+                      <span className="text-slate-400 block">Trust Score</span>
+                      <span className="font-bold text-slate-800">{user.trustScore} pts</span>
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-slate-400 block">Campus Info</span>
+                      <span className="font-medium text-slate-700 truncate block">
+                        {user.branch || "General"} • {user.hostel || "Day Scholar"}
+                      </span>
+                    </div>
+                    {user.ptuRollNo && (
+                      <div className="col-span-2 pt-1 border-t border-slate-200/60">
+                        <span className="text-slate-400">PTU Roll: </span>
+                        <span className="font-mono font-semibold text-slate-700">
+                          {user.ptuRollNo}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-2 pt-1">
+                    {user.studentStatus !== "verified" ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={pendingActionId === `user-status-${user.id}`}
+                        onClick={() => handleUpdateStudentStatus(user.id, "verified")}
+                        className="flex-1 h-9 text-xs font-bold text-emerald-600 border-emerald-200 hover:bg-emerald-50 rounded-xl cursor-pointer"
+                      >
+                        {pendingActionId === `user-status-${user.id}` ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <>
+                            <Check className="w-3.5 h-3.5 mr-1" /> Verify
+                          </>
+                        )}
+                      </Button>
+                    ) : (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={pendingActionId === `user-status-${user.id}`}
+                        onClick={() => handleUpdateStudentStatus(user.id, "unverified")}
+                        className="flex-1 h-9 text-xs font-semibold text-slate-600 border-slate-200 hover:bg-slate-50 rounded-xl cursor-pointer"
+                      >
+                        Revoke
+                      </Button>
+                    )}
+
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={pendingActionId === `user-role-${user.id}`}
+                      onClick={() => handleToggleAdmin(user.id, user.isAdmin)}
+                      className={`flex-1 h-9 text-xs font-semibold rounded-xl cursor-pointer ${
+                        user.isAdmin
+                          ? "text-rose-600 border-rose-200 hover:bg-rose-50"
+                          : "text-purple-600 border-purple-200 hover:bg-purple-50"
+                      }`}
+                    >
+                      {user.isAdmin ? "Demote" : "Make Admin"}
+                    </Button>
+
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={user.id === currentAdminId || isDeletingUser}
+                      onClick={() => setDeleteUserTarget(user)}
+                      title={
+                        user.id === currentAdminId
+                          ? "You cannot delete your own account"
+                          : "Permanently delete user account"
+                      }
+                      aria-label={`Delete ${user.name}`}
+                      className="h-9 px-3 text-xs font-semibold text-rose-600 border-rose-200 hover:bg-rose-50 rounded-xl cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </Button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Desktop Users Table */}
+          <div className="hidden md:block bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-semibold">
@@ -541,7 +682,7 @@ export function AdminDashboardClient({
                         <td className="py-3.5 px-4">
                           <div className="flex items-center gap-3">
                             <div className="w-9 h-9 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
-                              {user.name.slice(0, 2).toUpperCase()}
+                              {getAvatarInitials(user.name, "ST")}
                             </div>
                             <div>
                               <div className="font-bold text-slate-900">{user.name}</div>
@@ -679,25 +820,25 @@ export function AdminDashboardClient({
       {/* TAB 2: MARKETPLACE LISTINGS */}
       {/* ------------------------------------------------------------------ */}
       {activeTab === "products" && (
-        <div className="space-y-4">
+        <div className="space-y-4 min-w-0">
           {/* Controls Bar */}
-          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="bg-white p-3 sm:p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 min-w-0">
             <div className="relative w-full sm:w-80">
               <Input
                 value={productSearch}
                 onChange={(e) => setProductSearch(e.target.value)}
                 placeholder="Search listings by title, seller..."
-                className="pl-9 h-10 text-xs rounded-xl bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white"
+                className="pl-9 h-10 text-xs rounded-xl bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white w-full"
               />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             </div>
 
-            <div className="flex items-center gap-1 overflow-x-auto w-full sm:w-auto">
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-1.5 w-full sm:w-auto">
               {(["all", "available", "sold", "hidden"] as const).map((filter) => (
                 <button
                   key={filter}
                   onClick={() => setProductFilter(filter)}
-                  className={`px-3 py-1.5 text-xs font-bold rounded-xl capitalize transition-all cursor-pointer ${
+                  className={`px-2.5 sm:px-3 py-1.5 text-xs font-bold rounded-xl capitalize transition-all cursor-pointer ${
                     productFilter === filter
                       ? "bg-slate-900 text-white"
                       : "bg-slate-100 text-slate-600 hover:bg-slate-200"
@@ -709,8 +850,114 @@ export function AdminDashboardClient({
             </div>
           </div>
 
-          {/* Products Table */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          {/* Mobile Listing Cards */}
+          <div className="md:hidden space-y-3">
+            {filteredProducts.length === 0 ? (
+              <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center text-xs text-slate-400 shadow-xs">
+                No listings found matching your search.
+              </div>
+            ) : (
+              filteredProducts.map((prod) => {
+                const img = prod.images?.[0] || "/placeholder-item.jpg";
+                const priceRs = Math.round(prod.priceCents / 100);
+
+                return (
+                  <div
+                    key={prod.id}
+                    className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-3 min-w-0"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="w-14 h-14 rounded-xl bg-slate-100 relative overflow-hidden shrink-0 border border-slate-200">
+                        <img src={img} alt={prod.name} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-2">
+                          <Link
+                            href={`/product/${prod.slug}`}
+                            className="font-bold text-sm text-slate-900 hover:text-blue-600 line-clamp-2 transition-colors"
+                          >
+                            {prod.name}
+                          </Link>
+                          <span className="font-extrabold text-blue-600 text-sm shrink-0">
+                            ₹{priceRs}
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-slate-400 capitalize mt-0.5">
+                          {prod.condition.replace("_", " ")} •{" "}
+                          {new Date(prod.createdAt).toLocaleDateString()}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-2 rounded-xl bg-slate-50 border border-slate-100 p-2.5 text-xs">
+                      <div className="min-w-0">
+                        <div className="font-semibold text-slate-800 truncate">
+                          {prod.sellerName}
+                        </div>
+                        <div className="text-[11px] text-slate-400 truncate">
+                          {prod.storeName}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="flex items-center gap-1 text-[11px] text-slate-500">
+                          <Eye className="w-3.5 h-3.5 text-slate-400" /> {prod.views}
+                        </span>
+                        <span
+                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                            prod.status === "available"
+                              ? "bg-emerald-50 text-emerald-600 border border-emerald-200"
+                              : prod.status === "sold"
+                              ? "bg-slate-100 text-slate-800 border border-slate-300"
+                              : "bg-amber-50 text-amber-600 border border-amber-200"
+                          }`}
+                        >
+                          {prod.status}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-1">
+                      {prod.status !== "available" ? (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={pendingActionId === `prod-status-${prod.id}`}
+                          onClick={() => handleUpdateProductStatus(prod.id, "available")}
+                          className="flex-1 h-9 text-xs font-semibold text-emerald-600 border-emerald-200 hover:bg-emerald-50 rounded-xl cursor-pointer"
+                        >
+                          Mark Active
+                        </Button>
+                      ) : (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={pendingActionId === `prod-status-${prod.id}`}
+                          onClick={() => handleUpdateProductStatus(prod.id, "hidden")}
+                          className="flex-1 h-9 text-xs font-semibold text-amber-600 border-amber-200 hover:bg-amber-50 rounded-xl cursor-pointer"
+                        >
+                          Hide Listing
+                        </Button>
+                      )}
+
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={pendingActionId === `prod-del-${prod.id}`}
+                        onClick={() => handleDeleteProduct(prod.id)}
+                        className="h-9 px-3 text-xs font-semibold text-rose-600 border-rose-200 hover:bg-rose-50 rounded-xl cursor-pointer shrink-0"
+                        aria-label={`Delete ${prod.name}`}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          {/* Desktop Products Table */}
+          <div className="hidden md:block bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-semibold">
@@ -844,9 +1091,9 @@ export function AdminDashboardClient({
       {/* TAB 3: VERIFICATION DESK */}
       {/* ------------------------------------------------------------------ */}
       {activeTab === "verifications" && (
-        <div className="space-y-4">
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-1">
-            <h3 className="font-display font-bold text-lg text-slate-900">
+        <div className="space-y-4 min-w-0">
+          <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-xs space-y-1">
+            <h3 className="font-display font-bold text-base sm:text-lg text-slate-900">
               Student ID &amp; PTU Portal Proof Queue
             </h3>
             <p className="text-xs text-slate-500">
@@ -854,22 +1101,22 @@ export function AdminDashboardClient({
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {verificationsList.length === 0 ? (
-              <div className="col-span-full py-12 text-center text-slate-400 bg-white rounded-2xl border border-slate-200">
+              <div className="col-span-full py-12 text-center text-xs sm:text-sm text-slate-400 bg-white rounded-2xl border border-slate-200">
                 No verification requests found.
               </div>
             ) : (
               verificationsList.map((req) => (
                 <div
                   key={req.id}
-                  className="bg-white rounded-2xl border border-slate-200 p-5 space-y-4 shadow-xs flex flex-col justify-between"
+                  className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 space-y-4 shadow-xs flex flex-col justify-between min-w-0"
                 >
-                  <div className="space-y-3">
+                  <div className="space-y-3 min-w-0">
                     <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <h4 className="font-bold text-slate-900 text-sm">{req.userName}</h4>
-                        <p className="text-xs text-slate-500">{req.userEmail}</p>
+                      <div className="min-w-0 flex-1">
+                        <h4 className="font-bold text-slate-900 text-sm truncate">{req.userName}</h4>
+                        <p className="text-xs text-slate-500 truncate">{req.userEmail}</p>
                       </div>
                       <span
                         className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full capitalize ${
@@ -949,15 +1196,15 @@ export function AdminDashboardClient({
       {/* TAB 4: ORDERS & TRANSACTIONS */}
       {/* ------------------------------------------------------------------ */}
       {activeTab === "orders" && (
-        <div className="space-y-4">
+        <div className="space-y-4 min-w-0">
           {/* Controls Bar */}
-          <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="bg-white p-3 sm:p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 min-w-0">
             <div className="relative w-full sm:w-80">
               <Input
                 value={orderSearch}
                 onChange={(e) => setOrderSearch(e.target.value)}
                 placeholder="Search orders by item, buyer, seller..."
-                className="pl-9 h-10 text-xs rounded-xl bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white"
+                className="pl-9 h-10 text-xs rounded-xl bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:bg-white w-full"
               />
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             </div>
@@ -970,8 +1217,101 @@ export function AdminDashboardClient({
             </div>
           </div>
 
-          {/* Orders Table */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          {/* Mobile Order Cards */}
+          <div className="md:hidden space-y-3">
+            {filteredOrders.length === 0 ? (
+              <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center text-xs text-slate-400 shadow-xs">
+                No orders found.
+              </div>
+            ) : (
+              filteredOrders.map((order) => {
+                const amountRs = Math.round(order.totalCents / 100);
+
+                return (
+                  <div
+                    key={order.id}
+                    className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-3 min-w-0"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <Link
+                          href={`/product/${order.productSlug}`}
+                          className="font-bold text-sm text-slate-900 hover:text-blue-600 line-clamp-2 transition-colors"
+                        >
+                          {order.productName}
+                        </Link>
+                        <div className="text-[11px] text-slate-400 font-mono mt-0.5">
+                          ID: {order.id.slice(0, 8)} •{" "}
+                          {new Date(order.createdAt).toLocaleDateString()}
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col items-end gap-1 shrink-0">
+                        <span className="font-extrabold text-blue-600 text-sm">₹{amountRs}</span>
+                        <span
+                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                            order.status === "completed"
+                              ? "bg-emerald-50 text-emerald-600 border border-emerald-200"
+                              : order.status === "seller_confirmed"
+                              ? "bg-amber-50 text-amber-600 border border-amber-200"
+                              : "bg-slate-100 text-slate-600 border border-slate-200"
+                          }`}
+                        >
+                          {order.status}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 rounded-xl bg-slate-50 border border-slate-100 p-2.5 text-xs">
+                      <div className="min-w-0">
+                        <span className="text-[10px] text-slate-400 block">Buyer</span>
+                        <div className="font-semibold text-slate-800 truncate">
+                          {order.buyerName}
+                        </div>
+                        <div className="text-[10px] text-slate-400 truncate">
+                          {order.buyerEmail}
+                        </div>
+                      </div>
+                      <div className="min-w-0">
+                        <span className="text-[10px] text-slate-400 block">Seller</span>
+                        <div className="font-semibold text-slate-800 truncate">
+                          {order.sellerName}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-1">
+                      {order.status !== "completed" && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={pendingActionId === `order-${order.id}`}
+                          onClick={() => handleUpdateOrderStatus(order.id, "completed")}
+                          className="flex-1 h-9 text-xs font-semibold text-emerald-600 border-emerald-200 hover:bg-emerald-50 rounded-xl cursor-pointer"
+                        >
+                          Mark Completed
+                        </Button>
+                      )}
+                      {order.status !== "cancelled" && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={pendingActionId === `order-${order.id}`}
+                          onClick={() => handleUpdateOrderStatus(order.id, "cancelled")}
+                          className="flex-1 h-9 text-xs font-semibold text-rose-600 border-rose-200 hover:bg-rose-50 rounded-xl cursor-pointer"
+                        >
+                          Cancel
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          {/* Desktop Orders Table */}
+          <div className="hidden md:block bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-semibold">
@@ -1110,13 +1450,13 @@ export function AdminDashboardClient({
               (<span className="font-mono text-xs">@{deleteUserTarget.username}</span>)? This will erase their account, storefront, listings, messages, verification requests, and related orders from the database.
             </p>
 
-            <div className="flex flex-wrap items-center justify-end gap-2.5 pt-2">
+            <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center sm:justify-end gap-2 sm:gap-2.5 pt-2">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => setDeleteUserTarget(null)}
                 disabled={isDeletingUser}
-                className="rounded-xl h-10 border-slate-200 text-xs font-semibold cursor-pointer"
+                className="rounded-xl h-10 border-slate-200 text-xs font-semibold cursor-pointer w-full sm:w-auto"
               >
                 Cancel
               </Button>
@@ -1124,7 +1464,7 @@ export function AdminDashboardClient({
                 type="button"
                 onClick={handleConfirmDeleteUser}
                 disabled={isDeletingUser}
-                className="bg-rose-600 hover:bg-rose-700 text-white rounded-xl h-10 px-4 text-xs font-bold shadow-xs cursor-pointer"
+                className="bg-rose-600 hover:bg-rose-700 text-white rounded-xl h-10 px-4 text-xs font-bold shadow-xs cursor-pointer w-full sm:w-auto"
               >
                 {isDeletingUser ? (
                   <>

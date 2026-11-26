@@ -8,6 +8,7 @@ import { ImageOff, Search } from "@/components/ui/material-symbol";
 
 import { Input } from "@/components/ui/input";
 import { formatPrice } from "@/lib/format";
+import { getAvatarInitials } from "@/lib/avatar";
 import type { ConversationSummary } from "@/db/queries/messages";
 
 const POLL_INTERVAL_MS = 5_000;
@@ -161,7 +162,7 @@ export function ConversationSidebar({
                   ? `You: ${lastMessage.message ?? "Sent a photo"}`
                   : (lastMessage.message ?? "Sent a photo")
               : "Say hello!";
-            const studentInitial = (conversation.otherUser?.name || "U").slice(0, 1).toUpperCase();
+            const studentInitial = getAvatarInitials(conversation.otherUser?.name, "U");
 
             return (
               <Link

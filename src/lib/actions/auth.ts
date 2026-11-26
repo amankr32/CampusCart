@@ -28,6 +28,7 @@ import {
 } from "@/lib/validations/auth";
 
 import { createInternalAuthToken } from "@/lib/auth-token";
+import { runAtomicBatch } from "@/lib/db-batch";
 
 type ActionResult<T = undefined> =
   | { success: true; data?: T; message?: string }
@@ -521,31 +522,43 @@ export async function resetPasswordAction(
   const { token, password } = parsed.data;
   const cleanToken = token.trim();
 
+  // Find non-expired, unused token
+  const [resetRecord] = await db
+    .select()
+    .from(passwordResetTokens)
+    .where(
+      and(
+        eq(passwordResetTokens.token, cleanToken),
+        isNull(passwordResetTokens.usedAt),
+        gt(passwordResetTokens.expiresAt, new Date())
+      )
+    )
+    .limit(1);
+
+  if (!resetRecord) {
+    return {
+      success: false,
+      error: "Password reset token is invalid or has expired. Please request a new link.",
+    };
+  }
+
+  const cleanRecordEmail = resetRecord.email.toLowerCase().trim();
+
+  const [targetUser] = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(sql`lower(${users.email}) = ${cleanRecordEmail}`)
+    .limit(1);
+
+  if (!targetUser) {
+    return { success: false, error: "Account not found for this reset link." };
+  }
+
   // Hash new password using Argon2id
   const newPasswordHash = await hashPassword(password);
 
-  const result = await db.transaction(async (tx) => {
-    // Find non-expired, unused token
-    const [resetRecord] = await tx
-      .select()
-      .from(passwordResetTokens)
-      .where(
-        and(
-          eq(passwordResetTokens.token, cleanToken),
-          isNull(passwordResetTokens.usedAt),
-          gt(passwordResetTokens.expiresAt, new Date())
-        )
-      )
-      .limit(1);
-
-    if (!resetRecord) {
-      return { error: "Password reset token is invalid or has expired. Please request a new link." };
-    }
-
-    const cleanRecordEmail = resetRecord.email.toLowerCase().trim();
-
-    // Update user's password permanently in database
-    const updatedUsers = await tx
+  const [updatedUsers] = (await runAtomicBatch(db, (tx) => [
+    tx
       .update(users)
       .set({
         passwordHash: newPasswordHash,
@@ -553,14 +566,8 @@ export async function resetPasswordAction(
         updatedAt: new Date(),
       })
       .where(sql`lower(${users.email}) = ${cleanRecordEmail}`)
-      .returning({ id: users.id });
-
-    if (updatedUsers.length === 0) {
-      return { error: "Account not found for this reset link." };
-    }
-
-    // Invalidate all open reset tokens and reset codes for this email
-    await tx
+      .returning({ id: users.id }),
+    tx
       .update(passwordResetTokens)
       .set({ usedAt: new Date() })
       .where(
@@ -568,17 +575,12 @@ export async function resetPasswordAction(
           sql`lower(${passwordResetTokens.email}) = ${cleanRecordEmail}`,
           isNull(passwordResetTokens.usedAt)
         )
-      );
+      ),
+    tx.delete(verificationCodes).where(eq(verificationCodes.email, cleanRecordEmail)),
+  ])) as [{ id: string }[], unknown, unknown];
 
-    await tx
-      .delete(verificationCodes)
-      .where(eq(verificationCodes.email, cleanRecordEmail));
-
-    return { ok: true as const };
-  });
-
-  if ("error" in result && result.error) {
-    return { success: false, error: result.error };
+  if (!updatedUsers || updatedUsers.length === 0) {
+    return { success: false, error: "Account not found for this reset link." };
   }
 
   return {
@@ -613,27 +615,40 @@ export async function resetPasswordWithOtpAction(
     };
   }
 
+  const [validCode] = await db
+    .select()
+    .from(verificationCodes)
+    .where(
+      and(
+        eq(verificationCodes.email, cleanEmail),
+        eq(verificationCodes.code, code),
+        gt(verificationCodes.expiresAt, new Date())
+      )
+    )
+    .orderBy(desc(verificationCodes.createdAt))
+    .limit(1);
+
+  if (!validCode) {
+    return {
+      success: false,
+      error: "Invalid or expired reset code. Please request a new password reset email.",
+    };
+  }
+
+  const [targetUser] = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(sql`lower(${users.email}) = ${cleanEmail}`)
+    .limit(1);
+
+  if (!targetUser) {
+    return { success: false, error: "Account not found." };
+  }
+
   const newPasswordHash = await hashPassword(password);
 
-  const result = await db.transaction(async (tx) => {
-    const [validCode] = await tx
-      .select()
-      .from(verificationCodes)
-      .where(
-        and(
-          eq(verificationCodes.email, cleanEmail),
-          eq(verificationCodes.code, code),
-          gt(verificationCodes.expiresAt, new Date())
-        )
-      )
-      .orderBy(desc(verificationCodes.createdAt))
-      .limit(1);
-
-    if (!validCode) {
-      return { error: "Invalid or expired reset code. Please request a new password reset email." };
-    }
-
-    const updatedUsers = await tx
+  const [updatedUsers] = (await runAtomicBatch(db, (tx) => [
+    tx
       .update(users)
       .set({
         passwordHash: newPasswordHash,
@@ -641,17 +656,9 @@ export async function resetPasswordWithOtpAction(
         updatedAt: new Date(),
       })
       .where(sql`lower(${users.email}) = ${cleanEmail}`)
-      .returning({ id: users.id });
-
-    if (updatedUsers.length === 0) {
-      return { error: "Account not found." };
-    }
-
-    await tx
-      .delete(verificationCodes)
-      .where(eq(verificationCodes.email, cleanEmail));
-
-    await tx
+      .returning({ id: users.id }),
+    tx.delete(verificationCodes).where(eq(verificationCodes.email, cleanEmail)),
+    tx
       .update(passwordResetTokens)
       .set({ usedAt: new Date() })
       .where(
@@ -659,13 +666,11 @@ export async function resetPasswordWithOtpAction(
           sql`lower(${passwordResetTokens.email}) = ${cleanEmail}`,
           isNull(passwordResetTokens.usedAt)
         )
-      );
+      ),
+  ])) as [{ id: string }[], unknown, unknown];
 
-    return { ok: true as const };
-  });
-
-  if ("error" in result && result.error) {
-    return { success: false, error: result.error };
+  if (!updatedUsers || updatedUsers.length === 0) {
+    return { success: false, error: "Account not found." };
   }
 
   return {

@@ -19,6 +19,7 @@ import { and, desc, eq, inArray, or } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { del } from "@vercel/blob";
 import { logger } from "@/lib/logger";
+import { runAtomicBatch } from "@/lib/db-batch";
 
 async function requireAdmin() {
   const session = await auth();
@@ -197,126 +198,132 @@ export async function adminDeleteUserAction(userId: string) {
 
     const blobUrlsToDelete: string[] = [];
 
-    const deletedInfo = await db.transaction(async (tx) => {
-      const [targetUser] = await tx
-        .select({
-          id: users.id,
-          name: users.name,
-          email: users.email,
-          avatarUrl: users.avatarUrl,
-        })
-        .from(users)
-        .where(eq(users.id, userId))
-        .limit(1);
+    const [targetUser] = await db
+      .select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        avatarUrl: users.avatarUrl,
+      })
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
 
-      if (!targetUser) {
-        return null;
+    if (!targetUser) {
+      return { success: false, error: "User account not found." };
+    }
+
+    if (targetUser.avatarUrl) {
+      blobUrlsToDelete.push(targetUser.avatarUrl);
+    }
+
+    // Collect verification proof images
+    const userVerifications = await db
+      .select({ portalScreenshotUrl: studentVerifications.portalScreenshotUrl })
+      .from(studentVerifications)
+      .where(eq(studentVerifications.userId, userId));
+
+    for (const v of userVerifications) {
+      if (v.portalScreenshotUrl) {
+        blobUrlsToDelete.push(v.portalScreenshotUrl);
       }
+    }
 
-      if (targetUser.avatarUrl) {
-        blobUrlsToDelete.push(targetUser.avatarUrl);
-      }
+    // Collect message attachment images for any conversation involving this user
+    const userConversations = await db
+      .select({ id: conversations.id })
+      .from(conversations)
+      .where(or(eq(conversations.buyerId, userId), eq(conversations.sellerId, userId)));
 
-      // Collect verification proof images
-      const userVerifications = await tx
-        .select({ portalScreenshotUrl: studentVerifications.portalScreenshotUrl })
-        .from(studentVerifications)
-        .where(eq(studentVerifications.userId, userId));
+    if (userConversations.length > 0) {
+      const convIds = userConversations.map((c) => c.id);
+      const convMessages = await db
+        .select({ image: messages.image })
+        .from(messages)
+        .where(inArray(messages.conversationId, convIds));
 
-      for (const v of userVerifications) {
-        if (v.portalScreenshotUrl) {
-          blobUrlsToDelete.push(v.portalScreenshotUrl);
+      for (const m of convMessages) {
+        if (m.image) {
+          blobUrlsToDelete.push(m.image);
         }
       }
+    }
 
-      // Collect message attachment images for any conversation involving this user
-      const userConversations = await tx
-        .select({ id: conversations.id })
-        .from(conversations)
-        .where(or(eq(conversations.buyerId, userId), eq(conversations.sellerId, userId)));
+    // Clean up storefront orders first (orders.tenantId / orders.productId use ON DELETE RESTRICT)
+    const [tenant] = await db
+      .select({ id: tenants.id, imageUrl: tenants.imageUrl })
+      .from(tenants)
+      .where(eq(tenants.ownerId, userId))
+      .limit(1);
 
-      if (userConversations.length > 0) {
-        const convIds = userConversations.map((c) => c.id);
-        const convMessages = await tx
-          .select({ image: messages.image })
-          .from(messages)
-          .where(inArray(messages.conversationId, convIds));
+    let productIds: string[] = [];
 
-        for (const m of convMessages) {
-          if (m.image) {
-            blobUrlsToDelete.push(m.image);
-          }
-        }
+    if (tenant) {
+      if (tenant.imageUrl) {
+        blobUrlsToDelete.push(tenant.imageUrl);
       }
 
-      // Clean up storefront orders first (orders.tenantId / orders.productId use ON DELETE RESTRICT)
-      const [tenant] = await tx
-        .select({ id: tenants.id, imageUrl: tenants.imageUrl })
-        .from(tenants)
-        .where(eq(tenants.ownerId, userId))
-        .limit(1);
+      const tenantProducts = await db
+        .select({ id: products.id, images: products.images })
+        .from(products)
+        .where(eq(products.tenantId, tenant.id));
 
-      let productIds: string[] = [];
+      productIds = tenantProducts.map((p) => p.id);
 
-      if (tenant) {
-        if (tenant.imageUrl) {
-          blobUrlsToDelete.push(tenant.imageUrl);
-        }
-
-        const tenantProducts = await tx
-          .select({ id: products.id, images: products.images })
-          .from(products)
-          .where(eq(products.tenantId, tenant.id));
-
-        productIds = tenantProducts.map((p) => p.id);
-
-        for (const p of tenantProducts) {
-          if (Array.isArray(p.images)) {
-            for (const img of p.images) {
-              if (typeof img === "string") {
-                blobUrlsToDelete.push(img);
-              }
+      for (const p of tenantProducts) {
+        if (Array.isArray(p.images)) {
+          for (const img of p.images) {
+            if (typeof img === "string") {
+              blobUrlsToDelete.push(img);
             }
           }
         }
+      }
+    }
 
-        await tx.delete(orders).where(eq(orders.tenantId, tenant.id));
+    await runAtomicBatch(db, (tx) => {
+      const queries = [];
+
+      if (tenant) {
+        queries.push(tx.delete(orders).where(eq(orders.tenantId, tenant.id)));
 
         if (productIds.length > 0) {
-          await tx.delete(orders).where(inArray(orders.productId, productIds));
-          await tx
-            .delete(reports)
-            .where(and(eq(reports.targetType, "product"), inArray(reports.targetId, productIds)));
+          queries.push(tx.delete(orders).where(inArray(orders.productId, productIds)));
+          queries.push(
+            tx
+              .delete(reports)
+              .where(and(eq(reports.targetType, "product"), inArray(reports.targetId, productIds)))
+          );
         }
       }
 
       // Clean up reports targeting this user and email-keyed auth tokens
-      await tx
-        .delete(reports)
-        .where(and(eq(reports.targetType, "user"), eq(reports.targetId, userId)));
-      await tx.delete(verificationCodes).where(eq(verificationCodes.email, targetUser.email));
-      await tx.delete(passwordResetTokens).where(eq(passwordResetTokens.email, targetUser.email));
+      queries.push(
+        tx
+          .delete(reports)
+          .where(and(eq(reports.targetType, "user"), eq(reports.targetId, userId)))
+      );
+      queries.push(tx.delete(verificationCodes).where(eq(verificationCodes.email, targetUser.email)));
+      queries.push(tx.delete(passwordResetTokens).where(eq(passwordResetTokens.email, targetUser.email)));
 
       // Delete the user (cascades tenants, products, conversations, messages, buyer orders, reviews, etc.)
-      await tx.delete(users).where(eq(users.id, userId));
+      queries.push(tx.delete(users).where(eq(users.id, userId)));
 
       // Record audit log for the admin action
-      await tx.insert(auditLogs).values({
-        userId: adminUser.id,
-        action: "ADMIN_USER_DELETED",
-        details: {
-          deletedUserId: targetUser.id,
-          deletedEmail: targetUser.email,
-          deletedName: targetUser.name,
-        },
-      });
+      queries.push(
+        tx.insert(auditLogs).values({
+          userId: adminUser.id,
+          action: "ADMIN_USER_DELETED",
+          details: {
+            deletedUserId: targetUser.id,
+            deletedEmail: targetUser.email,
+            deletedName: targetUser.name,
+          },
+        })
+      );
 
-      return targetUser;
+      return queries;
     });
-
-    if (!deletedInfo) {
-      return { success: false, error: "User account not found." };
-    }
 
     // Best-effort cleanup of stored Vercel Blob images
     for (const url of new Set(blobUrlsToDelete)) {

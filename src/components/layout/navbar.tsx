@@ -21,6 +21,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { subscribeToUnreadCount } from "@/lib/unread-store";
+import { getAvatarInitials } from "@/lib/avatar";
 
 export function Navbar() {
   const { data: session, status } = useSession();
@@ -171,8 +172,8 @@ export function Navbar() {
                     className="flex items-center gap-1.5 sm:gap-2 pl-1.5 pr-1.5 sm:pl-2 sm:pr-2.5 py-1 sm:py-1.5 rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-colors cursor-pointer"
                     aria-label="User Account Menu"
                   >
-                    <span className="flex items-center justify-center h-7 w-7 rounded-lg bg-blue-600 text-white font-bold text-xs shrink-0 shadow-xs">
-                      {session.user.name?.slice(0, 2).toUpperCase() || "CC"}
+                    <span className="flex items-center justify-center h-7 w-7 rounded-full bg-blue-600 text-white font-bold text-xs shrink-0 shadow-xs">
+                      {getAvatarInitials(session.user.name, "CC")}
                     </span>
                     <span className="text-xs font-semibold text-slate-800 hidden sm:inline max-w-[90px] truncate">
                       {session.user.name?.split(" ")[0]}

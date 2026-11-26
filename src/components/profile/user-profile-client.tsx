@@ -26,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { updateProfileAction, changePasswordAction } from "@/lib/actions/profile";
 import { getTrustScoreBadge } from "@/lib/trust-score-client";
+import { getAvatarInitials } from "@/lib/avatar";
 import { toast } from "@/lib/toast";
 
 interface UserProfileData {
@@ -188,7 +189,7 @@ export function UserProfileClient({
               {avatarUrl ? (
                 <img src={avatarUrl} alt={profile.name} className="w-full h-full object-cover" />
               ) : (
-                profile.name.slice(0, 2).toUpperCase()
+                getAvatarInitials(profile.name, "ST")
               )}
             </div>
 

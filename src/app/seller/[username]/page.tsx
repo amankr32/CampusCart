@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/material-symbol";
 import { Button } from "@/components/ui/button";
 import { getTrustScoreBadge } from "@/lib/trust-score-client";
+import { getAvatarInitials } from "@/lib/avatar";
 
 export default async function PublicSellerProfilePage({
   params,
@@ -90,7 +91,7 @@ export default async function PublicSellerProfilePage({
             {seller.avatarUrl ? (
               <img src={seller.avatarUrl} alt={seller.name} className="w-full h-full object-cover" />
             ) : (
-              seller.name.slice(0, 2).toUpperCase()
+              getAvatarInitials(seller.name, "ST")
             )}
           </div>
 

@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { db } from "@/db";
 import { users, products, tenants, studentVerifications, orders } from "@/db/schema";
-import { eq, desc, count, sql } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import {
   AdminDashboardClient,
@@ -177,15 +177,15 @@ export default async function AdminPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8">
+    <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-10 pb-24 md:pb-10 space-y-5 sm:space-y-8 min-w-0">
       {/* Admin Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-xs">
-        <div>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 bg-white p-4 sm:p-8 rounded-2xl border border-slate-200 shadow-xs">
+        <div className="min-w-0">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-bold mb-2 border border-blue-100">
             <ShieldCheck className="w-4 h-4 text-blue-600" />
             <span>CampusCart Administrator Portal</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black font-display text-slate-900 tracking-tight">
+          <h1 className="text-xl sm:text-3xl font-black font-display text-slate-900 tracking-tight">
             Admin Command Center
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
@@ -193,7 +193,7 @@ export default async function AdminPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <span className="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl">
             Admin: {session.user.name?.split(" ")[0]}
           </span>

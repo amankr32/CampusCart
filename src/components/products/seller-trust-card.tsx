@@ -9,6 +9,7 @@ import {
   ExternalLink,
 } from "@/components/ui/material-symbol";
 import { getTrustScoreBadge } from "@/lib/trust-score";
+import { getAvatarInitials } from "@/lib/avatar";
 
 interface SellerTrustCardProps {
   seller: {
@@ -33,14 +34,7 @@ export function SellerTrustCard({
 }: SellerTrustCardProps) {
   const isVerified = seller.studentStatus === "verified";
   const trustBadge = getTrustScoreBadge(seller.trustScore, seller.studentStatus);
-  const initials = seller.name
-    ? seller.name
-        .split(" ")
-        .map((p) => p[0])
-        .slice(0, 2)
-        .join("")
-        .toUpperCase()
-    : "ST";
+  const initials = getAvatarInitials(seller.name, "ST");
 
   return (
     <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--card-bg)] p-4 sm:p-5 space-y-4 shadow-2xs">
@@ -48,7 +42,7 @@ export function SellerTrustCard({
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           {/* Avatar */}
-          <div className="flex items-center justify-center w-11 h-11 rounded-2xl bg-blue-600 text-white font-bold text-sm shadow-xs shrink-0">
+          <div className="flex items-center justify-center w-11 h-11 rounded-full bg-blue-600 text-white font-bold text-sm shadow-xs shrink-0">
             {initials}
           </div>
 

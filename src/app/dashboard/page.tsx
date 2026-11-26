@@ -23,6 +23,7 @@ import { listConversationsForUser } from "@/db/queries/messages";
 import { getOrdersByBuyerId, getSalesByTenantId } from "@/db/queries/orders";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/format";
+import { getAvatarInitials } from "@/lib/avatar";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -258,7 +259,7 @@ export default async function DashboardPage() {
                   className="flex items-center gap-3 p-3 rounded-xl border border-[var(--border-subtle)]/70 hover:bg-[var(--border-subtle)]/40 transition-colors"
                 >
                   <div className="flex items-center justify-center h-10 w-10 rounded-full bg-[var(--brand-primary-light)] text-[var(--brand-primary)] font-bold text-xs shrink-0">
-                    {chat.otherUser?.name?.slice(0, 2).toUpperCase() || "US"}
+                    {getAvatarInitials(chat.otherUser?.name, "US")}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">

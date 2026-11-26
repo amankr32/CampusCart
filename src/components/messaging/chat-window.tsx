@@ -31,6 +31,7 @@ import {
 } from "@/lib/actions/orders";
 import { submitBuyerReviewAction } from "@/lib/actions/reviews";
 import { refreshUnreadCount } from "@/lib/unread-store";
+import { getAvatarInitials } from "@/lib/avatar";
 
 const FALLBACK_SYNC_INTERVAL_MS = 2_500;
 const HEARTBEAT_INTERVAL_MS = 20_000;
@@ -588,7 +589,7 @@ export function ChatWindow({
           {/* Student Avatar */}
           <div className="relative shrink-0">
             <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-full bg-blue-600 text-white font-bold text-sm sm:text-base flex items-center justify-center shadow-xs">
-              {otherUser.name.slice(0, 1).toUpperCase()}
+              {getAvatarInitials(otherUser.name, "U")}
             </div>
             {presence.isOnline && (
               <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-500 border-2 border-white" />
@@ -809,7 +810,7 @@ export function ChatWindow({
         {messages.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center p-6 space-y-4 max-w-sm mx-auto my-auto">
             <div className="h-14 w-14 rounded-full bg-blue-50 text-blue-600 font-bold text-xl flex items-center justify-center shadow-xs">
-              {otherUser.name.slice(0, 1).toUpperCase()}
+              {getAvatarInitials(otherUser.name, "U")}
             </div>
             <div>
               <h4 className="font-display font-bold text-base text-slate-900">
